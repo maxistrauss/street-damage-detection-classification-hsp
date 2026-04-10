@@ -10,3 +10,6 @@
 *.ind
 *.fdb_latexmk
 *.toc
+Python/data/GAPsV2
+
+Python/hsp
