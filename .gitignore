@@ -10,6 +10,16 @@
 *.ind
 *.fdb_latexmk
 *.toc
+*.idx
+*.bfc
+*.loa
+*.lof
+*.lol
+*.lot
+*.run.xml
+*.toc
+*.bcf
+*.pdf
 Python/data/GAPsV2
 
 Python/hsp
