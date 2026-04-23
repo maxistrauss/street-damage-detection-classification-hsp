@@ -19,7 +19,7 @@
 *.run.xml
 *.toc
 *.bcf
-*.pdf
+HSP1-Latex/Vorlage.pdf
 Python/data/GAPsV2
 
 Python/hsp
