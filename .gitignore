@@ -21,6 +21,6 @@
 *.bcf
 HSP1-Latex/Vorlage.pdf
 HSP2-Latex/Vorlage.pdf
-Python/data/
+Python/data/dataset-ninja
 
 Python/hsp
