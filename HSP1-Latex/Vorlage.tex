@@ -306,9 +306,96 @@ isbn=false		% Keine Ausbage der ISBN
 %	Inhalt
 %------------------------------------------------------------------------------
 
+% --- Abschnitt 1 ---
+\section{Einleitung}
+\label{sec:einleitung}
+
+\subsection{Motivation}
+In Zeiten knapper öffentlicher Kassen stehen Kommunen unter erheblichem Kostendruck. Die manuelle Erfassung des Straßenzustands ist zeitintensiv und teuer. Es besteht ein dringender Bedarf an automatisierten Lösungen zur schnellen Erfassung von Fahrbahnschäden.
+
+\subsection{Zielsetzung}
+Das Ziel dieser Arbeit ist die Entwicklung und Evaluation einer Lösung zur echtzeitfähigen Detektion von Straßenschäden direkt auf mobilen Endgeräten, um den Prozess der Datenerhebung zu skalieren.
+
+\subsection{Forschungsfragen}
+Im Zentrum steht die Frage: Wie beeinflusst die Modellkomprimierung (z.\,B. Quantisierung) die Erkennungsrate im Vergleich zur Inferenzgeschwindigkeit?
+
+\subsection{Abgrenzung}
+Der Fokus liegt auf der qualitativen Erkennung und Klassifizierung (Detektionsgeschwindigkeit) im fließenden Verkehr, nicht auf der zentimetergenauen Vermessung der Schadstellen.
+
+% --- Abschnitt 2 ---
+\section{Stand der Technik}
+\label{sec:stand_der_technik}
+
+\subsection{Systematik von Fahrbahnschäden}
+Klassifizierung relevanter Schadensbilder: Schlaglöcher, Risse (Längs-, Quer-, Netzrisse) sowie Flickstellen und Ausmagerungen.
+
+\subsection{Computer Vision in der Straßenerhaltung}
+Historischer Abriss: Von klassischen Bildverarbeitungsfiltern (Canny Edge, etc.) hin zu modernen Deep-Learning-Ansätzen.
+
+\subsection{Single-Stage-Detektoren: Die Evolution von YOLO}
+Analyse der YOLO-Architekturen von v8 bis hin zu den aktuellsten Versionen (v11) im Kontext der Objekterkennung.
+
+\subsection{Der Speed-vs-Accuracy Trade-off}
+Vergleich verschiedener Modellgrößen (Nano bis Large) hinsichtlich Präzision (mAP) und Latenz.
+
+% --- Abschnitt 3 ---
+\section{Methodik und Projektvorgehen}
+\label{sec:methodik}
+
+\subsection{Systemarchitektur}
+Entwurf einer mobilen Data Acquisition Pipeline: Vom Kamerasensor über die On-Device-Verarbeitung bis hin zur Ergebnissicherung.
+
+\subsection{Datenerhebung}
+Einsatz von Smartphone-Kameras und Dashcams unter realen Bedingungen im Stadtverkehr.
+
+\subsection{Datenaufbereitung und Vorverarbeitung}
+Implementierung von Resize-Strategien und Normalisierungstechniken zur Maximierung der Frames per Second (FPS).
+
+\subsection{Modellwahl und Architektur}
+Detaillierte Betrachtung der gewählten YOLO-Architektur (Backbone, Neck und Prediction Head).
+
+\subsection{Trainingsstrategie}
+Anwendung von Transfer Learning auf spezifische Straßenschadens-Datasets sowie Strategien zur Quantisierung (INT8 und FP16).
+
+% --- Abschnitt 4 ---
+\section{Implementierung und Deployment}
+\label{sec:implementierung}
+
+\subsection{Software-Stack}
+Einsatz von PyTorch für das Training, Ultralytics als Framework und OpenCV für die Bildvorverarbeitung.
+
+\subsection{Edge-Optimierung}
+Workflow zur Konvertierung der Modelle nach ONNX und TensorRT zur Hardwarebeschleunigung.
+
+\subsection{Prototypische Umsetzung}
+Entwicklung eines App-Prototyps oder einer mobilen Schnittstelle zur Demonstration der Echtzeit-Fähigkeit.
+
+% --- Abschnitt 5 ---
+\section{Ergebnisse und Evaluation}
+\label{sec:evaluation}
+
+\subsection{Evaluationsmetriken}
+Quantitative Bewertung mittels Mean Average Precision (mAP@50), Inferenzzeit in Millisekunden und FPS.
+
+\subsection{Hardware-Benchmark}
+Vergleichende Analyse der Performance auf verschiedenen Recheneinheiten: Desktop-CPU vs. GPU vs. Mobile Chipset (NPU/GPU).
+
+\subsection{Fehleranalyse (Qualitative Auswertung)}
+Untersuchung von False Positives, verursacht durch Umwelteinflüsse wie Schattenwurf oder Infrastrukturelemente wie Gullydeckel.
+
+% --- Abschnitt 6 ---
+\section{Wirtschaftlichkeit und Fazit}
+\label{sec:fazit}
+
+\subsection{Skalierbarkeit}
+Potenzial der Lösung für die flächendeckende Überwachung großer städtischer Straßennetze durch "Crowdsourced Sensing".
+
+\subsection{Zusammenfassung}
+Abschließende Beurteilung der Eignung von Mobile-Deep-Learning für das effiziente Screening von Stadtgebieten.
 
 %-------------------------------------------------------------------------------------
-% Verzeichnisse %-------------------------------------------------------------------------------------
+% Verzeichnisse 
+%-------------------------------------------------------------------------------------
 \rhead{Verzeichnisse} %Kopftextbeschriftung
 
 \stepcounter{section}
