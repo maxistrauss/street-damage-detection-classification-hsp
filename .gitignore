@@ -21,6 +21,6 @@
 *.bcf
 HSP1-Latex/Vorlage.pdf
 HSP2-Latex/Vorlage.pdf
-Python/data/GAPsV2
+Python/data/
 
 Python/hsp
