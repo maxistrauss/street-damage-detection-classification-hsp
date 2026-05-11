@@ -24,3 +24,7 @@ HSP2-Latex/Vorlage.pdf
 Python/data/dataset-ninja
 
 Python/hsp
+data/
+.venv/
+runs/
+.claude/settings.local.json
