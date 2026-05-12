@@ -16,8 +16,8 @@ import shutil
 import random
 from pathlib import Path
 
-DATASET_DIR = Path(__file__).parent.parent / "data" / "rdd2022"
-OUTPUT_DIR  = Path(__file__).parent.parent / "data" / "yolo"
+DATASET_DIR = Path(__file__).parent / "data" / "dataset-ninja"
+OUTPUT_DIR  = Path(__file__).parent / "data" / "yolo"
 
 CLASSES = [
     "alligator crack",
