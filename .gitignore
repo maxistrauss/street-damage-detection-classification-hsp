@@ -22,6 +22,13 @@
 HSP1-Latex/Vorlage.pdf
 HSP2-Latex/Vorlage.pdf
 Python/data/dataset-ninja
+Python/hsp2_transformer/data
+*.pth
+
+
+node_modules/
+package-lock.json
+package.json
 
 Python/hsp
 data/
