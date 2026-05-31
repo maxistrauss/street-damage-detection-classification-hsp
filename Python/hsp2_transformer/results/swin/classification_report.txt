@@ -1,0 +1,12 @@
+                    precision    recall  f1-score   support
+
+   alligator_crack       0.91      0.90      0.91      2109
+longitudinal_crack       0.95      0.96      0.96      5260
+            normal       1.00      1.00      1.00      7109
+  other_corruption       0.95      0.96      0.95      1158
+           pothole       0.94      0.93      0.94      1295
+  transverse_crack       0.96      0.96      0.96      2352
+
+          accuracy                           0.96     19283
+         macro avg       0.95      0.95      0.95     19283
+      weighted avg       0.96      0.96      0.96     19283
