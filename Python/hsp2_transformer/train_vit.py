@@ -127,7 +127,7 @@ def train_model():
     plt.legend()
     plt.title('Validation Accuracy')
     
-    plt.savefig(MODEL_DIR / "training_curves.png")
+    plt.savefig(MODEL_DIR / "vit_training_curves.png")
     plt.close()
 
 if __name__ == "__main__":

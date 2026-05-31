@@ -82,8 +82,8 @@ def evaluate():
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.title('Confusion Matrix: Vision Transformer (ViT)')
-    plt.savefig(RESULTS_DIR / "confusion_matrix.png")
-    print(f"Confusion Matrix saved to {RESULTS_DIR / 'confusion_matrix.png'}")
+    plt.savefig(RESULTS_DIR / "vit_confusion_matrix.png")
+    print(f"Confusion Matrix saved to {RESULTS_DIR / 'vit_confusion_matrix.png'}")
 
 if __name__ == "__main__":
     evaluate()
