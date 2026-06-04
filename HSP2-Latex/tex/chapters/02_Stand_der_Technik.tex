@@ -1,0 +1,75 @@
+\section{Stand der Technik}
+\label{sec:stand_der_technik}
+
+Die automatische Analyse von Straßenoberflächen hat sich in den letzten Jahrzehnten stark weiterentwickelt. Von den ersten Systemen der 1980er Jahre bis hin zu modernen Transformer-Modellen war das Ziel immer, die menschliche Inspektion durch objektive, maschinelle Verfahren zu unterstützen. In diesem Kapitel werden die theoretischen Grundlagen erklärt, die für das Verständnis dieser Arbeit notwendig sind. Dabei wird der Bogen von der klassischen Bildverarbeitung über Convolutional Neural Networks (CNNs) bis hin zu den aktuellen Vision Transformern gespannt. Der Fokus liegt dabei auf einer verständlichen Darstellung der mathematischen und informatischen Konzepte.
+
+\subsection{Klassische Bildverarbeitung und Merkmalsextraktion}
+Bevor Deep-Learning-Verfahren zum Standard wurden, basierte die Schadenserkennung auf manuell definierten Merkmalen (Hand-crafted Features). Unter diesen Merkmalen versteht man die Anwendung von festen Algorithmen, um bestimmte geometrische Formen, Kanten oder Farbwerte im Bild gezielt zu isolieren. Diese Methoden erfordern ein tiefes Expertenwissen über die Charakteristik des Zielobjekts, da die Filterkerne manuell entworfen werden müssen und nicht gelernt werden.
+
+\paragraph{Der Sobel-Operator zur Kantendetektion}
+Ein grundlegendes Werkzeug der klassischen Bildverarbeitung ist der Sobel-Operator. Er dient dazu, Kanten im Bild zu finden, indem er die Gradienten (Änderungsraten) der Helligkeit berechnet. Eine Kante stellt technisch betrachtet eine Stelle im Bild dar, an der sich die Pixelwerte abrupt ändern. Der Sobel-Operator nutzt zwei kleine Filtermatrizen (Kernels) der Größe $3 \times 3$, die jeweils die Ableitung in horizontaler ($G_x$) und vertikaler ($G_y$) Richtung approximieren:
+
+\begin{equation}
+    G_x = \begin{bmatrix} -1 & 0 & +1 \\ -2 & 0 & +2 \\ -1 & 0 & +1 \end{bmatrix} * A, \quad G_y = \begin{bmatrix} +1 & +2 & +1 \\ 0 & 0 & 0 \\ -1 & -2 & -1 \end{bmatrix} * A
+\end{equation}
+
+Dabei ist $A$ das Quellbild und der Operator $*$ steht für die diskrete 2D-Faltung. Bei einer Faltung wird die Filtermatrix über das Bild geschoben, und für jeden Pixel wird ein gewichteter Mittelwert seiner Nachbarschaft berechnet. Die daraus resultierende Gradientenstärke $G = \sqrt{G_x^2 + G_y^2}$ markiert Stellen mit starken Helligkeitsunterschieden. 
+
+Ein wesentliches Problem dieses Ansatzes ist die Empfindlichkeit gegenüber Rauschen. Jede kleine Pore im Asphalt oder eine leichte Verschmutzung erzeugt ebenfalls einen Gradienten, der vom Algorithmus fälschlicherweise als Risskante interpretiert wird. Hierbei müssen oft komplexe Vorverarbeitungsschritte wie der Gauß-Filter zur Glättung vorgeschaltet werden, was jedoch auch echte, feine Risse „verwaschen“ kann.
+
+\paragraph{Die Hough-Transformation für geometrische Strukturen}
+Um aus den isolierten Kantenpunkten zusammenhängende Strukturen zu extrahieren, wurde oft die Hough-Transformation eingesetzt. Das Ziel ist es, mathematisch beschreibbare Primitiva wie Geraden oder Kreise in einem verrauschten Bild zu finden. Dabei wird jeder Kantenpunkt in einen Parameterraum (Hough-Raum) transformiert. Für eine Gerade lautet die Beschreibung in Polarkoordinaten:
+\begin{equation}
+    r = x \cdot \cos(\phi) + y \cdot \sin(\phi)
+\end{equation}
+Dabei ist $r$ der Abstand der Geraden zum Ursprung und $\phi$ der Winkel der Normalen. Jeder Punkt im Bildraum entspricht einer Sinuskurve im Parameterraum. Stellen, an denen sich viele Kurven schneiden (Akkumulator-Zellen), deuten auf eine Gerade im Bild hin.
+
+Dieser Algorithmus lässt sich als ein Abstimmungsverfahren (Voting) beschreiben, das sehr robust gegen Ausreißer ist. Für die Erkennung von Längs- und Querrissen klang dieser Ansatz theoretisch vielversprechend. In der Praxis scheitert er jedoch an der unregelmäßigen Natur echter Risse. Ein Riss ist fast nie eine exakte Gerade, sondern eine verzweigte Struktur. Die Hough-Transformation ist zudem sehr rechenintensiv, da für jeden Kantenpunkt der gesamte Parameterraum berechnet werden muss, was bei hochauflösenden Straßenbildern zu langen Laufzeiten führt.
+
+\subsection{Deep Learning und Convolutional Neural Networks (CNN)}
+Der Durchbruch in der automatisierten Schadenserkennung gelang mit der Einführung von Convolutional Neural Networks (CNNs). Im Gegensatz zu klassischen Methoden „lernen“ CNNs die notwendigen Filterkerne direkt aus den Trainingsdaten. Sie extrahieren hierarchisch Merkmale, wobei in den unteren Schichten einfache Kanten und in den tieferen Schichten komplexe Formen erkannt werden.
+
+\paragraph{Das Konzept der Feature Maps}
+Ein CNN besteht aus mehreren Schichten, die nacheinander Informationen verarbeiten. Das Herzstück ist die Faltungsschicht. Ein lernbarer Filter gleitet über das Eingabebild und berechnet das Skalarprodukt. Das Ergebnis ist eine neue Matrix, die sogenannte \textbf{Feature Map}. Wenn ein Filter zum Beispiel darauf trainiert wurde, vertikale Kanten zu finden, wird die Feature Map an Stellen mit vertikalen Rissen hohe Werte aufweisen. Durch das Training via Backpropagation (Fehlerrückführung) passt das Netzwerk diese Filtergewichte so an, dass der Vorhersagefehler minimiert wird. 
+
+\paragraph{Nichtlinearität und Datenreduktion}
+Um komplexe, nicht-lineare Zusammenhänge abzubilden (z. B. die Form eines Schlaglochs), benötigt ein neuronales Netzwerk Nichtlinearitäten. Hierfür wird meist die \textbf{ReLU-Aktivierungsfunktion} eingesetzt:
+\begin{equation}
+    f(x) = \max(0, x)
+\end{equation}
+Funktional fungiert ReLU als ein Filter, der negative Signale abschneidet und nur relevante, positive Informationen weitergibt. Dies verhindert mathematische Probleme wie das Verschwinden von Gradienten in sehr tiefen Netzen.
+
+Zusätzlich werden \textbf{Pooling-Schichten} genutzt. Max-Pooling reduziert die räumliche Dimension einer Feature Map, indem es nur den Maximalwert aus einem Fenster (z. B. $2 \times 2$) weitergibt. Dies dient der Datenkompression und macht das Modell robuster gegenüber leichten Verschiebungen des Objekts im Bild (Translationsinvarianz). Wenn ein Schlagloch ein paar Pixel weiter links liegt, erkennt das Pooling-Verfahren es dennoch an der gleichen Stelle in der abstrakten Merkmalskarte.
+
+\paragraph{Die Problematik des lokalen Fokus}
+Trotz ihrer Dominanz haben CNNs eine fundamentale Einschränkung: Das \textbf{lokale rezeptive Feld}. Ein einzelner Faltungskern sieht immer nur einen winzigen Ausschnitt des Bildes. Um globale Zusammenhänge zu verstehen – etwa ob ein Riss am oberen Bildrand mit einem am unteren Bildrand eine zusammenhängende Struktur bildet – muss die Information über viele Schichten hinweg aggregiert werden. Dabei geht jedoch oft die räumliche Auflösung verloren. Dies motiviert den Einsatz von Transformer-Architekturen, die globale Informationen effizienter verarbeiten können.
+
+\subsection{Vision Transformer (ViT): Von Sprache zu Bildern}
+Vision Transformer (ViT) brechen mit dem Paradigma der lokalen Faltung. Sie basieren auf dem Transformer-Modell, das ursprünglich für die Verarbeitung von Texten (Natural Language Processing, NLP) entwickelt wurde. Modelle wie ChatGPT nutzen die gleiche Grundarchitektur.
+
+\paragraph{Bilder als Sequenzen von Informationen}
+Ein Transformer kann keine 2D-Gitter (Bilder) direkt verarbeiten, sondern erwartet eine Folge von Elementen (wie Wörter in einem Satz). Daher wird das Bild in eine feste Anzahl von Quadraten, die sogenannten \textbf{Patches}, zerlegt. Ein Bild mit $224 \times 224$ Pixeln wird beispielsweise in $196$ Patches der Größe $16 \times 16$ Pixel unterteilt. Jeder Patch wird „flachgeklopft“ (flattened) und durch eine Matrixmultiplikation in einen Vektor (Embedding) umgewandelt.
+
+\paragraph{Der Self-Attention-Mechanismus: Globale Aufmerksamkeit}
+Der entscheidende Teil des Transformers ist die \textit{Self-Attention}. Sie erlaubt es jedem Patch, mit jedem anderen Patch im Bild zu kommunizieren. Man kann sich das wie eine Gruppe von Experten vorstellen, die jeweils einen Teil des Bildes betrachten und sich gegenseitig zurufen, was sie gefunden haben. Mathematisch wird dies über drei Vektoren pro Patch realisiert:
+\begin{itemize}
+    \item \textbf{Query ($Q$):} Was sucht dieser Bildbereich gerade? (z. B. „Ich suche eine Fortsetzung einer Kante“).
+    \item \textbf{Key ($K$):} Was kann dieser Bildbereich anbieten? (z. B. „Ich habe hier eine vertikale Kante“).
+    \item \textbf{Value ($V$):} Die eigentliche Bildinformation, die weitergegeben wird.
+\end{itemize}
+
+Die Aufmerksamkeit zwischen zwei Patches wird durch das Skalarprodukt ihrer Query- und Key-Vektoren bestimmt. Die Formel lautet:
+\begin{equation}
+    \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+\end{equation}
+Hierbei sorgt die Softmax-Funktion dafür, dass die Aufmerksamkeit als Wahrscheinlichkeitsverteilung (Werte zwischen 0 und 1) interpretiert werden kann. Durch diesen Mechanismus kann das Modell bereits in der ersten Schicht globale Abhängigkeiten erfassen, was für die Analyse weit verzweigter Rissmuster ein enormer Vorteil ist.
+
+\subsection{Der Swin Transformer: Hierarchische Attention}
+Ein Nachteil des Standard-ViT ist der quadratische Anstieg der Rechenlast ($O(n^2)$), wenn die Anzahl der Patches steigt. Der Swin Transformer (Shifted Window Transformer) löst dieses Problem durch eine hierarchische Struktur, die dem Aufbau des menschlichen Auges ähnelt.
+
+Anstatt die Aufmerksamkeit über das gesamte Bild zu berechnen, wird das Bild in lokale Fenster unterteilt. Die Aufmerksamkeit wird nur innerhalb dieser Fenster berechnet, was die Rechenkomplexität drastisch reduziert. Damit Informationen trotzdem über die Fenstergrenzen hinweg fließen können, nutzt der Swin Transformer das Konzept der \textbf{Shifted Windows}. In aufeinanderfolgenden Schichten werden die Fenstergrenzen versetzt, sodass Patches, die zuvor in unterschiedlichen Fenstern lagen, nun miteinander kommunizieren können. 
+
+Zusätzlich nutzt der Swin Transformer das \textbf{Patch Merging}. Dabei werden in tieferen Schichten benachbarte Patches zusammengefasst. Dies ähnelt dem „Herauszoomen“: Das Modell sieht erst feine Details (Rissspitzen) und in späteren Schichten das große Ganze (das gesamte Schlagloch). Dies macht den Swin Transformer besonders effizient für hochauflösende Bilder, wie sie in HSP 2 verwendet werden.
+.
+wendet werden.
+.

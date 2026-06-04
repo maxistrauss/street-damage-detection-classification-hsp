@@ -1,0 +1,43 @@
+\section{Einleitung}
+\label{sec:einleitung}
+
+Die Instandhaltung von Straßen ist eine zentrale Aufgabe für moderne Gesellschaften und deren wirtschaftliche Stabilität. Ein funktionierendes Verkehrsnetz ist die Grundlage für den Warenverkehr, die individuelle Mobilität und die Erreichbarkeit von Arbeitsplätzen. Da das Straßennetz durch ein stetig wachsendes Verkehrsaufkommen, schwerere Fahrzeuge und extreme Wettereinflüsse massiv belastet wird, ist eine regelmäßige und präzise Überprüfung des Zustands unerlässlich. Eine objektive Bewertung hilft dabei, Sanierungsmaßnahmen vorausschauend zu planen und enorme Folgekosten durch zu spät erkannte schwere Schäden zu vermeiden.
+
+\paragraph{Vom Projekt HSP 1 zu HSP 2}
+Das Gesamtprojekt HSP besteht aus zwei wesentlichen Teilen, die technologisch aufeinander aufbauen. Im ersten Teil (HSP 1) lag der Fokus auf der Detektion von Schadensstellen in Echtzeit während der Fahrt. Dabei wurden Convolutional Neural Networks (CNNs) verwendet, um Rahmen (Bounding Boxes) um mögliche Schäden wie Risse oder Schlaglöcher zu ziehen. HSP 1 hat somit die Frage beantwortet, wo sich ein potenzieller Schaden im Straßennetz befindet. Die vorliegende Arbeit im Rahmen von HSP 2 konzentriert sich nun auf den nächsten logischen Schritt: die hochpräzise Klassifizierung dieser Schäden.
+
+HSP 2 nutzt hierfür moderne Vision Transformer (ViT) und Swin Transformer. Diese Modelle wurden ursprünglich für die Sprachverarbeitung entwickelt, zeigen aber auch bei der Bilderkennung herausragende Ergebnisse. Ziel ist es, die Genauigkeit der Klassifizierung auf ein Niveau zu heben, das als verlässliche Entscheidungsgrundlage für Bauämter und Ingenieurbüros dienen kann. Durch die Kombination von schneller Detektion (HSP 1) und präziser Analyse (HSP 2) entsteht eine vollständige automatisierte Prozesskette zur Straßenzustandsbewertung.
+
+\subsection{Motivation}
+Die automatische Erkennung von Straßenschäden ist eine komplexe Aufgabe. Reale Aufnahmen sind oft durch ungünstige Lichtverhältnisse, Schattenwurf, unterschiedliche Asphalttexturen oder Verschmutzungen geprägt. Herkömmliche Verfahren der Bildverarbeitung stoßen hier oft an ihre Grenzen, da sie Schwierigkeiten haben, feine Unterschiede zu erkennen – zum Beispiel zwischen einem harmlosen Schattenkante und einem echten Riss. Auch klassische neuronale Netze (CNNs) haben Nachteile bei der Erfassung von weit verzweigten Strukturen oder globalen Zusammenhängen im Bild.
+
+\paragraph{Informatische Herausforderungen}
+Dies setzt eine hohe \textbf{Generalisierungsfähigkeit} voraus. Ein Modell darf nicht nur die Schäden erkennen, die es im Training gesehen hat, sondern muss auch auf völlig neuen Straßenoberflächen (z. B. in anderen Ländern oder bei anderem Wetter) funktionieren. Die Vermeidung von \textbf{Overfitting} (Überanpassung an den Trainingsdatensatz) ist daher ein zentrales Thema dieser Arbeit.
+
+\paragraph{Praktische und wirtschaftliche Relevanz}
+In der kommunalen Praxis haben Fehlklassifizierungen weitreichende finanzielle Folgen. Wenn ein kritischer Schaden, wie ein beginnender Netzriss, nicht rechtzeitig erkannt wird, steigen die Sanierungskosten in der Folgezeit exponentiell an. Wasser kann in die tieferen Schichten der Fahrbahn eindringen und bei Frost den gesamten Unterbau zerstören. Wird dagegen ein Schaden gemeldet, wo eigentlich keiner vorhanden ist, werden begrenzte finanzielle Mittel unnötig gebunden. Eine maximale Genauigkeit in der Klassifizierung ist daher eine wirtschaftliche Notwendigkeit, um die knappen Budgets der öffentlichen Hand zielgerichtet einzusetzen.
+
+\subsection{Zielsetzung der Arbeit}
+Das Hauptziel dieser Arbeit ist die Entwicklung und Evaluation einer leistungsstarken Pipeline zur Schadensbewertung auf Basis von Transformer-Modellen. Es soll empirisch untersucht werden, ob sogenannte Attention-Mechanismen (Aufmerksamkeits-Verfahren) besser geeignet sind, die komplexen Merkmale von Straßenschäden zu erfassen als bisherige Methoden.
+
+Die Arbeit umfasst dabei folgende Kernpunkte:
+\begin{itemize}
+    \item \textbf{Implementierung und Test des Vision Transformers (ViT):} Es wird untersucht, wie gut das Modell Schäden erkennt, indem es das Bild in kleine Kacheln (Patches) zerlegt und deren Beziehungen untereinander global analysiert.
+    \item \textbf{Analyse des Swin Transformers:} Hier steht die Untersuchung einer hierarchischen Struktur im Vordergrund, die es ermöglicht, Merkmale in verschiedenen Skalierungen (von der feinen Rissspitze bis zum großen Schlagloch) optimal zu finden.
+    \item \textbf{Benchmarking mit dem RDD2022-Standard:} Die Modelle werden unter Nutzung des Road Damage Datasets 2022 unter realistischen und internationalen Bedingungen getestet, um eine allgemeingültige Aussage über deren Leistungsfähigkeit zu treffen.
+\end{itemize}
+
+\subsection{Forschungsfragen}
+Um den Erfolg der Arbeit messbar zu machen und einen wissenschaftlichen Mehrwert zu generieren, werden folgende Forschungsfragen (FF) im Detail untersucht:
+
+\paragraph{FF 1: Differenzierungsvermögen bei Rissmustern}
+Können die verwendeten Transformer-Modelle die feinen Unterschiede zwischen geometrisch ähnlichen, aber strukturell verschiedenen Schäden (z. B. Längs- vs. Querrisse) besser erkennen als klassische CNNs? Dabei wird geprüft, ob die globale Sichtweise der Transformer hilft, den Verlauf von Rissen über Patch-Grenzen hinweg besser zu deuten.
+
+\paragraph{FF 2: Vorteil der hierarchischen Attention}
+Welchen spezifischen Vorteil bietet die Struktur des Swin Transformers gegenüber dem Standard-ViT bei der Erfassung von feingliedrigen Details? Es soll die Hypothese geprüft werden, dass der Swin Transformer durch seine Ähnlichkeit zu hierarchischen Strukturen eine bessere Balance zwischen lokaler Präzision und globalem Kontext findet.
+
+\paragraph{FF 3: Reduktion der Fehlklassifizierungsrate}
+Inwieweit lässt sich durch den Einsatz von Transfer Learning (Nutzung von vortrainiertem Wissen auf großen Datensätzen) die Fehlerrate bei kritischen Klassen wie Netzrissen (Alligator Cracks) unter eine praxisrelevante Schwelle senken? Das Ziel ist ein System, dem Bauingenieure bei der automatisierten Vorauswertung vertrauen können.
+
+\subsection{Aufbau der Arbeit}
+Die Arbeit ist wie folgt strukturiert: Nach dieser Einleitung werden in Kapitel 2 die theoretischen Grundlagen der Bildverarbeitung, von CNNs bis hin zu Transformern, erläutert. Dabei wird besonderer Wert auf die mathematische Herleitung der Attention-Mechanismen gelegt. Kapitel 3 beschreibt die methodische Vorgehensweise, die internationale Datenbasis des RDD2022 sowie die untersuchten Modellarchitekturen (ViT und Swin). Die technische Umsetzung, inklusive der Vorverarbeitungs-Pipeline und des Trainingsprozesses auf Hochleistungshardware, wird in Kapitel 4 detailliert. In Kapitel 5 erfolgt die Präsentation und ausführliche Diskussion der Ergebnisse inklusive einer fundierten qualitativen Fehleranalyse. Kapitel 6 schlägt die Brücke zur praktischen Anwendung und zeigt, wie die Ergebnisse in die standardisierte Bewertung nach ZTV ZEB einfließen können. In Kapitel 7 wird schließlich die wirtschaftliche Relevanz der Technologie beleuchtet, bevor ein abschließendes Fazit mit einem Ausblick auf zukünftige Entwicklungen gegeben wird.

@@ -1,0 +1,10 @@
+\thispagestyle{empty}
+\section*{Zusammenfassung}
+Die vorliegende Arbeit im Rahmen des Projekts HSP 2 befasst sich mit der hochpräzisen Klassifizierung von Fahrbahnschäden unter Einsatz moderner Deep-Learning-Architekturen. Während herkömmliche Ansätze basierend auf Convolutional Neural Networks (CNNs) oft an ihre Grenzen bei der Erfassung feiner Texturmerkmale stoßen, bietet der Einsatz von Transformer-Modellen durch integrierte Attention-Mechanismen neue Möglichkeiten der Bildanalyse.
+
+Im Zentrum der Untersuchung steht der empirische Vergleich zwischen dem klassischen Vision Transformer (ViT) und dem hierarchischen Swin Transformer auf Basis des Road Damage Datasets (RDD2022). Durch die Implementierung einer speziellen Tiling-Strategie und eines datenzentrierten Preprocessings konnte eine Klassifikationsgenauigkeit von bis zu 96,4\% bei einem F1-Score von 0,96 erreicht werden.
+
+Die Arbeit dokumentiert die gesamte Pipeline von der Datensatztransformation über das Training auf Hochleistungs-Hardware (NVIDIA RTX 6000 Ada) bis hin zur qualitativen Fehleranalyse mittels Attention-Maps. Es wird gezeigt, dass insbesondere der Swin Transformer durch seine „Shifted Window“-Attention eine überlegene Robustheit bei der Unterscheidung geometrisch ähnlicher Schadensklassen wie Längs- und Querrissen aufweist.
+
+Abschließend wird die praktische Relevanz der Ergebnisse im Kontext der nationalen Bewertungsrichtlinien (ZTV ZEB) sowie die ökonomischen Vorteile einer präziseren Sanierungsplanung für Bauämter dargelegt. Die Ergebnisse unterstreichen das Potenzial von Transformer-Architekturen als neuen Standard für die automatisierte Infrastrukturbewertung.
+\newpage

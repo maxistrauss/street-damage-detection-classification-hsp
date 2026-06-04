@@ -111,7 +111,7 @@ isbn=false		% Keine Ausbage der ISBN
 
 %Zusätzliche für Umbrüche für Kleinbuchstaben z.B. in URLs
 \appto\UrlBreaks{\do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j
-	\do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w
+	\do\k\do\l\do\m\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w
 	\do\x\do\y\do\z}
 
 
@@ -197,12 +197,12 @@ isbn=false		% Keine Ausbage der ISBN
 % Metainformationen
 % --------------------------------------------------------------------------------
 \hypersetup{unicode=false, pdftoolbar=true, pdfmenubar=true, pdffitwindow=false, pdfstartview={FitH},
-	pdftitle={Vorlage},
+	pdftitle={HSP2 Abschlussbericht},
 	pdfauthor={Studierender},
 	pdfsubject={Abschlussarbeit},
 	pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
 	pdfproducer={pdfTeX \the\pdftexversion.\pdftexrevision},
-	pdfkeywords={Vorlage},
+	pdfkeywords={Deep Learning, Transformer, Swin, ViT, RDD2022, Straßenschäden},
 	pdfnewwindow=true,
 	colorlinks=true,linkcolor=black,citecolor=black,filecolor=magenta,urlcolor=black}
 \pdfinfo{/CreationDate (D:20141024101000)}
@@ -219,6 +219,18 @@ isbn=false		% Keine Ausbage der ISBN
 %Abkürzungen hinzufügen
 \newacronym{LIP}{LIP}{Labor für Informationstechnik und Produktionslogistik}
 \newacronym{OTH}{OTHR}{Ostbayerische Technische Hochschule Regensburg}
+\newacronym{CNN}{CNN}{Convolutional Neural Network}
+\newacronym{ViT}{ViT}{Vision Transformer}
+\newacronym{Swin}{Swin}{Shifted Window Transformer}
+\newacronym{RDD}{RDD}{Road Damage Dataset}
+\newacronym{ZEB}{ZEB}{Zustandserfassung und -bewertung}
+\newacronym{ZTV}{ZTV}{Zusätzliche Technische Vertragsbedingungen}
+\newacronym{IoU}{IoU}{Intersection over Union}
+\newacronym{ReLU}{ReLU}{Rectified Linear Unit}
+\newacronym{NLP}{NLP}{Natural Language Processing}
+\newacronym{AdamW}{AdamW}{Adaptive Moment Estimation with Weight Decay}
+\newacronym{RTX}{RTX}{Ray Tracing Texel eXtreme (NVIDIA GPU Serie)}
+\newacronym{VRAM}{VRAM}{Video Random Access Memory}
 \newacronym{MRP}{MRP}{Material Requirements Planing}
 \newacronym{RCPSP}{RCPSP}{Resource-Constrained Project Scheduling Problem}
 \newacronym{MLCLSP}{MLCLSP}{Multi-level capacipated lot-sizing Problem}
@@ -274,7 +286,7 @@ isbn=false		% Keine Ausbage der ISBN
 \input{tex/Titelseite}
 \pagebreak
 
-
+\input{tex/Zusammenfassung}
 
 % ------------------------------------------------------------------------------
 % Inhaltsverzeichnis
@@ -306,92 +318,13 @@ isbn=false		% Keine Ausbage der ISBN
 %	Inhalt
 %------------------------------------------------------------------------------
 
-% --- Abschnitt 1 ---
-\section{Einleitung}
-\label{sec:einleitung}
-
-\subsection{Motivation}
-Die Qualitätssicherung in der Sanierungsplanung erfordert präzise Daten. Herkömmliche Methoden stoßen bei der Differenzierung komplexer Schadensmuster oft an ihre Grenzen, was eine automatisierte, hochgenaue Analyse notwendig macht.
-
-\subsection{Zielsetzung}
-Entwicklung eines Frameworks zur hochpräzisen Klassifizierung und semantischen Segmentierung von Straßenschäden, um eine belastbare Grundlage für Erhaltungsentscheidungen zu schaffen.
-
-\subsection{Forschungsfragen}
-Im Fokus steht die Überprüfung der Hypothese: Übertreffen Transformer-basierte Architekturen klassische CNNs bei der Erkennung von verdeckten oder besonders feinen Rissstrukturen?
-
-% --- Abschnitt 2 ---
-\section{Stand der Technik}
-\label{sec:stand_der_technik}
-
-\subsection{Normen und Richtlinien: ZTV ZEB und RStO}
-Detaillierte Betrachtung der Schadenskataloge gemäß den Zusätzlichen Technischen Vertragsbedingungen (ZTV ZEB) und der Richtlinien für die Standardisierung des Oberbaus (RStO).
-
-\subsection{Attention-Mechanismen in der Computer Vision}
-Theoretische Herleitung: Der Transfer des Attention-Konzepts aus dem Natural Language Processing (NLP) auf die Bildverarbeitung.
-
-\subsection{Vision Transformer (ViT) und SegFormer Architekturen}
-Analyse moderner Transformer-Topologien für die semantische Segmentierung im Vergleich zu Encoder-Decoder-Modellen (wie U-Net).
-
-\subsection{Stand der Forschung: Transformer in der Materialprüfung}
-Aktueller Forschungsstand zum Einsatz von Transformern für die Detektion von Materialermüdung und strukturellen Defekten.
-
-% --- Abschnitt 3 ---
-\section{Methodik und Projektvorgehen}
-\label{sec:methodik}
-
-\subsection{Gesamtarchitektur: High-Precision Pipeline}
-Konzeption einer End-to-End Pipeline von der hochauflösenden Datenaufnahme bis zur finalen Segmentierungsmaske.
-
-\subsection{Datenerhebung}
-Einsatz hochauflösender Sensorik: Drohnenbasierte Photogrammetrie oder kalibrierte Kamerasysteme professioneller Messfahrzeuge.
-
-\subsection{Feingranulare Annotation}
-Methodik der Datenbeschriftung: Vergleich zwischen groben Bounding Boxes und hochpräzisen Polygon-Slices für die Pixel-Level-Analyse.
-
-\subsection{Modellarchitektur}
-Detaillierung der Transformer-Komponenten: Patch Merging, Multi-Head Self-Attention und die Modellierung des Global Receptive Fields.
-
-\subsection{Hyperparameter-Tuning}
-Optimierungsstrategien zur Erfassung von Long-Range Dependencies innerhalb der Bilddaten (z.\,B. Verfolgung langer Rissverläufe).
-
-% --- Abschnitt 4 ---
-\section{Implementierung und Analyse}
-\label{sec:implementierung}
-
-\subsection{Software-Frameworks}
-Implementierung unter Nutzung von Hugging Face Transformers oder dem MMSegmentation-Framework.
-
-\subsection{Datenaugmentation für Texturerkennung}
-Spezifische Augmentierungstechniken zur Verbesserung der Robustheit gegenüber wechselnden Texturen und Lichtverhältnissen.
-
-\subsection{Rechenintensität und Infrastruktur}
-Analyse der Anforderungen an die Rechenleistung (GPU/TPU) und Einsatz von Cloud-Infrastrukturen für das Modelltraining.
-
-% --- Abschnitt 5 ---
-\section{Ergebnisse und Validierung}
-\label{sec:evaluation}
-
-\subsection{Quantitative Metriken}
-Evaluierung mittels mAP@50-95 und Intersection over Union (IoU) zur präzisen Flächenberechnung der Schadstellen.
-
-\subsection{Visualisierung: Attention Maps}
-Qualitative Analyse: Was „sieht“ das Modell? Visualisierung der Aufmerksamkeitsverteilung zur Interpretierbarkeit der Ergebnisse.
-
-\subsection{Vergleich mit Expertenbewertungen}
-Validierung der Modellvorhersagen gegen den Experten-Standard (Ground Truth) aus realen Sanierungsbegehungen.
-
-% --- Abschnitt 6 ---
-\section{Zustandsbewertung und Logik}
-\label{sec:zustandsbewertung}
-
-\subsection{Automatisierte Ableitung des Zustandsindex}
-Algorithmen zur Überführung der Segmentierungsergebnisse in den Zustandsindex gemäß den ZEB-Vorgaben.
-
-\subsection{Priorisierungsmatrix}
-Entwicklung einer Entscheidungsmatrix für das kommunale Erhaltungsmanagement basierend auf Schadensausmaß und Verkehrsbedeutung.
-
-\subsection{Kritische Reflexion}
-Gegenüberstellung von Rechenlast und tatsächlichem Genauigkeitsgewinn im Vergleich zu effizienteren Leichtgewicht-Modellen.
+\input{tex/chapters/01_Einleitung}
+\input{tex/chapters/02_Stand_der_Technik}
+\input{tex/chapters/03_Methodik}
+\input{tex/chapters/04_Implementierung}
+\input{tex/chapters/05_Ergebnisse}
+\input{tex/chapters/06_Zustandsbewertung}
+\input{tex/chapters/07_Wirtschaftlichkeit}
 
 %-------------------------------------------------------------------------------------
 % Verzeichnisse 

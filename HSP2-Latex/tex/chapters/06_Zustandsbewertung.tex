@@ -1,0 +1,29 @@
+\section{Zustandsbewertung und Normen}
+\label{sec:zustandsbewertung}
+
+Die automatisierte Klassifizierung von Straßenschäden ist kein Selbstzweck, sondern dient dazu, das Erhaltungsmanagement objektiv, datenbasiert und reproduzierbar zu unterstützen. Erst wenn die Deep-Learning-Ergebnisse mit etablierten Ingenieurnormen verknüpft werden, entsteht ein Werkzeug, das in der Verwaltungspraxis von Bauämtern Bestand hat. In diesem Kapitel wird erläutert, wie die hochpräzisen Klassifizierungsergebnisse von HSP 2 in die standardisierte Bewertung nach deutschen Normen einfließen.
+
+\subsection{Bewertung nach der ZTV ZEB}
+In Deutschland erfolgt die Bewertung von Straßenoberflächen nach der „Zusätzlichen Technischen Vertragsbedingung und Richtlinie für die Zustandserfassung und -bewertung von Straßen“ (ZTV ZEB). Diese Richtlinie schreibt vor, dass die Oberfläche von Straßen in regelmäßigen Zyklen erfasst und bewertet werden muss, um den Sanierungsbedarf objektiv zu ermitteln.
+
+Die in HSP 2 untersuchten Transformer-Modelle sind so konzipiert, dass sie genau die Merkmale erkennen, die für diese Bewertung nach ZTV ZEB entscheidend sind:
+\begin{itemize}
+    \item \textbf{Rissbildung (RI):} Die präzise Unterscheidung zwischen Längsrissen (D00) und Querrissen (D10) ermöglicht eine differenzierte Bewertung des Risszustands. In der Norm fließen diese Merkmale unmittelbar in den sogenannten „Substanzwert“ ein, der den baulichen Zustand der Straße beschreibt.
+    \item \textbf{Netzrisse (NR):} Diese Risse (D20) gelten als Indikator für ein strukturelles Versagen der tieferen Schichten. Das Modell erlaubt hier eine frühzeitige Identifikation, bevor sich großflächige Schlaglöcher bilden, was für den Erhalt der Substanz kritisch ist.
+    \item \textbf{Schlaglöcher (D40):} Diese fließen unmittelbar in den „Gebrauchswert“ ein, da sie die Verkehrssicherheit und den Fahrkomfort direkt beeinflussen.
+\end{itemize}
+
+\subsection{Automatisierte Berechnung des Zustandsindex}
+Der entscheidende Schritt in der HSP 2-Pipeline ist die Aggregation der Ergebnisse der einzelnen Bildkacheln zu einem kontinuierlichen Zustandsindex (ZW). Da die Modelle auf Patch-Ebene arbeiten (wobei ein Patch etwa einer Realwelt-Fläche von $1 \times 1$ Meter entspricht), kann für jeden größeren Straßenabschnitt (z. B. 100 Meter) ein detailliertes Schadensprofil erstellt werden.
+
+Dabei wird für jeden Abschnitt die relative Häufigkeit der verschiedenen Schadensklassen berechnet. Ein Abschnitt mit einer hohen Dichte an Netzrissen wird automatisch schlechter bewertet als ein Abschnitt, in dem lediglich vereinzelte Querrisse auftreten. Die Berechnung folgt dabei einem mathematischen Verknüpfungsmodell, das die verschiedenen Schadensarten gewichtet. Das System bewertet jedes Bild nach den exakt gleichen, gelernten Kriterien. Dies schließt menschliche Subjektivität und Tagesform aus, was zu einer hohen Konsistenz über das gesamte Straßennetz führt. Dies ist die Grundvoraussetzung für eine gerechte und transparente Verteilung von Sanierungsgeldern zwischen verschiedenen Kommunen.
+
+\subsection{Priorisierung der Sanierungsmaßnahmen}
+Auf Basis der berechneten Zustandswerte kann eine digitale Priorisierungsliste erstellt werden, die den Bauämtern anzeigt, welche Abschnitte zuerst saniert werden müssen. Die Werte werden dabei auf einer Skala von 1,0 (sehr guter Zustand) bis 5,0 (ungenügender Zustand) abgebildet:
+\begin{itemize}
+    \item \textbf{1,0 - 3,5:} Die Straße ist in einem erhaltungswürdigen Zustand. Hier sind lediglich Routinekontrollen und kleinere Instandsetzungen notwendig.
+    \item \textbf{3,5 - 4,5 (Warnwert):} Der Zustand verschlechtert sich merklich. Eine detaillierte Sanierungsplanung sollte in diesem Stadium eingeleitet werden, um den optimalen Zeitpunkt für eine kosteneffiziente Instandsetzung nicht zu verpassen.
+    \item \textbf{4,5 - 5,0 (Schwellenwert):} Es besteht kurzfristiger Handlungsbedarf. In diesem Bereich droht eine Zerstörung der Substanz, was einen deutlich teureren Vollausbau der Straße zur Folge hätte.
+\end{itemize}
+
+Dank der hohen Klassifikationsgenauigkeit von über 96\% kann das System kritische „Hotspots“ automatisch identifizieren. Bauingenieure müssen so nicht mehr tausende Kilometer Videomaterial sichten, was oft Wochen in Anspruch nimmt. Stattdessen können sie sich direkt auf die Abschnitte konzentrieren, die vom System als kritisch (ZW > 4,0) markiert wurden. Dies trägt wesentlich zur Effizienzsteigerung der Fachabteilungen bei und erlaubt es, die knappen personellen Ressourcen gezielter einzusetzen.

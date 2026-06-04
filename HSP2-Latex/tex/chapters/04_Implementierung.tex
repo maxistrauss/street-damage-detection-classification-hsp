@@ -1,0 +1,63 @@
+\section{Implementierung}
+\label{sec:implementierung}
+
+Die technische Umsetzung von HSP 2 umfasst die Aufbereitung der Daten, die Konfiguration der Transformer-Modelle und den eigentlichen Trainingsprozess. In diesem Kapitel werden die einzelnen Schritte detailliert beschrieben, um die Reproduzierbarkeit der Ergebnisse sicherzustellen. Dabei wird der gesamte Workflow von der Rohbildverarbeitung bis hin zur finalen Modelloptimierung beleuchtet. Der Fokus liegt hierbei auf den technischen Details, die für das Verständnis der Pipeline entscheidend sind.
+
+\subsection{Vorbereitung der Bildkacheln (Tiling Pipeline)}
+Transformer-Modelle benötigen Bilder in einer festen quadratischen Größe, typischerweise $224 \times 224$ Pixel. Da die ursprünglichen Bounding Boxes im RDD2022-Datensatz jedoch sehr unterschiedliche Seitenverhältnisse aufweisen – von extrem schmalen Längsrissen bis hin zu quadratischen Schlaglöchern – wurde eine spezielle Vorverarbeitungs-Pipeline entwickelt. Ein einfaches Verzerren der Bilder (Resizing) auf das quadratische Format hätte die geometrischen Merkmale der Risse massiv verfälscht, was die Klassifizierungsleistung negativ beeinflusst hätte. Daher wurde ein intelligentes Padding-Verfahren gewählt.
+
+Dabei wurde für jede Bounding Box wie folgt vorgegangen:
+\begin{enumerate}
+    \item \textbf{Ermittlung der maximalen Ausdehnung:} Zuerst wurde die längere Seite des markierten Bereichs (Breite oder Höhe) bestimmt.
+    \item \textbf{Quadratische Erweiterung:} Der Bereich wurde symmetrisch so erweitert, dass ein Quadrat entsteht. Fehlende Bildbereiche wurden durch die tatsächliche umgebende Asphalttextur des Originalbildes aufgefüllt (sofern verfügbar) oder durch Spiegelung der Randpixel ergänzt.
+    \item \textbf{Kontext-Puffer:} Um sicherzustellen, dass das Modell auch den Übergang vom Schaden zum gesunden Asphalt lernt, wurde ein zusätzlicher Puffer von 10\% der Seitenlänge hinzugefügt. Dies ist wichtig, damit die Attention-Mechanismen die Umgebung des Schadens zur Kontextualisierung nutzen können.
+    \item \textbf{Skalierung:} Das quadratische Teilstück wurde mittels bilinearer Interpolation auf die Zielgröße von $224 \times 224$ Pixeln skaliert.
+\end{enumerate}
+
+\subsection{Strategie für das Negative Sampling („Normal“-Klasse)}
+Ein entscheidender Faktor für die Praxistauglichkeit des Systems ist die Fähigkeit, unbeschädigten Asphalt korrekt zu erkennen. Da der RDD2022-Datensatz primär Schadensstellen enthält, musste die Klasse „Normal“ (unbeschädigt) systematisch erzeugt werden. Dieser Prozess wird als \textbf{Negative Sampling} bezeichnet und dient dazu, dem Modell die Charakteristika schadenfreier Oberflächen zu vermitteln.
+
+Hierzu wurde ein Algorithmus implementiert, der in den Originalbildern nach zufälligen Regionen sucht, die keine Überschneidung mit den annotierten Bounding Boxes aufweisen. Es wurde sichergestellt, dass die extrahierten „Normal“-Patches die gleiche Größenverteilung aufweisen wie die Schadenspatches. Nur Bereiche, die vollständig schadenfrei sind, wurden als Kacheln in den Datensatz aufgenommen. Dies zwingt das Modell während des Trainings, den feinen Unterschied zwischen einer natürlichen, rauen Asphaltstruktur und einem echten Haarriss präzise zu unterscheiden.
+
+\subsection{Daten-Augmentierung und Regularisierung}
+Um die Robustheit gegenüber wechselnden Umweltbedingungen zu erhöhen und ein Auswendiglernen der Trainingsdaten (\textbf{Overfitting}) zu verhindern, wurde eine umfangreiche Augmentierungs-Pipeline integriert. Overfitting bedeutet in der Informatik, dass ein Modell die Trainingsdaten „auswendig lernt“, anstatt allgemeine Merkmale zu generalisieren.
+
+Diese nutzt die \texttt{torchvision.transforms}-Bibliothek und wendet während des Trainings zufällige Transformationen an:
+\begin{itemize}
+    \item \textbf{Random Resized Crop:} Dabei wird ein zufälliger Ausschnitt des Bildes gewählt und skaliert. Dies simuliert unterschiedliche Kameraabstände, Brennweiten und Blickwinkel des Messfahrzeugs.
+    \item \textbf{Color Jittering:} Helligkeit, Kontrast, Sättigung und Farbton werden variiert. Dies bereitet das Modell auf unterschiedliche Tageszeiten und Wetterbedingungen vor.
+    \item \textbf{Zufälliges Spiegeln und Rotieren:} Erhöht die Invarianz des Modells gegenüber der geometrischen Ausrichtung.
+\end{itemize}
+
+\subsection{Training und Hardware-Konfiguration}
+Das Training wurde mit dem PyTorch-Framework auf einer NVIDIA RTX 6000 Ada Grafikkarte durchgeführt. Die Wahl der Hardware ist entscheidend für die Machbarkeit von Deep-Learning-Projekten.
+
+\paragraph{Rolle der GPU in der KI}
+Grafikkarten (GPUs) sind für KI-Training ideal, da sie tausende kleine Rechenkerne (CUDA Cores) besitzen. Während ein klassischer Prozessor (CPU) Aufgaben nacheinander (seriell) abarbeitet, kann eine GPU die Millionen von Matrixmultiplikationen, die für Transformer notwendig sind, gleichzeitig (parallel) berechnen. Die RTX 6000 Ada bietet zudem 48 GB VRAM (Grafikspeicher), was es erlaubt, große Mengen an Bilddaten gleichzeitig im schnellen Zugriff zu halten (\textbf{Batch Size}).
+
+\paragraph{Optimizer: AdamW und Lernraten}
+Als Optimierungsverfahren wurde \textbf{AdamW} gewählt. Ein Optimizer ist der Algorithmus, der entscheidet, wie die Gewichte des Netzwerks basierend auf dem Fehler angepasst werden. AdamW nutzt dabei für jedes Gewicht eine individuelle „Schrittgeschwindigkeit“ (adaptive Lernrate). Um ein „Oszillieren“ am Ende des Trainings zu vermeiden, wurde ein \textit{Cosine Annealing Scheduler} genutzt, der die Lernrate sinusförmig reduziert.
+
+\paragraph{Mixed Precision Training (AMP)}
+Um den Speicherbedarf der Grafikkarte effizient zu nutzen, wurde \textit{Automatic Mixed Precision} (AMP) eingesetzt. Hierbei werden unkritische Rechenschritte in 16-Bit-Fließkommazahlen (FP16) anstatt in 32-Bit (FP32) durchgeführt. Technisch betrachtet halbiert dies den Speicherbedarf pro Zahl und verdoppelt die Rechengeschwindigkeit, ohne die Präzision des Modells spürbar zu verschlechtern.
+
+\paragraph{Trainingsverlauf und Konvergenz}
+Der Standard-ViT erreichte bereits nach etwa 10 Epochen ein stabiles Plateau. Der Swin Transformer benötigte aufgrund seiner komplexeren hierarchischen Struktur etwas länger (ca. 20 Epochen). In Abbildung \ref{fig:training_curves} ist der Verlauf von Loss (Fehlerwert) und Accuracy (Genauigkeit) gegenübergestellt.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../Python/hsp2_transformer/results/vit/training_curves.png}
+        \caption*{Trainingsverlauf des Vision Transformers (ViT).}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{../Python/hsp2_transformer/results/swin/training_curves.png}
+        \caption*{Trainingsverlauf des Swin Transformers.}
+    \end{minipage}
+    \caption{Detaillierter Vergleich der Lernkurven.}
+    \label{fig:training_curves}
+\end{figure}
+

@@ -1,0 +1,34 @@
+\section{Wirtschaftliche Relevanz}
+\label{sec:wirtschaftlichkeit}
+
+Der Einsatz von Deep-Learning-Modellen wie dem Swin Transformer hat große Auswirkungen auf die Wirtschaftlichkeit des Straßenmanagements. Da öffentliche Mittel oft begrenzt sind, hilft die Digitalisierung dabei, Sanierungen effizienter zu planen und den Wert des Anlagevermögens Straße langfristig zu erhalten.
+
+\subsection{Planungssicherheit für Bauämter}
+Fehlplanungen bei der Straßenerhaltung sind teuer. Wenn der richtige Zeitpunkt für eine Sanierung verpasst wird, können die Kosten innerhalb weniger Jahre stark ansteigen. Die genaue Analyse in HSP 2 hilft dabei, diesen Zeitpunkt besser zu bestimmen. So können zum Beispiel Netzrisse früh erkannt und kostengünstig behandelt werden, bevor die gesamte Straße ausgetauscht werden muss.
+
+Zudem werden unnötige Baustellen vermieden, da das System weniger Fehlalarme produziert. Die Kosten für eine Sanierung können so schon im Vorfeld genauer berechnet werden, was Nachträge während der Bauphase minimiert.
+
+\subsection{Effizienz durch Automatisierung}
+Durch die automatische Auswertung großer Bildmengen kann das Straßennetz öfter bewertet werden.
+
+\paragraph{Senkung der Kosten pro Kilometer}
+Die manuelle Auswertung von Videos ist zeitaufwendig und teuer. Das System in HSP 2 kann große Streckenabschnitte innerhalb kurzer Zeit auf einer leistungsstarken Grafikkarte (wie der RTX 6000 Ada) auswerten. Dadurch sinken die Kosten für die Analyse deutlich. Dies ermöglicht einen Wechsel von einer reaktiven („Reparieren, wenn kaputt“) zu einer vorausschauenden Strategie.
+
+\subsection{Zusammenarbeit von HSP 1 und HSP 2}
+In der Praxis bilden HSP 1 und HSP 2 eine Kette, die Geschwindigkeit und Genauigkeit verbindet.
+
+Zuerst findet die \textbf{Detektion (HSP 1)} statt: Ein Messfahrzeug fährt das Straßennetz ab, und ein schnelles YOLO-Modell findet in Echtzeit mögliche Schäden. So wird die riesige Datenmenge auf die relevanten Stellen reduziert.
+
+Danach folgt die \textbf{Analyse (HSP 2)}: Nur die gefundenen Stellen werden an das Transformer-Modell übergeben. Da diese Modelle genauer, aber auch rechenintensiver sind, spart dieses Vorgehen Hardware-Ressourcen. Das Ergebnis ist eine genaue Klassifizierung, die direkt für die Sanierungsplanung genutzt werden kann. Diese Synergie spiegelt moderne industrielle Qualitätssicherungsverfahren wider.
+
+\subsection{Kosten-Nutzen-Verhältnis}
+Auch wenn die Hardware für Transformer-Modelle teurer ist, lohnt sich die Investition oft schon durch den ersten vermiedenen Planungsfehler. Die hohe Qualität der Daten führt zudem zu einer besseren Akzeptanz der Ergebnisse bei politischen Entscheidungsträgern.
+
+\section{Fazit und Ausblick}
+Diese Arbeit hat im Rahmen von HSP 2 gezeigt, dass moderne Transformer-Modelle die automatisierte Zustandsbewertung von Straßen deutlich verbessern können.
+
+\paragraph{Zusammenfassung der Ergebnisse}
+Mit dem Swin Transformer wurde eine Genauigkeit von über 96\% erreicht. Die Forschungsfragen konnten positiv beantwortet werden: Moderne Aufmerksamkeits-Verfahren und hierarchische Modelle bieten einen klaren Vorteil gegenüber klassischen Methoden. Vor allem die Fähigkeit, sowohl das gesamte Bild als auch feine Details zu erfassen, sorgt für eine hohe Präzision.
+
+\paragraph{Ausblick}
+In Zukunft könnten auch zeitliche Verläufe in die Analyse einbezogen werden. Wenn das System lernt, wie sich ein Riss über Jahre entwickelt, wird eine echte vorausschauende Instandhaltung möglich. Die in HSP 2 entwickelte Pipeline bietet dafür eine stabile Grundlage. Ziel ist ein „Digitaler Zwilling“ des Straßennetzes, der automatisch über seinen Zustand berichtet.
