@@ -1,34 +1,49 @@
-\section{Wirtschaftliche Relevanz}
+\section{Wirtschaftliche und praktische Relevanz}
 \label{sec:wirtschaftlichkeit}
 
-Der Einsatz von Deep-Learning-Modellen wie dem Swin Transformer hat große Auswirkungen auf die Wirtschaftlichkeit des Straßenmanagements. Da öffentliche Mittel oft begrenzt sind, hilft die Digitalisierung dabei, Sanierungen effizienter zu planen und den Wert des Anlagevermögens Straße langfristig zu erhalten.
+Der Einsatz von künstlicher Intelligenz bei der Straßenkontrolle bietet wirtschaftliche Vorteile. In diesem Kapitel erfolgt eine Betrachtung des Nutzens für Kommunen, Bauunternehmen sowie für die Gesellschaft. Die Digitalisierung der Infrastrukturüberwachung stellt einen Bestandteil für die Entwicklung von Stadtstrukturen dar.
 
-\subsection{Planungssicherheit für Bauämter}
-Fehlplanungen bei der Straßenerhaltung sind teuer. Wenn der richtige Zeitpunkt für eine Sanierung verpasst wird, können die Kosten innerhalb weniger Jahre stark ansteigen. Die genaue Analyse in HSP 2 hilft dabei, diesen Zeitpunkt besser zu bestimmen. So können zum Beispiel Netzrisse früh erkannt und kostengünstig behandelt werden, bevor die gesamte Straße ausgetauscht werden muss.
+\subsection{Nutzen für Kommunen, Bauunternehmen und Betreiber}
+\label{subsec:nutzen}
 
-Zudem werden unnötige Baustellen vermieden, da das System weniger Fehlalarme produziert. Die Kosten für eine Sanierung können so schon im Vorfeld genauer berechnet werden, was Nachträge während der Bauphase minimiert.
+Die Instandhaltung des Straßennetzes stellt für Städte und Gemeinden einen Kostenfaktor im Haushalt dar. Häufig fehlen Daten für eine Mittelallokation.
 
-\subsection{Effizienz durch Automatisierung}
-Durch die automatische Auswertung großer Bildmengen kann das Straßennetz öfter bewertet werden.
+\paragraph{Vorteile für die öffentliche Hand}
+\begin{itemize}
+    \item \textbf{Früherkennung und Werterhalt:} Durch die Detektion von Netzrissen in einem frühen Stadium können Instandsetzungsmaßnahmen durchgeführt werden, bevor eine vollständige Erneuerung der Tragschicht erforderlich wird. Dies führt langfristig zu Einsparungen öffentlicher Mittel.
+    \item \textbf{Objektivität und Transparenz:} Die Bereitstellung quantifizierbarer Zustandsdaten ermöglicht eine faktenbasierte Verteilung von Budgets. Entscheidungen können gegenüber der Öffentlichkeit begründet werden.
+    \item \textbf{Haftung und Verkehrssicherheit:} Die Identifikation von Gefahrenstellen wie Schlaglöchern reduziert das Unfallrisiko und unterstützt Kommunen bei der Erfüllung ihrer Verkehrssicherungspflicht.
+\end{itemize}
 
-\paragraph{Senkung der Kosten pro Kilometer}
-Die manuelle Auswertung von Videos ist zeitaufwendig und teuer. Das System in HSP 2 kann große Streckenabschnitte innerhalb kurzer Zeit auf einer leistungsstarken Grafikkarte (wie der RTX 6000 Ada) auswerten. Dadurch sinken die Kosten für die Analyse deutlich. Dies ermöglicht einen Wechsel von einer reaktiven („Reparieren, wenn kaputt“) zu einer vorausschauenden Strategie.
+\paragraph{Vorteile für Bauunternehmen}
+Auch die Privatwirtschaft profitiert von den Ergebnissen aus HSP 2. Bauunternehmen können die Zustandsdaten zur Kalkulation von Sanierungsaufwänden nutzen, wodurch das Risiko unvorhergesehener Mehrkosten sinkt.
 
-\subsection{Zusammenarbeit von HSP 1 und HSP 2}
-In der Praxis bilden HSP 1 und HSP 2 eine Kette, die Geschwindigkeit und Genauigkeit verbindet.
+\subsection{Potenziale für Automatisierung und Kosteneinsparung}
+\label{subsec:automatisierung}
 
-Zuerst findet die \textbf{Detektion (HSP 1)} statt: Ein Messfahrzeug fährt das Straßennetz ab, und ein schnelles YOLO-Modell findet in Echtzeit mögliche Schäden. So wird die riesige Datenmenge auf die relevanten Stellen reduziert.
+Die manuelle Sichtung von Videoaufnahmen ist ein zeitintensiver Prozess. Die Automatisierung mittels KI bietet hier ein Optimierungspotenzial.
 
-Danach folgt die \textbf{Analyse (HSP 2)}: Nur die gefundenen Stellen werden an das Transformer-Modell übergeben. Da diese Modelle genauer, aber auch rechenintensiver sind, spart dieses Vorgehen Hardware-Ressourcen. Das Ergebnis ist eine genaue Klassifizierung, die direkt für die Sanierungsplanung genutzt werden kann. Diese Synergie spiegelt moderne industrielle Qualitätssicherungsverfahren wider.
+\paragraph{Geschwindigkeit und Effizienz}
+Eine KI-gestützte Auswertung ermöglicht die Analyse eines städtischen Straßennetzes. Dies entspricht einer Zeitersparnis bei der Datenauswertung im Vergleich zu manuellen Verfahren. Das Fachpersonal wird dadurch für strategische Planungsaufgaben entlastet.
 
-\subsection{Kosten-Nutzen-Verhältnis}
-Auch wenn die Hardware für Transformer-Modelle teurer ist, lohnt sich die Investition oft schon durch den ersten vermiedenen Planungsfehler. Die hohe Qualität der Daten führt zudem zu einer besseren Akzeptanz der Ergebnisse bei politischen Entscheidungsträgern.
+\paragraph{Vermeidung von Fehlplanungen}
+Durch den Einsatz objektiver Bewertungskriterien können Baustellen an Straßen mit gutem Erhaltungszustand vermieden werden, während Mängel erfasst werden. Dies schont Ressourcen wie Material und Energie.
 
-\section{Fazit und Ausblick}
-Diese Arbeit hat im Rahmen von HSP 2 gezeigt, dass moderne Transformer-Modelle die automatisierte Zustandsbewertung von Straßen deutlich verbessern können.
+\paragraph{Vorausschauende Instandhaltung, Predictive Maintenance}
+Durch eine regelmäßige Datenerhebung lassen sich Degenerationsprozesse von Straßenoberflächen beobachten. Es können Prognosen über den Sanierungszeitpunkt erstellt werden, was die Effizienz der Instandhaltungszyklen beeinflusst.
 
-\paragraph{Zusammenfassung der Ergebnisse}
-Mit dem Swin Transformer wurde eine Genauigkeit von über 96\% erreicht. Die Forschungsfragen konnten positiv beantwortet werden: Moderne Aufmerksamkeits-Verfahren und hierarchische Modelle bieten einen klaren Vorteil gegenüber klassischen Methoden. Vor allem die Fähigkeit, sowohl das gesamte Bild als auch feine Details zu erfassen, sorgt für eine hohe Präzision.
+\subsection{Skalierbarkeit und Integration in bestehende Prozesse}
+\label{subsec:skalierbarkeit}
 
-\paragraph{Ausblick}
-In Zukunft könnten auch zeitliche Verläufe in die Analyse einbezogen werden. Wenn das System lernt, wie sich ein Riss über Jahre entwickelt, wird eine echte vorausschauende Instandhaltung möglich. Die in HSP 2 entwickelte Pipeline bietet dafür eine stabile Grundlage. Ziel ist ein „Digitaler Zwilling“ des Straßennetzes, der automatisch über seinen Zustand berichtet.
+Das System ist modular aufgebaut und ermöglicht einen Einsatz in unterschiedlich großen Verwaltungseinheiten.
+
+\paragraph{Hardware-Flexibilität}
+Die Modelle sind auf verschiedenen Plattformen, Cloud, Edge oder Mobile, lauffähig. Dies ermöglicht sowohl einen niederschwelligen Einstieg mittels Smartphone-basierter Erfassung als auch den Einsatz spezialisierter Messfahrzeuge. Die zugrundeliegende Softwarearchitektur bleibt dabei konsistent.
+
+\paragraph{GIS-Anbindung}
+Die Ergebnisse von HSP 2 lassen sich unmittelbar in Geoinformationssysteme, GIS, integrieren. Die visuelle Aufbereitung der Zustandsdaten in digitalen Karten ermöglicht eine Steuerung von Reparaturteams.
+
+\paragraph{Zukunftssicherheit}
+Die technologische Weiterentwicklung im Bereich der künstlichen Intelligenz erlaubt eine kontinuierliche Anpassung der Modelle. Zukünftige Anforderungen, wie die Erkennung neuartiger Fahrbahnbeläge oder spezifischer Schadensbilder, können somit integriert werden.
+
+Zusammenfassend lässt sich feststellen, dass künstliche Intelligenz ein Werkzeug für Bauingenieure darstellt. Sie automatisiert repetitive Analyseaufgaben und liefert die Datenbasis für eine nachhaltige Infrastrukturpolitik.

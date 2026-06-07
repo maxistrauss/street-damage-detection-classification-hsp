@@ -1,88 +1,98 @@
 \section{Methodik und Projektvorgehen}
 \label{sec:methodik}
 
-Die Qualität einer wissenschaftlichen Untersuchung im Bereich Deep Learning hängt maßgeblich von der Datenbasis und den gewählten Modellarchitekturen ab. In diesem Kapitel wird das methodische Vorgehen von HSP 2 erläutert. Dies umfasst die Auswahl und Aufbereitung der Daten aus dem Road Damage Dataset 2022 (RDD2022) sowie die detaillierte Beschreibung der untersuchten Transformer-Architekturen. Zudem wird die mathematische Grundlage der Evaluationsmetriken definiert, um eine objektive Bewertung der Ergebnisse zu ermöglichen. Der Fokus liegt dabei auf einer klaren Strukturierung des Prozesses von der Datenerfassung bis zur statistischen Auswertung.
+In diesem Kapitel wird beschrieben, wie die Umsetzung des Projekts HSP 2 erfolgt. Der Prozess umfasst die Bildaufnahme, die Datenvorbereitung sowie die Auswahl der Modelle und deren Evaluation. Der Fokus liegt auf der Datenqualität, da die Leistung der künstlichen Intelligenz von der Qualität der Trainingsdaten abhängt. Es wird erläutert, wie die Daten annotiert und vorverarbeitet werden. Zudem werden die Evaluationsmetriken vorgestellt, die zur objektiven Beurteilung der Modellgüte herangezogen werden. Abschließend erfolgt eine Beschreibung des Validierungs- und Testkonzepts.
 
-\subsection{Datenbasis: Das Road Damage Dataset 2022 (RDD2022)}
-Für HSP 2 wurde das Road Damage Dataset 2022 (RDD2022) als primäre Datenquelle gewählt. Es handelt sich um eine der weltweit umfangreichsten Datenbanken für Straßenschäden, die speziell für die Forschung im Bereich Computer Vision entwickelt wurde. Der Datensatz enthält zehntausende Aufnahmen aus sechs verschiedenen Ländern: Japan, Indien, Tschechien, Norwegen, USA und China.
+\subsection{Gesamtarchitektur des Systems}
+\label{subsec:architektur}
 
-\paragraph{Die Bedeutung der internationalen Vielfalt}
-Die Einbeziehung von Daten aus verschiedenen Ländern ist für die Robustheit der Modelle von zentraler Bedeutung. Straßenszenen unterscheiden sich international erheblich. Aus technischer Sicht dient diese Vielfalt als eine Form der \textbf{Domänen-Varianz}.
+Das System ist als eine Pipeline strukturiert, die mehrere Verarbeitungsstufen umfasst.
+
+Zunächst erfolgt die Erfassung von Straßenbildern aus Quellen wie Fahrzeugkameras oder Drohnen aus dem vorhandenen Datensatz. Das Ziel von HSP 1 ist die Detektion, wobei hier digitale Rahmen, sogenannte Bounding Boxes, um potenzielle Schäden gezogen werden.
+
+Das System schneidet diesen Bereich aus dem Gesamtbild heraus. Dieser Ausschnitt (Patch) wird an das Klassifizierungsmodul übergeben, welches über die Art des Schadens entscheidet. Am Ende steht eine Bewertung, die mit GPS-Daten verknüpft wird. So entsteht eine digitale Schadenskarte, die als Grundlage für die Sanierungsplanung dient.
+
+\subsection{Datenbasis: Das Road Damage Dataset 2022, RDD2022}
+\label{subsec:rdd2022}
+
+Für das Training findet das Road Damage Dataset 2022, RDD2022 Anwendung. Es handelt sich um einen umfangreichen Datensatz für Straßenschäden. Die Relevanz dieses Datensatzes ergibt sich aus mehreren Faktoren.
+
+\paragraph{Bedeutung der internationalen Vielfalt}
+Das RDD2022 enthält Aufnahmen aus sechs verschiedenen Ländern, darunter Japan, Indien, Tschechien, Norwegen, USA und China. Diese Vielfalt ist entscheidend, da sie eine breite Palette von Straßenbedingungen, Asphaltmischungen und Umgebungsfaktoren abdeckt. Die KI muss in der Lage sein, Schäden unabhängig von der spezifischen Umgebung zu erkennen. Die internationale Vielfalt fördert die Generalisierungsfähigkeit des Modells und verhindert ein Überanpassen an die Besonderheiten eines einzelnen Landes. 
 \begin{itemize}
-    \item \textbf{Umweltbedingungen:} Die Lichtverhältnisse variieren von der grellen Sonne in Indien bis hin zu den oft bewölkten oder regnerischen Bedingungen in Norwegen. In der Informatik ist dies eine Herausforderung für die Helligkeits-Invarianz der Modelle.
-    \item \textbf{Infrastruktur:} Die Qualität des Asphalts, die Art der Fahrbahnmarkierungen und sogar die Farbe der Gesteinskörnung im Asphaltgemisch unterscheiden sich je nach Land.
-    \item \textbf{Fahrzeuge und Umgebung:} Objekte im Hintergrund, wie spezifische Fahrzeugtypen oder länderspezifische Vegetation, können Modelle ablenken, wenn diese nicht auf eine hohe Varianz trainiert werden.
+    \item Lichtverhältnisse: Die Bedingungen reichen von direktem Sonnenlicht in Indien bis hin zu Bewölkung und Regen in Norwegen. Eine robuste KI muss unter verschiedenen Lichtverhältnissen Ergebnisse liefern.
+    \item Asphalt-Texturen: Da jedes Land unterschiedliche Asphaltmischungen verwendet, muss die KI lernen, Schäden unabhängig von der Oberflächenstruktur zu erkennen.
+    \item Infrastrukturelemente: Fahrbahnmarkierungen oder länderspezifische Beschilderungen dürfen nicht zu Fehlklassifikationen führen.
 \end{itemize}
-Diese Vielfalt zwingt die Modelle in HSP 2, allgemeingültige Merkmale für Risse und Schlaglöcher zu lernen, anstatt sich auf spezifische Hintergründe zu spezialisieren (Vermeidung von Overfitting auf die Umgebung).
+Diese Vielfalt wird in der Informatik als Domänen-Varianz bezeichnet. Sie stellt eine Herausforderung dar, da die KI die zugrundeliegenden Merkmale eines Schadens erfassen muss, anstatt sich auf oberflächliche Details zu verlassen. Das RDD2022 bietet somit eine ideale Grundlage für die Entwicklung eines Modells mit hoher Generalisierungsfähigkeit.
 
-\paragraph{Vom Detektions- zum Klassifikationsdatensatz}
-Ursprünglich ist das RDD2022 für die Objekterkennung (Object Detection) konzipiert. Schäden sind in den Bildern durch Rahmen (Bounding Boxes) markiert. Da das Ziel von HSP 2 jedoch die hochpräzise Klassifizierung der Schadensart ist, war eine Transformation der Daten notwendig. Mit diesem Schritt wird das ursprüngliche Detektionsproblem in ein reines Klassifikationsproblem überführt, um die Kapazität der Transformer voll auszuschöpfen.
+\subsection{Datenannotation und Labeling-Strategie}
+\label{subsec:annotation}
 
-Aus den Originalbildern wurden die annotierten Bereiche extrahiert. Ein automatisches Skript wurde entwickelt, um die oft rechteckigen Bounding Boxes symmetrisch zu quadratischen Bildkacheln (Patches) zu erweitern. Dabei wurde ein Puffer von 10\% zur Seitenlänge addiert, um den Übergang vom Schaden zum gesunden Asphalt einzubeziehen. Alle extrahierten Patches wurden anschließend auf die einheitliche Zielgröße von $224 \times 224$ Pixeln skaliert. Durch diese Fokussierung kann das Modell seine volle Kapazität auf die Analyse der Schadenscharakteristik verwenden.
+Bevor ein Lernprozess stattfinden kann, ist eine Kennzeichnung der Bildinhalte erforderlich. Dieser Vorgang wird als Annotation oder Labeling bezeichnet. Experten markieren dabei die Schäden in den Bildern durch Rahmen.
 
-\paragraph{Definition der Schadensklassen}
-Der Datensatz orientiert sich an international standardisierten Schadensklassen, die auch für die deutsche Straßenzustandsbewertung (ZTV ZEB) von hoher Relevanz sind:
-\begin{itemize}
-    \item \textbf{D00 (Längsriss):} Diese Risse verlaufen parallel zur Fahrtrichtung. Sie entstehen oft durch Ermüdung des Asphalts in den Radspuren.
-    \item \textbf{D10 (Querriss):} Diese Risse verlaufen senkrecht zur Fahrtrichtung. Sie sind meist die Folge von thermischen Spannungen bei Kälte.
-    \item \textbf{D20 (Netzriss):} Ein komplexes Muster aus vielen kleinen, miteinander verbundenen Rissen (Alligator Cracking). Dies ist ein Zeichen für ein fortgeschrittenes strukturelles Versagen der Tragschichten.
-    \item \textbf{D40 (Schlagloch):} Lokale Ausbrüche in der Fahrbahnoberfläche. Sie stellen das größte Sicherheitsrisiko dar.
-\end{itemize}
+Für HSP 2 werden diese Informationen genutzt, um die relevanten Bildbereiche zu extrahieren. In einer JSON-Datei sind die Koordinaten der Bounding Boxes sowie die zugehörigen Schadensklassen gespeichert. Das System liest diese Informationen ein und schneidet die entsprechenden Bildausschnitte aus, um sie für die Klassifikation vorzubereiten. Dabei wird ein Puffer von etwa 10\,\% um den Schaden herum beibehalten. Dies ermöglicht es der KI, den Übergang vom beschädigten zum intakten Asphalt zu analysieren, was für die Einschätzung von Kontrast und Tiefe relevant ist.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\textwidth]{../Python/hsp2_transformer/results/dataset_distribution.png}
-    \caption{Statistische Verteilung der extrahierten Bildkacheln über die Schadensklassen.}
-    \label{fig:dataset_dist}
-\end{figure}
+\subsection{Datenaufbereitung und Preprocessing}
+\label{subsec:preprocessing}
 
-\subsection{Detaillierte Modellarchitekturen}
-Der Kern der Untersuchung ist der Vergleich zwischen dem klassischen Vision Transformer (ViT) und dem modernen Swin Transformer. Technisch betrachtet ist dies ein Vergleich zwischen globaler und hierarchischer Informationsverarbeitung.
+Rohbilder aus der Straßenüberwachung sind aufgrund ihrer hohen Auflösung und der Varianz der enthaltenen Objekte meist nicht direkt für das Klassifikationstraining geeignet. Daher durchläuft der Datensatz eine mehrstufige Vorverarbeitung.
 
-\paragraph{Vision Transformer (ViT-B/16)}
-Der Vision Transformer (ViT) betrachtet das Bild als eine flache Sequenz von Informationen. Ein Eingabebild der Größe $224 \times 224$ Pixel wird in $14 \times 14 = 196$ Patches zerlegt.
-\begin{enumerate}
-    \item \textbf{Lineare Projektion:} Jeder Patch wird in einen höherdimensionalen Raum (Embedding Space) projiziert. Man kann sich das als eine Übersetzung der Pixeldaten in eine „Sprache“ vorstellen, die der Transformer versteht.
-    \item \textbf{Position Embedding:} Da der Transformer keine Information über die 2D-Anordnung hat, wird jedem Vektor eine Positionsnummer hinzugefügt. Ohne dies wäre der Transformer „bildblind“ für die räumliche Anordnung (wie ein Buch, dessen Seiten beliebig vertauscht wurden).
-    \item \textbf{Transformer Encoder:} Die Daten durchlaufen 12 aufeinanderfolgende Transformer-Blöcke. In jedem Block kommuniziert jeder Patch mit jedem anderen Patch (Globale Attention).
-\end{enumerate}
+\paragraph{Objektextraktion und Padding}
+Anstatt die hochauflösenden Gesamtbilder zu skalieren, werden die betroffenen Schadensstellen auf Basis der Annotationsdaten gezielt als Bildausschnitte  extrahiert. Bei der Extraktion wird ein symmetrisches Padding von $20\%$ auf die Bounding-Boxen addiert. Dies stellt sicher, dass der unmittelbare Kontext des Schadens erhalten bleibt. Anschließend werden die Ausschnitte verzerrungsfrei auf die für das Transformer-Modell erforderliche quadratische Zielgröße von $224 \times 224$ Pixeln skaliert.
 
-\paragraph{Swin Transformer (Shifted Window Transformer)}
-Der Swin Transformer führt eine hierarchische Verarbeitung ein, die ihn effizienter macht. Dies ist methodisch mit der \textbf{Divide-and-Conquer-Strategie} vergleichbar.
-\begin{enumerate}
-    \item \textbf{Patch Merging:} Ähnlich wie bei einem klassischen CNN wird das Bild in mehreren Stufen verarbeitet. Zwischen den Stufen werden benachbarte Patches zusammengefasst. Dies reduziert die Rechenlast, da die Sequenzlänge sinkt.
-    \item \textbf{Shifted Windows:} Die Aufmerksamkeit wird nur innerhalb kleiner, lokaler Fenster berechnet. In aufeinanderfolgenden Schichten werden diese Fenster jedoch versetzt (Shift). Dadurch können Informationen auch über die Fenstergrenzen hinweg fließen, ohne dass eine rechenintensive globale Attention notwendig ist.
-\end{enumerate}
+\paragraph{Normalisierung}
+Da unterschiedlicher Kameraeigenschaften und Lichtverhältnisse existieren, erfolgt eine pixelweise Normalisierung der Farb- und Helligkeitswerte. Hierbei werden die Werte auf einen Bereich von $[0, 1]$ skaliert, um die Trainingsstabilität zu verbessern.
 
-\subsection{Evaluationsmetriken: Mathematische Grundlage}
-Um die Forschungsfragen objektiv beantworten zu können, werden Metriken verwendet, die über die einfache Treffgenauigkeit (Accuracy) hinausgehen. Informatiker nutzen diese Metriken, um das Verhalten des Modells bei ungleich verteilten Daten (\textbf{Class Imbalance}) zu beurteilen.
+\paragraph{Daten-Augmentierung}
+Zur künstlichen Vergrößerung der Datenvarianz und zur Vermeidung von Overfitting findet während des Trainingsprozesses eine dynamische Daten-Augmentierung statt. Hierbei werden die extrahierten Ausschnitte zufällig rotiert, gespiegelt oder in ihren Kontrastwerten modifiziert. Dies verbessert die Robustheit des Modells gegenüber variierenden Aufnahmebedingungen in der Praxis.
+
+\subsection{Evaluationsmetriken: Messung des Erfolgs}
+\label{subsec:metriken}
+
+Zur objektiven Beurteilung der Modellgüte sind Messwerte erforderlich.
 
 \paragraph{Die Konfusionsmatrix als Basis}
-Alle Metriken basieren auf den vier Grundwerten der Konfusionsmatrix:
+Die Messwerte basieren auf dem Vergleich zwischen der Vorhersage der KI und der tatsächlichen Wahrheit, Ground Truth. Hierfür werden vier Begriffe definiert:
 \begin{itemize}
-    \item \textbf{True Positives (TP):} Schaden wurde korrekt erkannt.
-    \item \textbf{True Negatives (TN):} Schadenfreie Oberfläche wurde korrekt erkannt.
-    \item \textbf{False Positives (FP):} Fehlalarm (Nicht-Schaden als Schaden erkannt).
-    \item \textbf{False Negatives (FN):} Übersehener Schaden (Schaden nicht erkannt).
+    \item True Positives, TP: Korrekt erkannter Schaden.
+    \item True Negatives, TN: Korrekt als schadensfrei erkannte Straße.
+    \item False Positives, FP: Fehlalarm, bei dem ein Nicht-Schaden als Schaden erkannt wurde.
+    \item False Negatives, FN: Nicht erkannter Schaden.
 \end{itemize}
 
-\paragraph{Definition der Metriken}
+\paragraph{Umgang mit ungleich verteilten Daten}
+Da in der Realität schadensfreie Straßen häufiger vorkommen als Schäden, Class Imbalance, ist die alleinige Betrachtung der Genauigkeit nicht ausreichend.
+
 \begin{itemize}
-    \item \textbf{Accuracy:} Der Anteil aller korrekten Vorhersagen.
+    \item Accuracy, Genauigkeit: Anteil aller korrekten Vorhersagen.
     \begin{equation}
         \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
     \end{equation}
-    \item \textbf{Precision:} Misst, wie viele der gemeldeten Schäden wirklich existieren. Diese Metrik beschreibt die \textbf{Genauigkeit der positiven Vorhersagen}.
+
+    \item Precision, Präzision: Zuverlässigkeit der Schadensmeldung zur Reduzierung von Fehlalarmen.
     \begin{equation}
         \text{Precision} = \frac{TP}{TP + FP}
     \end{equation}
-    \item \textbf{Recall:} Gibt an, wie viel Prozent der echten Schäden gefunden wurden. Dies wird auch als \textbf{Trefferquote} bezeichnet.
+
+    \item Recall, Trefferquote: Anteil der insgesamt gefundenen Schäden.
     \begin{equation}
         \text{Recall} = \frac{TP}{TP + FN}
     \end{equation}
-    \item \textbf{F1-Score:} Das harmonische Mittel aus Precision und Recall. Er ist besonders aussagekräftig, wenn eine Klasse (wie „Normal“) deutlich häufiger vorkommt als eine andere.
+
+    \item F1-Score: Harmonisches Mittel aus Präzision und Trefferquote zur Gesamtbewertung der Modellleistung.
     \begin{equation}
         F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
     \end{equation}
 \end{itemize}
 
+\subsection{Validierungs- und Testkonzept}
+\label{subsec:validierung}
+
+Zur Gewährleistung einer Evaluation erfolgt eine Aufteilung der Daten in drei getrennte Mengen:
+\begin{enumerate}
+    \item Trainingsdaten (80\,\% des Quell-Trainingsdatensatzes): Diese Teilmenge dient als Basis für den Lernprozess, bei dem das Modell die spezifischen Schadensmuster der Straßenoberfläche erlernt.
+    \item Validierungsdaten (20\,\% des Quell-Trainingsdatensatzes): Dieser Anteil wird über eine randomisierte Partitionierung vom ursprünglichen Trainingspool abgespalten. Er dient zur kontinuierlichen Überprüfung der Lernfortschritte während der Epochen.
+    \item Testdaten: Diese Menge entspricht dem separaten, isolierten Test-Verzeichnis des Original-Datensatzes. Sie verbleibt während des gesamten Trainingsprozesses vollständig unberührt. Die abschließende Bewertung anhand dieser völlig neuen Bilddaten stellt die Generalisierungsfähigkeit des Transformer-Modells sicher.
+\end{enumerate}
+Um eine vollständige Reproduzierbarkeit dieser Aufteilung zu garantieren, wird der Randomisierungs-Algorithmus bei jedem Durchlauf über einen festen Zufallssaatwert initialisiert.

@@ -1,43 +1,71 @@
 \section{Einleitung}
 \label{sec:einleitung}
 
-Die Instandhaltung von Straßen ist eine zentrale Aufgabe für moderne Gesellschaften und deren wirtschaftliche Stabilität. Ein funktionierendes Verkehrsnetz ist die Grundlage für den Warenverkehr, die individuelle Mobilität und die Erreichbarkeit von Arbeitsplätzen. Da das Straßennetz durch ein stetig wachsendes Verkehrsaufkommen, schwerere Fahrzeuge und extreme Wettereinflüsse massiv belastet wird, ist eine regelmäßige und präzise Überprüfung des Zustands unerlässlich. Eine objektive Bewertung hilft dabei, Sanierungsmaßnahmen vorausschauend zu planen und enorme Folgekosten durch zu spät erkannte schwere Schäden zu vermeiden.
+Die Straßeninfrastruktur ist eine Voraussetzung für den Warenverkehr und die Mobilität der Bevölkerung. Ein funktionierendes Verkehrsnetz stellt sicher, dass Güter pünktlich geliefert werden, Rettungsdienste ihre Ziele erreichen und die tägliche Mobilität gewährleistet bleibt. Ein funktionsfähiges Straßennetz ist für die Aufrechterhaltung täglicher Abläufe notwendig. Die Straßen unterliegen jedoch hohen Belastungen. Das Verkehrsaufkommen steigt, die Fahrzeuge, insbesondere Lastkraftwagen, werden schwerer und klimatische Einflüsse nehmen zu, insbesondere Hitzeperioden im Sommer oder auch Frostperioden im Winter. Dies beansprucht die Fahrbahnen und führt zu einer beschleunigten Abnutzung. 
 
-\paragraph{Vom Projekt HSP 1 zu HSP 2}
-Das Gesamtprojekt HSP besteht aus zwei wesentlichen Teilen, die technologisch aufeinander aufbauen. Im ersten Teil (HSP 1) lag der Fokus auf der Detektion von Schadensstellen in Echtzeit während der Fahrt. Dabei wurden Convolutional Neural Networks (CNNs) verwendet, um Rahmen (Bounding Boxes) um mögliche Schäden wie Risse oder Schlaglöcher zu ziehen. HSP 1 hat somit die Frage beantwortet, wo sich ein potenzieller Schaden im Straßennetz befindet. Die vorliegende Arbeit im Rahmen von HSP 2 konzentriert sich nun auf den nächsten logischen Schritt: die hochpräzise Klassifizierung dieser Schäden.
+Eine regelmäßige und präzise Prüfung des Straßenzustands ist für die zuständigen Behörden daher erforderlich. Frühzeitig erkannte Risse lassen sich mit geringem Aufwand instand setzen. Werden diese jedoch übersehen, kann Wasser eindringen, was zur Beeinträchtigung des Untergrunds und zur Bildung von Schlaglöchern führt. Die Instandsetzungskosten steigen in diesem Fall an. Zudem können Schäden, die nicht rechtzeitig erkannt werden, die Verkehrssicherheit beeinträchtigen. Es besteht die Gefahr von Unfällen, vor allem bei Nacht oder schlechten Sichtverhältnissen. Daher ist eine genaue und zeitnahe Erfassung von Straßenschäden von großer Bedeutung. 
 
-HSP 2 nutzt hierfür moderne Vision Transformer (ViT) und Swin Transformer. Diese Modelle wurden ursprünglich für die Sprachverarbeitung entwickelt, zeigen aber auch bei der Bilderkennung herausragende Ergebnisse. Ziel ist es, die Genauigkeit der Klassifizierung auf ein Niveau zu heben, das als verlässliche Entscheidungsgrundlage für Bauämter und Ingenieurbüros dienen kann. Durch die Kombination von schneller Detektion (HSP 1) und präziser Analyse (HSP 2) entsteht eine vollständige automatisierte Prozesskette zur Straßenzustandsbewertung.
+\subsection{Motivation und Problemstellung}
+\label{subsec:motivation}
 
-\subsection{Motivation}
-Die automatische Erkennung von Straßenschäden ist eine komplexe Aufgabe. Reale Aufnahmen sind oft durch ungünstige Lichtverhältnisse, Schattenwurf, unterschiedliche Asphalttexturen oder Verschmutzungen geprägt. Herkömmliche Verfahren der Bildverarbeitung stoßen hier oft an ihre Grenzen, da sie Schwierigkeiten haben, feine Unterschiede zu erkennen – zum Beispiel zwischen einem harmlosen Schattenkante und einem echten Riss. Auch klassische neuronale Netze (CNNs) haben Nachteile bei der Erfassung von weit verzweigten Strukturen oder globalen Zusammenhängen im Bild.
+Das Gesamtprojekt HSP besteht aus zwei Komponenten, die technologisch aufeinander aufbauen. Um das Ziel einer automatisierten Straßenkontrolle zu erreichen, sind zwei Kernaufgaben zu lösen. Erstens ist die Ermittlung der Schadensposition, die Frage nach dem "Wo", und die Bestimmung der Schadensart, die Frage nach dem "Was".
 
-\paragraph{Informatische Herausforderungen}
-Dies setzt eine hohe \textbf{Generalisierungsfähigkeit} voraus. Ein Modell darf nicht nur die Schäden erkennen, die es im Training gesehen hat, sondern muss auch auf völlig neuen Straßenoberflächen (z. B. in anderen Ländern oder bei anderem Wetter) funktionieren. Die Vermeidung von \textbf{Overfitting} (Überanpassung an den Trainingsdatensatz) ist daher ein zentrales Thema dieser Arbeit.
+Im ersten Teil des Projekts, HSP 1, liegt der Fokus auf der Echtzeit-Detektion. Ein Fahrzeug befährt die Straße mit regulärer Geschwindigkeit, während die Fahrbahnoberfläche aufgezeichnet wird. Ein Algorithmus, ein sogenanntes YOLO-Modell, analysiert diese Aufnahmen kontinuierlich auf Schäden. Sobald ein Schaden identifiziert wird, erfolgt die Markierung durch einen digitalen Rahmen, eine sogenannte "Bounding Box". HSP 1 übernimmt somit die Aufgabe der Detektion.
 
-\paragraph{Praktische und wirtschaftliche Relevanz}
-In der kommunalen Praxis haben Fehlklassifizierungen weitreichende finanzielle Folgen. Wenn ein kritischer Schaden, wie ein beginnender Netzriss, nicht rechtzeitig erkannt wird, steigen die Sanierungskosten in der Folgezeit exponentiell an. Wasser kann in die tieferen Schichten der Fahrbahn eindringen und bei Frost den gesamten Unterbau zerstören. Wird dagegen ein Schaden gemeldet, wo eigentlich keiner vorhanden ist, werden begrenzte finanzielle Mittel unnötig gebunden. Eine maximale Genauigkeit in der Klassifizierung ist daher eine wirtschaftliche Notwendigkeit, um die knappen Budgets der öffentlichen Hand zielgerichtet einzusetzen.
+In der vorliegenden Arbeit, HSP 2, erfolgt der nächste Schritt der Klassifizierung. Nach der Markierung einer Stelle durch HSP 1 wird eine Analyse durchgeführt, um festzustellen, ob es sich beispielsweise um einen Längsriss oder um einen Netzriss handelt. Hierfür kommen Technologien aus dem Bereich der künstlichen Intelligenz zum Einsatz. Diese Modelle können komplexe Zusammenhänge in Bilddaten erkennen. Das Ziel ist eine Schadenserfassung, die als Entscheidungsgrundlage für Bauämter und Ingenieurbüros dient.
 
-\subsection{Zielsetzung der Arbeit}
-Das Hauptziel dieser Arbeit ist die Entwicklung und Evaluation einer leistungsstarken Pipeline zur Schadensbewertung auf Basis von Transformer-Modellen. Es soll empirisch untersucht werden, ob sogenannte Attention-Mechanismen (Aufmerksamkeits-Verfahren) besser geeignet sind, die komplexen Merkmale von Straßenschäden zu erfassen als bisherige Methoden.
+\subsection{Informatische Herausforderungen}
+\label{subsec:herausforderungen}
+
+Die automatische Erkennung von Straßenschäden stellt eine komplexe Aufgabe in der Informatik dar. Ein Computer verarbeitet ein Bild als eine Ansammlung von Pixeln, aus denen die relevanten Informationen extrahiert werden müssen.
+
+\paragraph{Einfluss der Umgebung}
+Reale Straßenaufnahmen weisen oft Schatten von Bäumen, Zäunen oder Brücken auf. Eine Schattenkante kann in einem einfachen Algorithmus beispielsweise wie ein Riss wirken. Hinzu kommen Verschmutzungen auf der Straße wie Laub, Zweige, Ölspuren oder Reifenabrieb, welche die Form eines Schadens imitieren können. Auch wechselnde Witterungsbedingungen wie Regen oder Nebel beeinflussen die Bildqualität. Die künstliche Intelligenz muss diese Störfaktoren unterschieden können und sich auf die Struktur des Asphalts konzentrieren.
+
+\paragraph{Generalisierung vs. Overfitting}
+Ein weiteres Thema ist die Vielfalt der Straßenoberflächen. Da Asphalt international unterschiedlich beschaffen ist, ist eine hohe Generalisierungsfähigkeit erforderlich. Das Programm muss das zugrundeliegende Prinzip eines Schadens unabhängig von der jeweiligen Oberfläche erfassen. Gleichzeitig muss "Overfitting" vermieden werden, also der Effekt, dass die KI die Trainingsbilder lediglich auswendig lernt, anstatt die zugrundeliegenden Merkmale zu verstehen. Dies würde zu einer schlechten Leistung bei neuen, unbekannten Bildern führen.
+
+\subsection{Zielsetzung des Projekts}
+\label{subsec:zielsetzung}
+
+Das Hauptziel von HSP 2 ist die Entwicklung einer Pipeline, die Straßenschäden mit hoher Genauigkeit klassifiziert. Es soll untersucht werden, ob Transformer-Modelle hierfür geeignet sind.
 
 Die Arbeit umfasst dabei folgende Kernpunkte:
 \begin{itemize}
-    \item \textbf{Implementierung und Test des Vision Transformers (ViT):} Es wird untersucht, wie gut das Modell Schäden erkennt, indem es das Bild in kleine Kacheln (Patches) zerlegt und deren Beziehungen untereinander global analysiert.
-    \item \textbf{Analyse des Swin Transformers:} Hier steht die Untersuchung einer hierarchischen Struktur im Vordergrund, die es ermöglicht, Merkmale in verschiedenen Skalierungen (von der feinen Rissspitze bis zum großen Schlagloch) optimal zu finden.
-    \item \textbf{Benchmarking mit dem RDD2022-Standard:} Die Modelle werden unter Nutzung des Road Damage Datasets 2022 unter realistischen und internationalen Bedingungen getestet, um eine allgemeingültige Aussage über deren Leistungsfähigkeit zu treffen.
+    \item \textbf{Implementierung des Vision Transformers, ViT:} Untersuchung der Schadenserkennung durch die Zerlegung des Bildes in kleine Quadrate, sogenannte "Patches", und die Analyse ihrer globalen Beziehungen.
+    \item \textbf{Einsatz des Swin Transformers:} Prüfung, ob eine hierarchische Struktur Vorteile bei der Erkennung feiner Rissmuster bietet.
+    \item \textbf{Benchmarking mit RDD2022:} Nutzung eines internationalen Datensatzes zur Überprüfung der Funktionalität unter verschiedenen Bedingungen.
+    \item \textbf{Visualisierung der Entscheidung:} Einsatz von Techniken wie "Attention-Maps", um die Entscheidungsgrundlage der KI darzustellen und die Nachvollziehbarkeit zu erhöhen.
 \end{itemize}
 
 \subsection{Forschungsfragen}
-Um den Erfolg der Arbeit messbar zu machen und einen wissenschaftlichen Mehrwert zu generieren, werden folgende Forschungsfragen (FF) im Detail untersucht:
+\label{subsec:forschungsfragen}
 
-\paragraph{FF 1: Differenzierungsvermögen bei Rissmustern}
-Können die verwendeten Transformer-Modelle die feinen Unterschiede zwischen geometrisch ähnlichen, aber strukturell verschiedenen Schäden (z. B. Längs- vs. Querrisse) besser erkennen als klassische CNNs? Dabei wird geprüft, ob die globale Sichtweise der Transformer hilft, den Verlauf von Rissen über Patch-Grenzen hinweg besser zu deuten.
+Um den Erfolg der Arbeit messbar zu machen, werden folgende drei Forschungsfragen (FF) beantwortet:
 
-\paragraph{FF 2: Vorteil der hierarchischen Attention}
-Welchen spezifischen Vorteil bietet die Struktur des Swin Transformers gegenüber dem Standard-ViT bei der Erfassung von feingliedrigen Details? Es soll die Hypothese geprüft werden, dass der Swin Transformer durch seine Ähnlichkeit zu hierarchischen Strukturen eine bessere Balance zwischen lokaler Präzision und globalem Kontext findet.
+\paragraph{FF 1: Überlegenheit bei komplexen Mustern}
+Können Transformer-Modelle die Unterschiede zwischen geometrisch ähnlichen, aber strukturell verschiedenen Schäden erkennen?
 
-\paragraph{FF 3: Reduktion der Fehlklassifizierungsrate}
-Inwieweit lässt sich durch den Einsatz von Transfer Learning (Nutzung von vortrainiertem Wissen auf großen Datensätzen) die Fehlerrate bei kritischen Klassen wie Netzrissen (Alligator Cracks) unter eine praxisrelevante Schwelle senken? Das Ziel ist ein System, dem Bauingenieure bei der automatisierten Vorauswertung vertrauen können.
+\paragraph{FF 2: Vorteil der hierarchischen Aufmerksamkeit}
+Welchen spezifischen Vorteil bietet der Swin Transformer gegenüber dem Standard-ViT bei der Erfassung von Details?
+
+\paragraph{FF 3: Reduktion von Fehlalarmen}
+Inwieweit lässt sich durch den Einsatz von Transfer Learning die Fehlerrate unter schwierigen Lichtverhältnissen senken?
+
+\subsection{Projektumfang und Abgrenzung}
+\label{subsec:abgrenzung}
+
+Diese Arbeit konzentriert sich auf die Klassifizierung von bereits entdeckten Schäden. Es wird davon ausgegangen, dass Bildausschnitte vorliegen, auf denen ein potenzieller Schaden zu sehen ist. 
+Die Entwicklung der Hardware, wie Kameras, Sensoren und Fahrzeuge, sowie die physikalische Instandsetzung der Straßen sind nicht Bestandteil dieser Untersuchung. Der Fokus liegt auf der Software-Ebene und der Verbesserung der Interpretation von Bilddaten durch künstliche Intelligenz. Zudem erfolgt eine Beschränkung auf die internationalen Schadensklassen des RDD2022-Datensatzes.
 
 \subsection{Aufbau der Arbeit}
-Die Arbeit ist wie folgt strukturiert: Nach dieser Einleitung werden in Kapitel 2 die theoretischen Grundlagen der Bildverarbeitung, von CNNs bis hin zu Transformern, erläutert. Dabei wird besonderer Wert auf die mathematische Herleitung der Attention-Mechanismen gelegt. Kapitel 3 beschreibt die methodische Vorgehensweise, die internationale Datenbasis des RDD2022 sowie die untersuchten Modellarchitekturen (ViT und Swin). Die technische Umsetzung, inklusive der Vorverarbeitungs-Pipeline und des Trainingsprozesses auf Hochleistungshardware, wird in Kapitel 4 detailliert. In Kapitel 5 erfolgt die Präsentation und ausführliche Diskussion der Ergebnisse inklusive einer fundierten qualitativen Fehleranalyse. Kapitel 6 schlägt die Brücke zur praktischen Anwendung und zeigt, wie die Ergebnisse in die standardisierte Bewertung nach ZTV ZEB einfließen können. In Kapitel 7 wird schließlich die wirtschaftliche Relevanz der Technologie beleuchtet, bevor ein abschließendes Fazit mit einem Ausblick auf zukünftige Entwicklungen gegeben wird.
+\label{subsec:aufbau}
+
+Die Arbeit ist folgende 8 Kapitel gegliedert. Kapitel~\ref{sec:einleitung} stellt die Motivation, die Herausforderungen und die Zielsetzung vor. 
+In Kapitel~\ref{sec:stand_der_technik} werden die theoretischen Grundlagen erläutert. 
+Kapitel~\ref{sec:methodik} beschreibt das methodische Vorgehen und die Datenbasis. 
+Die technische Umsetzung wird in Kapitel~\ref{sec:implementierung} dargestellt. 
+In Kapitel~\ref{sec:ergebnisse} erfolgt die Präsentation und Diskussion der Ergebnisse. 
+Kapitel~\ref{sec:zustandsbewertung} stellt den Bezug zur Praxis und zum offiziellen Bewertungssystem her. 
+In Kapitel~\ref{sec:wirtschaftlichkeit} wird der wirtschaftliche Nutzen dargelegt. 
+Ein Fazit in Kapitel~\ref{sec:fazit} fasst die Arbeit zusammen.

@@ -1,0 +1,47 @@
+\section{Fazit und Ausblick}
+\label{sec:fazit}
+
+Abschließend erfolgt ein Rückblick auf die Ergebnisse von HSP 2 sowie eine Zusammenfassung der erzielten Fortschritte. Zudem wird ein Ausblick auf die zukünftige Entwicklung der automatisierten Straßenerhaltung gegeben, die durch künstliche Intelligenz technologische Möglichkeiten eröffnet.
+
+\subsection{Zusammenfassung der Ergebnisse}
+\label{subsec:zusammenfassung_ergebnisse}
+
+In dieser Arbeit wurde belegt, dass Transformer-Modelle, ViT und Swin, zur Klassifizierung komplexer Straßenschäden geeignet sind. Mit einer Gesamtgenauigkeit von über 96,4\,\% erreichen die Modelle ein Leistungsniveau, das den Anforderungen für einen praktischen Einsatz in Kommunen und Bauämtern entspricht.
+
+Zu verzeichnen ist die Leistungsfähigkeit des Swin Transformers. Die hierarchische Architektur ermöglicht die Kombination von Merkmalen auf verschiedenen Skalierungsebenen, wodurch sowohl feine Risse als auch großflächige Netzrissstrukturen erkannt werden. Die durchgeführten Tests belegen eine Robustheit gegenüber unterschiedlichen Asphaltarten und Umweltbedingungen. Es wurde eine Verarbeitungs-Pipeline entwickelt, welche die Prozesskette von der Bildaufnahme über die Extraktion relevanter Bildbereiche bis hin zur finalen Zustandsbewertung abdeckt. Die Kombination aus HSP 1, Detektion, und HSP 2, Klassifikation, stellt somit ein System zur digitalen Infrastrukturüberwachung dar.
+
+\subsection{Beantwortung der Forschungsfragen}
+\label{subsec:beantwortung_ff}
+
+Im Rahmen der Untersuchung konnten alle drei Forschungsfragen beantwortet werden:
+
+\paragraph{FF 1: Überlegenheit der Transformer}
+Transformer-Modelle weisen bei der Differenzierung von Rissmustern eine höhere Genauigkeit auf als klassische neuronale Netze, CNNs. Durch die globale Merkmalsanalyse wird der strukturelle Zusammenhang eines Schadens erfasst, was die Fehleranfälligkeit gegenüber lokalen Störungen reduziert. Die Analyse mittels Attention-Maps belegt die Fokussierung der Modelle auf die relevanten Schadenscharakteristika.
+
+\paragraph{FF 2: Vorteil des Swin Transformers}
+Die hierarchische Struktur des Swin Transformers bietet Vorteile gegenüber dem Standard-ViT. Neben einer höheren Präzision bei komplexen Schadensklassen zeichnet sich das Modell durch eine effizientere Ressourcennutzung aus. Dies qualifiziert den Swin Transformer für zukünftige Systeme mit steigenden Anforderungen an die Bildauflösung.
+
+\paragraph{FF 3: Reduktion der Fehlerrate durch Transfer Learning}
+Durch den Einsatz von Transfer Learning konnte die Fehlerrate unter schwierigen Lichtverhältnissen gesenkt werden. Die Nutzung von vortrainiertem Wissen ermöglicht eine Adaption auf die spezifische Domäne der Straßenschäden. Das Ergebnis ist ein System mit einer geringen Quote an Fehlalarmen, False Positives.
+
+\subsection{Ausblick auf zukünftige Forschung}
+\label{subsec:ausblick}
+
+Trotz der erzielten Ergebnisse besteht weiteres Forschungspotenzial:
+\begin{itemize}
+    \item \textbf{Echtzeit-Videoanalyse:} Zukünftige Systeme könnten anstelle von Einzelbildern den gesamten Videostrom analysieren, was eine zeitliche und räumliche Konsistenzprüfung der Schadensmeldungen ermöglichen würde.
+    \item \textbf{Multimodale Sensorfusion:} Die Kombination von Bilddaten mit weiteren Sensoren, beispielsweise Beschleunigungssensoren zur Erfassung der Erschütterungsintensität, könnte zusätzliche Informationen über die Schadensschwere liefern.
+    \item \textbf{Digitaler Zwilling:} Die Vision ist die Erstellung eines digitalen Zwillings des Straßennetzes, welcher Zustandsveränderungen automatisiert berichtet und eine vorausschauende Instandhaltungsplanung unterstützt.
+\end{itemize}
+
+\subsection{Empfehlungen für die Praxis}
+\label{subsec:empfehlungen}
+
+Für den praktischen Einsatz in Städten, Gemeinden und Ingenieurbüros lassen sich folgende Empfehlungen ableiten:
+\begin{enumerate}
+    \item \textbf{KI als Assistenz-System:} Die künstliche Intelligenz sollte zur automatisierten Vorauswahl der Daten genutzt werden. Die Verarbeitungsgeschwindigkeit entlastet das Fachpersonal von Sichtungsaufgaben, während die finale bautechnische Entscheidung weiterhin durch Experten erfolgen sollte.
+    \item \textbf{Kontinuierliche Datenerfassung:} Ein Nutzen wird durch eine regelmäßige Datenaufnahme erzielt, da hierdurch Degenerationsprozesse frühzeitig erkannt und Sanierungszyklen optimiert werden können.
+    \item \textbf{Niederschwelliger Einstieg:} Wie aufgezeigt wurde, liefern moderne Smartphones eine ausreichende Datenqualität für die KI-Analyse. Dies ermöglicht eine Integration der Schadenserfassung in bestehende Prozesse, beispielsweise durch die Ausstattung kommunaler Fahrzeugflotten.
+\end{enumerate}
+
+Diese Arbeit legt eine technologische Grundlage für ein Management der Straßeninfrastruktur. Die entwickelten Verfahren sind für die Überführung in den operativen Alltag der Bauverwaltung vorbereitet.

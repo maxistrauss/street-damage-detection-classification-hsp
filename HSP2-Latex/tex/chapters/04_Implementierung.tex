@@ -1,63 +1,78 @@
 \section{Implementierung}
 \label{sec:implementierung}
 
-Die technische Umsetzung von HSP 2 umfasst die Aufbereitung der Daten, die Konfiguration der Transformer-Modelle und den eigentlichen Trainingsprozess. In diesem Kapitel werden die einzelnen Schritte detailliert beschrieben, um die Reproduzierbarkeit der Ergebnisse sicherzustellen. Dabei wird der gesamte Workflow von der Rohbildverarbeitung bis hin zur finalen Modelloptimierung beleuchtet. Der Fokus liegt hierbei auf den technischen Details, die für das Verständnis der Pipeline entscheidend sind.
+In diesem Kapitel wird die technische Umsetzung von HSP 2 beschrieben. Es wird aufgezeigt, wie die Software strukturiert ist, wie die Datenvorbereitung für die künstliche Intelligenz erfolgt und wie der Lernprozess auf der Hardware abläuft. Zudem werden die verschiedenen Möglichkeiten für den praktischen Einsatz der entwickelten KI vorgestellt. Abschließend erfolgt eine Beschreibung, wie die Ergebnisse in ein Bewertungssystem integriert werden, um eine objektive Grundlage für die Sanierungsplanung zu schaffen.
 
-\subsection{Vorbereitung der Bildkacheln (Tiling Pipeline)}
-Transformer-Modelle benötigen Bilder in einer festen quadratischen Größe, typischerweise $224 \times 224$ Pixel. Da die ursprünglichen Bounding Boxes im RDD2022-Datensatz jedoch sehr unterschiedliche Seitenverhältnisse aufweisen – von extrem schmalen Längsrissen bis hin zu quadratischen Schlaglöchern – wurde eine spezielle Vorverarbeitungs-Pipeline entwickelt. Ein einfaches Verzerren der Bilder (Resizing) auf das quadratische Format hätte die geometrischen Merkmale der Risse massiv verfälscht, was die Klassifizierungsleistung negativ beeinflusst hätte. Daher wurde ein intelligentes Padding-Verfahren gewählt.
+\subsection{Softwarearchitektur und Programmierumgebung}
+\label{subsec:softwarearchitektur}
 
-Dabei wurde für jede Bounding Box wie folgt vorgegangen:
+Die Software ist modular aufgebaut, was eine Zerlegung des Gesamtsystems in voneinander unabhängige Bausteine bedeutet. Dies bietet den Vorteil, dass einzelne Komponenten, beispielsweise das KI-Modell, ausgetauscht oder optimiert werden können, ohne das gesamte Programm neu strukturieren zu müssen.
+
+\paragraph{Einsatz von Python und PyTorch}
+Als Programmiersprache findet Python Anwendung. Python wird im Bereich der künstlichen Intelligenz häufig eingesetzt, da eine Vielzahl von Bibliotheken zur Verfügung steht.
+Das Framework PyTorch bildet die Grundlage der Entwicklung. Es ermöglicht eine Definition neuronaler Netze und deren Training auf Grafikkarten. Ein Vorteil von PyTorch ist die „Eager Execution“, wodurch mathematische Operationen innerhalb des Netzwerks während der Entwicklung überprüfbar sind. Dies trägt zu einer effizienten Entwicklungszeit bei.
+
+Der Swin Tranformer werden über das Modell "swin\_t" genauer definiert. Das bedeutet die Architektur des Swin Transformers in der Version "tiny" zum Einsatz kommt, welche eine gute Balance zwischen Genauigkeit und Rechenaufwand bietet. Das Modell ist vortrainiert auf dem ImageNet-Datensatz. Das Modell verfügt über 28 Millionen Parameter.
+
+Währenddessen wird der ViT über das Modell "vit\_b\_16" definiert. Es handelt sich um die Version "base" mit einer Patch-Größe von 16x16 Pixeln. Dieses Modell ist ebenfalls vortrainiert auf ImageNet und verfügt über 86 Millionen Parameter, was eine höhere Kapazität für die Erfassung komplexer Merkmale ermöglicht, jedoch auch einen höheren Rechenaufwand mit sich bringt.
+
+\paragraph{Modulare Modulstruktur}
+Das System gliedert sich in drei Hauptmodule:
 \begin{enumerate}
-    \item \textbf{Ermittlung der maximalen Ausdehnung:} Zuerst wurde die längere Seite des markierten Bereichs (Breite oder Höhe) bestimmt.
-    \item \textbf{Quadratische Erweiterung:} Der Bereich wurde symmetrisch so erweitert, dass ein Quadrat entsteht. Fehlende Bildbereiche wurden durch die tatsächliche umgebende Asphalttextur des Originalbildes aufgefüllt (sofern verfügbar) oder durch Spiegelung der Randpixel ergänzt.
-    \item \textbf{Kontext-Puffer:} Um sicherzustellen, dass das Modell auch den Übergang vom Schaden zum gesunden Asphalt lernt, wurde ein zusätzlicher Puffer von 10\% der Seitenlänge hinzugefügt. Dies ist wichtig, damit die Attention-Mechanismen die Umgebung des Schadens zur Kontextualisierung nutzen können.
-    \item \textbf{Skalierung:} Das quadratische Teilstück wurde mittels bilinearer Interpolation auf die Zielgröße von $224 \times 224$ Pixeln skaliert.
+    \item Daten-Modul, Data Loader: Verantwortlich für den Import der Bilddaten. Es erfolgt das Einlesen der Dateien, die Anwendung der Vorverarbeitungsschritte sowie die Bereitstellung der Daten in Form von Batches für das Modell. Ein Batch ist eine Gruppe von Bildern, die gleichzeitig verarbeitet werden, um die Effizienz zu steigern.
+    \item Modell-Modul, Model Definition: Hier wird die mathematische Struktur der Transformer definiert. Die Bibliothek timm, PyTorch Image Models, stellt hierfür Versionen des ViT und Swin Transformers bereit.
+    \item Trainings- und Analyse-Modul, Trainer: Steuert den Lernprozess. Nach jeder Vorhersage erfolgt die Berechnung des Loss und die entsprechende Anpassung der internen Gewichte. Zudem werden die Evaluationsmetriken berechnet und protokolliert, um den Fortschritt zu überwachen.
 \end{enumerate}
 
-\subsection{Strategie für das Negative Sampling („Normal“-Klasse)}
-Ein entscheidender Faktor für die Praxistauglichkeit des Systems ist die Fähigkeit, unbeschädigten Asphalt korrekt zu erkennen. Da der RDD2022-Datensatz primär Schadensstellen enthält, musste die Klasse „Normal“ (unbeschädigt) systematisch erzeugt werden. Dieser Prozess wird als \textbf{Negative Sampling} bezeichnet und dient dazu, dem Modell die Charakteristika schadenfreier Oberflächen zu vermitteln.
+\subsection{Datenpipeline: Vorbereitung der Bilddaten}
+\label{subsec:datenpipeline}
 
-Hierzu wurde ein Algorithmus implementiert, der in den Originalbildern nach zufälligen Regionen sucht, die keine Überschneidung mit den annotierten Bounding Boxes aufweisen. Es wurde sichergestellt, dass die extrahierten „Normal“-Patches die gleiche Größenverteilung aufweisen wie die Schadenspatches. Nur Bereiche, die vollständig schadenfrei sind, wurden als Kacheln in den Datensatz aufgenommen. Dies zwingt das Modell während des Trainings, den feinen Unterschied zwischen einer natürlichen, rauen Asphaltstruktur und einem echten Haarriss präzise zu unterscheiden.
+Vor dem Lernprozess durchlaufen die Bilder eine Verarbeitungs-Pipeline, um ein einheitliches Format zu gewährleisten und die Relevanz der Merkmale zu erhöhen.
 
-\subsection{Daten-Augmentierung und Regularisierung}
-Um die Robustheit gegenüber wechselnden Umweltbedingungen zu erhöhen und ein Auswendiglernen der Trainingsdaten (\textbf{Overfitting}) zu verhindern, wurde eine umfangreiche Augmentierungs-Pipeline integriert. Overfitting bedeutet in der Informatik, dass ein Modell die Trainingsdaten „auswendig lernt“, anstatt allgemeine Merkmale zu generalisieren.
+\paragraph{Vorbereitung der Bildkacheln, Tiling und Padding}
+Transformer-Modelle erfordern quadratische Eingabedaten. Da reale Straßenschäden oft langgezogene Geometrien aufweisen, findet ein spezieller Algorithmus Anwendung. Dieser berechnet den erforderlichen Bildbereich um den Schaden herum, um ein Quadrat zu erzeugen. Fehlende Bildbereiche werden durch reale Asphaltstrukturen aus der Umgebung oder durch Spiegelung der Randpixel gefüllt, Padding. Dadurch bleibt die natürliche Struktur des Asphalts erhalten und geometrische Verzerrungen werden vermieden.
 
-Diese nutzt die \texttt{torchvision.transforms}-Bibliothek und wendet während des Trainings zufällige Transformationen an:
+\paragraph{Negative Sampling}
+Zur Vermeidung von Fehlklassifikationen, zum Beispiel Schattenwurf als Schaden, kommt \textbf{Negative Sampling} zum Einsatz. Das System wird so konfiguriert, dass es gezielt Bildausschnitte ohne Schäden selektiert, Klasse „Normal“. Dies fördert die Fähigkeit des Modells, natürliche Asphaltstrukturen von tatsächlichen Schäden zu unterscheiden.
+
+\paragraph{Daten-Augmentierung im Detail}
+Zur Erhöhung der Robustheit gegenüber variierenden Umweltbedingungen findet eine künstliche Veränderung der Trainingsdaten mittels der Bibliothek Albumentations statt:
 \begin{itemize}
-    \item \textbf{Random Resized Crop:} Dabei wird ein zufälliger Ausschnitt des Bildes gewählt und skaliert. Dies simuliert unterschiedliche Kameraabstände, Brennweiten und Blickwinkel des Messfahrzeugs.
-    \item \textbf{Color Jittering:} Helligkeit, Kontrast, Sättigung und Farbton werden variiert. Dies bereitet das Modell auf unterschiedliche Tageszeiten und Wetterbedingungen vor.
-    \item \textbf{Zufälliges Spiegeln und Rotieren:} Erhöht die Invarianz des Modells gegenüber der geometrischen Ausrichtung.
+    \item Helligkeit und Kontrast: Simulation verschiedener Tageszeiten und Lichtverhältnisse.
+    \item Rauschen, Noise: Hinzufügen von Pixelrauschen zur Simulation unterschiedlicher Kamerasensoren.
+    \item Rotation: Rotation der Bilder um bis zu 180 Grad, da die Schadenserkennung unabhängig von der Kameraorientierung erfolgen muss.
 \end{itemize}
 
-\subsection{Training und Hardware-Konfiguration}
-Das Training wurde mit dem PyTorch-Framework auf einer NVIDIA RTX 6000 Ada Grafikkarte durchgeführt. Die Wahl der Hardware ist entscheidend für die Machbarkeit von Deep-Learning-Projekten.
+\subsection{Modelltraining und mathematische Optimierung}
+\label{subsec:modelltraining}
 
-\paragraph{Rolle der GPU in der KI}
-Grafikkarten (GPUs) sind für KI-Training ideal, da sie tausende kleine Rechenkerne (CUDA Cores) besitzen. Während ein klassischer Prozessor (CPU) Aufgaben nacheinander (seriell) abarbeitet, kann eine GPU die Millionen von Matrixmultiplikationen, die für Transformer notwendig sind, gleichzeitig (parallel) berechnen. Die RTX 6000 Ada bietet zudem 48 GB VRAM (Grafikspeicher), was es erlaubt, große Mengen an Bilddaten gleichzeitig im schnellen Zugriff zu halten (\textbf{Batch Size}).
+Das Training stellt die rechenintensivste Phase des Projekts dar. Dabei erfolgt die Justierung der Modellparameter zur korrekten Schadensklassifizierung.
 
-\paragraph{Optimizer: AdamW und Lernraten}
-Als Optimierungsverfahren wurde \textbf{AdamW} gewählt. Ein Optimizer ist der Algorithmus, der entscheidet, wie die Gewichte des Netzwerks basierend auf dem Fehler angepasst werden. AdamW nutzt dabei für jedes Gewicht eine individuelle „Schrittgeschwindigkeit“ (adaptive Lernrate). Um ein „Oszillieren“ am Ende des Trainings zu vermeiden, wurde ein \textit{Cosine Annealing Scheduler} genutzt, der die Lernrate sinusförmig reduziert.
+\paragraph{Hardware-Konfiguration}
+Für das Training findet eine Grafikkarte vom Typ NVIDIA RTX 6000 Ada mit 48 GB Grafikspeicher, VRAM, Verwendung. Die Speicherkapazität ermöglicht die Verarbeitung großer Batch Sizes, was den Datendurchsatz zwischen Festplatte und GPU optimiert und das Training beschleunigt.
 
-\paragraph{Mixed Precision Training (AMP)}
-Um den Speicherbedarf der Grafikkarte effizient zu nutzen, wurde \textit{Automatic Mixed Precision} (AMP) eingesetzt. Hierbei werden unkritische Rechenschritte in 16-Bit-Fließkommazahlen (FP16) anstatt in 32-Bit (FP32) durchgeführt. Technisch betrachtet halbiert dies den Speicherbedarf pro Zahl und verdoppelt die Rechengeschwindigkeit, ohne die Präzision des Modells spürbar zu verschlechtern.
+\paragraph{Optimierungs-Algorithmus, AdamW}
+Die Minimierung des Fehlers erfolgt durch einen Optimizer. In diesem Projekt kommt AdamW zum Einsatz. Die integrierte "Weight Decay"-Technik verhindert ein übermäßiges Anwachsen der Modellgewichte, was zur Vermeidung von Overfitting beiträgt und die Generalisierungsfähigkeit stärkt. Die Lernrate wird dynamisch angepasst. Zu Beginn des Trainings ist sie höher, um schnelle Fortschritte zu ermöglichen. Im Verlauf des Trainings wird sie schrittweise reduziert, um eine feinere Anpassung der Gewichte zu ermöglichen. Die Lernrate ist dafür verantwortlich, wie stark die Gewichte bei jeder Aktualisierung angepasst werden. Eine zu hohe Lernrate kann zu instabilem Training führen, während eine zu niedrige Lernrate den Fortschritt verlangsamt.
 
-\paragraph{Trainingsverlauf und Konvergenz}
-Der Standard-ViT erreichte bereits nach etwa 10 Epochen ein stabiles Plateau. Der Swin Transformer benötigte aufgrund seiner komplexeren hierarchischen Struktur etwas länger (ca. 20 Epochen). In Abbildung \ref{fig:training_curves} ist der Verlauf von Loss (Fehlerwert) und Accuracy (Genauigkeit) gegenübergestellt.
+\paragraph{Mixed Precision Training, AMP}
+Zur Effizienzsteigerung wird Mixed Precision genutzt. Dabei erfolgen Teile der Berechnungen mit reduzierter Genauigkeit, 16-Bit anstatt 32-Bit. Dies resultiert in einer Beschleunigung des Trainingsprozesses bei gleichzeitig reduziertem Speicherbedarf, ohne die Klassifikationsgenauigkeit negativ zu beeinflussen. Die Grafikkarte unterstützt diese Technik nativ, was die Implementierung erleichtert.
 
-\begin{figure}[H]
-    \centering
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{../Python/hsp2_transformer/results/vit/training_curves.png}
-        \caption*{Trainingsverlauf des Vision Transformers (ViT).}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{../Python/hsp2_transformer/results/swin/training_curves.png}
-        \caption*{Trainingsverlauf des Swin Transformers.}
-    \end{minipage}
-    \caption{Detaillierter Vergleich der Lernkurven.}
-    \label{fig:training_curves}
-\end{figure}
+\subsection{Deployment-Ansätze}
+\label{subsec:deployment}
 
+Nach Abschluss der Trainings- und Testphase stehen verschiedene Szenarien für den praktischen Einsatz zur Verfügung:
+
+\paragraph{Cloud-basierte Auswertung}
+Die Übertragung der Bilddaten erfolgt via Mobilfunk, an einen zentralen Server. Dieser Ansatz bietet eine hohe Rechenleistung, ist jedoch von der Verfügbarkeit einer stabilen Netzwerkverbindung abhängig. 
+
+\paragraph{Edge-Computing im Fahrzeug}
+Die Auswertung findet direkt auf einem im Fahrzeug integrierten KI-Computer statt. Dies gewährleistet Datenschutz durch lokale Verarbeitung und ermöglicht den Betrieb unabhängig von einer Internetverbindung, erfordert jedoch eine Optimierung des Modells für die begrenzte Rechenleistung.
+
+\paragraph{Mobile Applikationen}
+Die Ausführung erfolgt direkt auf einem Smartphone. Moderne Mobilgeräte verfügen über KI-Beschleuniger, welche die Transformer-Modelle ausführen können. Dies ermöglicht eine kostengünstige Schadenserfassung ohne spezialisierte Messfahrzeuge.
+
+\subsection{Integration in ein Bewertungssystem}
+\label{subsec:integration}
+
+Die Ergebnisse der Klassifizierung werden in ein umfassendes Bewertungssystem integriert. Das Modell liefert für jedes Bild Wahrscheinlichkeitswerte für die einzelnen Schadensklassen. Diese Daten werden mit Zeitstempeln und GPS-Koordinaten verknüpft.
+In einer Datenbank erfolgt die Erstellung von Zustandsprofilen für einzelne Straßenabschnitte. Basierend auf der Häufigkeit und Art der detektierten Schäden erfolgt eine automatisierte Berechnung der Noten gemäß ZTV ZEB. Dies stellt eine objektive Entscheidungsgrundlage für die Sanierungsplanung bereit.
