@@ -1,7 +1,7 @@
 \section{Zustandsbewertung und Entscheidungslogik}
 \label{sec:zustandsbewertung}
 
-Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. Für eine Nutzung durch Bauämter ist eine Überführung der Ergebnisse in Bewertungssysteme für Verkehrswege erforderlich. In diesem Kapitel wird erläutert, wie aus den KI-basierten Klassifizierungen Zustandsnoten abgeleitet werden und welche Logik der Sanierungsplanung zugrunde liegt. Zudem werden die Grenzen der Bewertung aufgezeigt, um eine realistische Interpretation der Ergebnisse zu ermöglichen.
+Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. Für eine Nutzung durch Bauämter ist eine Überführung der Ergebnisse in Bewertungssysteme für Verkehrswege erforderlich. In diesem Kapitel wird ein \textbf{Konzept} erläutert, wie aus den KI-basierten Klassifizierungen Zustandsnoten abgeleitet werden könnten und welche Logik einer Sanierungsplanung zugrunde liegen kann. Zudem werden die Grenzen der Bewertung aufgezeigt, um eine realistische Interpretation der Ergebnisse zu ermöglichen.
 
 \subsection{Schadensklassifikation nach Normen, ZTV ZEB und RStO}
 \label{subsec:normen}
@@ -18,13 +18,13 @@ Die „Zusätzlichen Technischen Vertragsbedingungen und Richtlinien für die Zu
 \paragraph{RStO und Belastungsklassen}
 Die Richtlinien für die Standardisierung des Oberbaus, RStO, definieren die Anforderungen an Straßen in Abhängigkeit von der Verkehrslast. Eine Autobahn, Bk100, unterliegt dabei anderen Bewertungskriterien als eine normale Straße, Bk0,3. Die Entscheidungslogik von HSP 2 berücksichtigt diese Belastungsklassen, da die Relevanz eines Schadens, wie beispielsweise eines Schlaglochs, mit der zulässigen Fahrgeschwindigkeit und der Verkehrsintensität korreliert.
 
-\subsection{Ableitung eines Zustandsindex}
+\subsection{Ableitung eines Zustandsindex (Konzept)}
 \label{subsec:zustandsindex}
 
-Zur Gesamtbeurteilung eines Straßenabschnitts erfolgt eine Aggregation der Einzelergebnisse zu einem \textbf{Zustandsindex}.
+Zur Gesamtbeurteilung eines Straßenabschnitts könnte eine Aggregation der Einzelergebnisse zu einem \textbf{Zustandsindex} erfolgen.
 
 \paragraph{Gewichtung der Schadensarten}
-Die Schadensrelevanz wird innerhalb der Logik über ein Punktesystem abgebildet:
+Die Schadensrelevanz könnte innerhalb der Logik über ein Punktesystem abgebildet werden:
 \begin{enumerate}
     \item Schlaglöcher, D40: Priorität aufgrund der Relevanz für die Verkehrssicherheit.
     \item Netzrisse, D20: Gewichtung als Indikator für strukturelle Beeinträchtigungen.
@@ -32,7 +32,7 @@ Die Schadensrelevanz wird innerhalb der Logik über ein Punktesystem abgebildet:
 \end{enumerate}
 
 \paragraph{Berechnung für den Abschnitt}
-Innerhalb eines definierten Abschnitts, beispielsweise 100 Meter, erfolgt eine Zählung aller detektierten Schäden. Ein mathematisches Modell transformiert die Anzahl und Art der Schäden in einen Wert zwischen 1,0, sehr guter Zustand, und 5,0, ungenügender Zustand. Dies ermöglicht die Erstellung digitaler Zustandskarten, welche Bauingenieuren einen Überblick über das Straßennetz bieten.
+Innerhalb eines definierten Abschnitts, beispielsweise 100 Meter, könnte eine Zählung aller detektierten Schäden erfolgen. Ein mathematisches Modell würde die Anzahl und Art der Schäden in einen Wert zwischen 1,0 (sehr guter Zustand) und 5,0 (ungenügender Zustand) transformieren. Dies würde die Erstellung digitaler Zustandskarten ermöglichen.
 
 \subsection{Priorisierung von Sanierungsmaßnahmen}
 \label{subsec:priorisierung}
@@ -52,8 +52,8 @@ Für eine Interpretation der Ergebnisse ist die Kenntnis der technologischen Gre
 \paragraph{Informationstiefe}
 Die Analyse basiert auf Oberflächenbildern. Eine Bestimmung der tatsächlichen Schadensausdehnung in tiefere Schichten ist optisch nicht möglich. Hierfür sind weiterhin ergänzende Verfahren wie Bodenradar oder Bohrkernentnahmen notwendig.
 
-\paragraph{Witterungseinflüsse}
-Umwelteinflüsse wie Schattenwurf oder Nässe können die Zuverlässigkeit der KI beeinflussen. Bilder mit einem Konfidenzwert unterhalb eines definierten Schwellenwerts, beispielsweise 70\,\%, werden für eine manuelle Nachprüfung durch Experten markiert.
+\paragraph{Witterungseinflüsse und Konfidenzwerte}
+Umwelteinflüsse wie Schattenwurf oder Nässe können die Zuverlässigkeit der KI beeinflussen. Eine geplante Erweiterung des Systems sieht vor, dass Bilder mit einem Konfidenzwert unterhalb eines definierten Schwellenwerts, beispielsweise 70\,\%, für eine manuelle Nachprüfung markiert werden. Aktuell liefert das Modell die Klasse mit der höchsten statistischen Wahrscheinlichkeit zurück.
 
 \paragraph{Menschliche Endkontrolle}
 Die künstliche Intelligenz fungiert als Filter zur Entlastung des Fachpersonals. Sie ermöglicht die Konzentration auf kritische Abschnitte, während unauffällige Bereiche automatisiert aussortiert werden. Die Entscheidung über Sanierungsmaßnahmen verbleibt beim verantwortlichen Bauingenieur.

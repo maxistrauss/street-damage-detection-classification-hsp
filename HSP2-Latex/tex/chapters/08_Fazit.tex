@@ -8,7 +8,7 @@ Abschließend erfolgt ein Rückblick auf die Ergebnisse von HSP 2 sowie eine Zus
 
 In dieser Arbeit wurde belegt, dass Transformer-Modelle, ViT und Swin, zur Klassifizierung komplexer Straßenschäden geeignet sind. Mit einer Gesamtgenauigkeit von über 96,4\,\% erreichen die Modelle ein Leistungsniveau, das den Anforderungen für einen praktischen Einsatz in Kommunen und Bauämtern entspricht.
 
-Zu verzeichnen ist die Leistungsfähigkeit des Swin Transformers. Die hierarchische Architektur ermöglicht die Kombination von Merkmalen auf verschiedenen Skalierungsebenen, wodurch sowohl feine Risse als auch großflächige Netzrissstrukturen erkannt werden. Die durchgeführten Tests belegen eine Robustheit gegenüber unterschiedlichen Asphaltarten und Umweltbedingungen. Es wurde eine Verarbeitungs-Pipeline entwickelt, welche die Prozesskette von der Bildaufnahme über die Extraktion relevanter Bildbereiche bis hin zur finalen Zustandsbewertung abdeckt. Die Kombination aus HSP 1, Detektion, und HSP 2, Klassifikation, stellt somit ein System zur digitalen Infrastrukturüberwachung dar.
+Zu verzeichnen ist die Leistungsfähigkeit des Swin Transformers. Die hierarchische Architektur ermöglicht die Kombination von Merkmalen auf verschiedenen Skalierungsebenen, wodurch sowohl feine Risse als auch großflächige Netzrissstrukturen erkannt werden. Die durchgeführten Tests belegen eine Robustheit gegenüber unterschiedlichen Asphaltarten und Umweltbedingungen. Es wurde eine Verarbeitungs-Pipeline entwickelt, welche die Prozesskette von der Bildaufnahme über die Extraktion relevanter Bildbereiche bis hin zur automatisierten Klassifizierung abdeckt. Die Kombination aus HSP 1 (Detektion) und HSP 2 (Klassifikation) stellt somit ein fundiertes Fundament für eine digitale Infrastrukturüberwachung dar.
 
 \subsection{Beantwortung der Forschungsfragen}
 \label{subsec:beantwortung_ff}
@@ -24,14 +24,15 @@ Die hierarchische Struktur des Swin Transformers bietet Vorteile gegenüber dem 
 \paragraph{FF 3: Reduktion der Fehlerrate durch Transfer Learning}
 Durch den Einsatz von Transfer Learning konnte die Fehlerrate unter schwierigen Lichtverhältnissen gesenkt werden. Die Nutzung von vortrainiertem Wissen ermöglicht eine Adaption auf die spezifische Domäne der Straßenschäden. Das Ergebnis ist ein System mit einer geringen Quote an Fehlalarmen, False Positives.
 
-\subsection{Ausblick auf zukünftige Forschung}
+\subsection{Ausblick auf zukünftige Forschung und Entwicklung}
 \label{subsec:ausblick}
 
-Trotz der erzielten Ergebnisse besteht weiteres Forschungspotenzial:
+Trotz der erzielten Ergebnisse besteht weiteres Potenzial für die Weiterentwicklung des Systems in Richtung einer produktiven Anwendung:
 \begin{itemize}
-    \item Echtzeit-Videoanalyse: Zukünftige Systeme könnten anstelle von Einzelbildern den gesamten Videostrom analysieren, was eine zeitliche und räumliche Konsistenzprüfung der Schadensmeldungen ermöglichen würde.
-    \item Multimodale Sensorfusion: Die Kombination von Bilddaten mit weiteren Sensoren, beispielsweise Beschleunigungssensoren zur Erfassung der Erschütterungsintensität, könnte zusätzliche Informationen über die Schadensschwere liefern.
-    \item Digitaler Zwilling: Die Vision ist die Erstellung eines digitalen Zwillings des Straßennetzes, welcher Zustandsveränderungen automatisiert berichtet und eine vorausschauende Instandhaltungsplanung unterstützt.
+    \item \textbf{Integration von Metadaten:} Ein entscheidender Vorteil für zukünftige Analysen wäre die Verwendung von Datensätzen, die zusätzlich zu den Bildern auch GPS-Koordinaten und Informationen zum Straßentyp (z. B. Autobahn vs. Wohnstraße) enthalten. Dies würde eine automatisierte Verknüpfung der Schäden mit digitalen Karten und eine belastungsklassenabhängige Priorisierung ermöglichen.
+    \item \textbf{Deployment-Szenarien:} Für den praktischen Einsatz sind verschiedene Ansätze denkbar. Neben einer Cloud-basierten Auswertung bietet das Edge-Computing direkt im Fahrzeug (z. B. auf spezialisierten KI-Beschleunigern) den Vorteil einer internetunabhängigen Verarbeitung in Echtzeit. Auch mobile Applikationen auf Smartphones könnten die Hürden für eine flächendeckende Erfassung senken.
+    \item \textbf{Automatisierte Zustandsbewertung:} Die Erweiterung der reinen Klassifikation hin zu einem Bewertungssystem gemäß ZTV ZEB stellt den nächsten logischen Schritt dar. Durch die Aggregation von Schadenshäufigkeit und Schweregrad über definierte Straßenabschnitte könnten automatisiert Sanierungsvorschläge generiert werden.
+    \item \textbf{Multimodale Sensorfusion:} Die Kombination von Bilddaten mit weiteren Sensoren, beispielsweise Beschleunigungssensoren zur Erfassung der Erschütterungsintensität, könnte zusätzliche Informationen über die Schadensschwere (z. B. Tiefe eines Schlaglochs) liefern.
 \end{itemize}
 
 \subsection{Empfehlungen für die Praxis}

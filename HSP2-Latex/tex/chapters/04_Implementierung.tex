@@ -56,23 +56,3 @@ Die Minimierung des Fehlers erfolgt durch einen Optimizer. In diesem Projekt kom
 
 \paragraph{Mixed Precision Training, AMP}
 Zur Effizienzsteigerung wird Mixed Precision genutzt. Dabei erfolgen Teile der Berechnungen mit reduzierter Genauigkeit, 16-Bit anstatt 32-Bit. Dies resultiert in einer Beschleunigung des Trainingsprozesses bei gleichzeitig reduziertem Speicherbedarf, ohne die Klassifikationsgenauigkeit negativ zu beeinflussen. Die Grafikkarte unterstützt diese Technik nativ, was die Implementierung erleichtert.
-
-\subsection{Deployment-Ansätze}
-\label{subsec:deployment}
-
-Nach Abschluss der Trainings- und Testphase stehen verschiedene Szenarien für den praktischen Einsatz zur Verfügung:
-
-\paragraph{Cloud-basierte Auswertung}
-Die Übertragung der Bilddaten erfolgt via Mobilfunk, an einen zentralen Server. Dieser Ansatz bietet eine hohe Rechenleistung, ist jedoch von der Verfügbarkeit einer stabilen Netzwerkverbindung abhängig. 
-
-\paragraph{Edge-Computing im Fahrzeug}
-Die Auswertung findet direkt auf einem im Fahrzeug integrierten KI-Computer statt. Dies gewährleistet Datenschutz durch lokale Verarbeitung und ermöglicht den Betrieb unabhängig von einer Internetverbindung, erfordert jedoch eine Optimierung des Modells für die begrenzte Rechenleistung.
-
-\paragraph{Mobile Applikationen}
-Die Ausführung erfolgt direkt auf einem Smartphone. Moderne Mobilgeräte verfügen über KI-Beschleuniger, welche die Transformer-Modelle ausführen können. Dies ermöglicht eine kostengünstige Schadenserfassung ohne spezialisierte Messfahrzeuge.
-
-\subsection{Integration in ein Bewertungssystem}
-\label{subsec:integration}
-
-Die Ergebnisse der Klassifizierung werden in ein umfassendes Bewertungssystem integriert. Das Modell liefert für jedes Bild Wahrscheinlichkeitswerte für die einzelnen Schadensklassen. Diese Daten werden mit Zeitstempeln und GPS-Koordinaten verknüpft.
-In einer Datenbank erfolgt die Erstellung von Zustandsprofilen für einzelne Straßenabschnitte. Basierend auf der Häufigkeit und Art der detektierten Schäden erfolgt eine automatisierte Berechnung der Noten gemäß ZTV ZEB. Dies stellt eine objektive Entscheidungsgrundlage für die Sanierungsplanung bereit.
