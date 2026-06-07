@@ -1,7 +1,7 @@
 \section{Zustandsbewertung und Entscheidungslogik}
 \label{sec:zustandsbewertung}
 
-Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. Für eine Nutzung durch Bauämter ist eine Überführung der Ergebnisse in Bewertungssysteme für Verkehrswege erforderlich. In diesem Kapitel wird erläutert, wie aus den KI-basierten Klassifizierungen Zustandsnoten abgeleitet werden und welche Logik der Sanierungsplanung zugrunde liegt.
+Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. Für eine Nutzung durch Bauämter ist eine Überführung der Ergebnisse in Bewertungssysteme für Verkehrswege erforderlich. In diesem Kapitel wird erläutert, wie aus den KI-basierten Klassifizierungen Zustandsnoten abgeleitet werden und welche Logik der Sanierungsplanung zugrunde liegt. Zudem werden die Grenzen der Bewertung aufgezeigt, um eine realistische Interpretation der Ergebnisse zu ermöglichen.
 
 \subsection{Schadensklassifikation nach Normen, ZTV ZEB und RStO}
 \label{subsec:normen}
@@ -9,14 +9,14 @@ Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. F�
 In Deutschland existieren Regelwerke für die Straßenbewertung, welche eine bundesweit einheitliche Beurteilung sicherstellen.
 
 \paragraph{Die Rolle der ZTV ZEB}
-Die „Zusätzlichen Technischen Vertragsbedingungen und Richtlinien für die Zustandserfassung und -bewertung von Straßen“, ZTV ZEB, bilden die Grundlage der Straßenplanung. Gemäß dieser Richtlinie ist eine regelmäßige Überprüfung, im Regelfall im 4-Jahres-Turnus, vorgesehen. Die künstliche Intelligenz detektiert die für diese Richtlinie relevanten Merkmale:
+Die „Zusätzlichen Technischen Vertragsbedingungen und Richtlinien für die Zustandserfassung und -bewertung von Straßen“, ZTV ZEB, bilden die Grundlage der Straßenplanung. Gemäß dieser Richtlinie ist eine regelmäßige Überprüfung, im Regelfall im 4-Jahres-Rythmus, vorgesehen. Die künstliche Intelligenz detektiert die für diese Richtlinie relevanten Merkmale:
 \begin{itemize}
-    \item \textbf{Substanzwert, Baulicher Zustand:} Bewertung der Materialermüdung, zum Beispiel durch Risse, und des Zustands der Tragschichten, Netzrisse.
-    \item \textbf{Gebrauchswert, Verkehrssicherheit:} Beurteilung der Fahrsicherheit, insbesondere im Hinblick auf Schlaglöcher und Spurrinnen.
+    \item Substanzwert, Baulicher Zustand: Bewertung des Materialzustandes, zum Beispiel durch Risse, und des Zustands der Tragschichten, Netzrisse.
+    \item Gebrauchswert, Verkehrssicherheit: Beurteilung der Fahrsicherheit, insbesondere im Hinblick auf Schlaglöcher und Spurrinnen.
 \end{itemize}
 
 \paragraph{RStO und Belastungsklassen}
-Die Richtlinien für die Standardisierung des Oberbaus, RStO, definieren die konstruktiven Anforderungen an Straßen in Abhängigkeit von der Verkehrslast. Eine Autobahn, Bk100, unterliegt dabei anderen Bewertungskriterien als eine Erschließungsstraße, Bk0,3. Die Entscheidungslogik von HSP 2 berücksichtigt diese Belastungsklassen, da die Relevanz eines Schadens, wie beispielsweise eines Schlaglochs, mit der zulässigen Fahrgeschwindigkeit und der Verkehrsintensität korreliert.
+Die Richtlinien für die Standardisierung des Oberbaus, RStO, definieren die Anforderungen an Straßen in Abhängigkeit von der Verkehrslast. Eine Autobahn, Bk100, unterliegt dabei anderen Bewertungskriterien als eine normale Straße, Bk0,3. Die Entscheidungslogik von HSP 2 berücksichtigt diese Belastungsklassen, da die Relevanz eines Schadens, wie beispielsweise eines Schlaglochs, mit der zulässigen Fahrgeschwindigkeit und der Verkehrsintensität korreliert.
 
 \subsection{Ableitung eines Zustandsindex}
 \label{subsec:zustandsindex}
@@ -26,9 +26,9 @@ Zur Gesamtbeurteilung eines Straßenabschnitts erfolgt eine Aggregation der Einz
 \paragraph{Gewichtung der Schadensarten}
 Die Schadensrelevanz wird innerhalb der Logik über ein Punktesystem abgebildet:
 \begin{enumerate}
-    \item \textbf{Schlaglöcher, D40:} Priorität aufgrund der Relevanz für die Verkehrssicherheit.
-    \item \textbf{Netzrisse, D20:} Gewichtung als Indikator für strukturelle Beeinträchtigungen.
-    \item \textbf{Längs- und Querrisse, D00/D10:} Bei isoliertem Auftreten erfolgt eine moderate Abwertung, bei Häufung sinkt der Index.
+    \item Schlaglöcher, D40: Priorität aufgrund der Relevanz für die Verkehrssicherheit.
+    \item Netzrisse, D20: Gewichtung als Indikator für strukturelle Beeinträchtigungen.
+    \item Längs- und Querrisse, D00/D10: Bei isoliertem Auftreten erfolgt eine moderate Abwertung, bei Häufung sinkt der Index.
 \end{enumerate}
 
 \paragraph{Berechnung für den Abschnitt}
@@ -39,9 +39,9 @@ Innerhalb eines definierten Abschnitts, beispielsweise 100 Meter, erfolgt eine Z
 
 Die automatisiert ermittelten Zustandsnoten dienen der Allokation finanzieller Mittel. Die Noten lassen sich in Handlungsstrategien übersetzen:
 \begin{itemize}
-    \item \textbf{1,0 - 3,5, Erhaltungsbereich:} Zustand ist stabil; eine kontinuierliche Beobachtung ist ausreichend.
-    \item \textbf{3,5 - 4,5, Warnwert:} Zunehmende Verschlechterung; dies stellt einen Zeitpunkt für Instandsetzungsmaßnahmen dar.
-    \item \textbf{4,5 - 5,0, Schwellenwert:} Erhebliche Mängel; zur Vermeidung von Folgeschäden und zur Abwendung eines vollständigen Neubaus sind Maßnahmen erforderlich.
+    \item 1,0 - 3,5, Erhaltungsbereich: Zustand ist stabil; eine kontinuierliche Beobachtung ist ausreichend.
+    \item 3,5 - 4,5, Warnwert: Zunehmende Verschlechterung; dies stellt einen Zeitpunkt für Instandsetzungsmaßnahmen dar.
+    \item 4,5 - 5,0, Schwellenwert: Erhebliche Mängel; zur Vermeidung von Folgeschäden und zur Abwendung eines vollständigen Neubaus sind Maßnahmen erforderlich.
 \end{itemize}
 
 \subsection{Grenzen und Unsicherheiten der Bewertung}
@@ -53,7 +53,7 @@ Für eine Interpretation der Ergebnisse ist die Kenntnis der technologischen Gre
 Die Analyse basiert auf Oberflächenbildern. Eine Bestimmung der tatsächlichen Schadensausdehnung in tiefere Schichten ist optisch nicht möglich. Hierfür sind weiterhin ergänzende Verfahren wie Bodenradar oder Bohrkernentnahmen notwendig.
 
 \paragraph{Witterungseinflüsse}
-Umwelteinflüsse wie Schattenwurf oder Nässe können die Konfidenz der KI beeinflussen. Bilder mit einem Konfidenzwert unterhalb eines definierten Schwellenwerts, beispielsweise 70\,\%, werden für eine manuelle Nachprüfung durch Experten markiert.
+Umwelteinflüsse wie Schattenwurf oder Nässe können die Zuverlässigkeit der KI beeinflussen. Bilder mit einem Konfidenzwert unterhalb eines definierten Schwellenwerts, beispielsweise 70\,\%, werden für eine manuelle Nachprüfung durch Experten markiert.
 
 \paragraph{Menschliche Endkontrolle}
 Die künstliche Intelligenz fungiert als Filter zur Entlastung des Fachpersonals. Sie ermöglicht die Konzentration auf kritische Abschnitte, während unauffällige Bereiche automatisiert aussortiert werden. Die Entscheidung über Sanierungsmaßnahmen verbleibt beim verantwortlichen Bauingenieur.
