@@ -9,9 +9,9 @@ from pathlib import Path
 import argparse
 
 # Config
-DATA_DIR = Path("hsp2_transformer/data/classification/val")
-TRAIN_DIR = Path("hsp2_transformer/data/classification/train")
-RESULTS_BASE_DIR = Path("hsp2_transformer/results")
+DATA_DIR = Path("data/classification/test")
+TRAIN_DIR = Path("data/classification/train")
+RESULTS_BASE_DIR = Path("results")
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -19,11 +19,11 @@ def load_model(model_type, num_classes):
     if model_type == "vit":
         model = models.vit_b_16()
         model.heads.head = nn.Linear(model.heads.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_vit.pth")
+        model_path = Path("models/best_vit.pth")
     elif model_type == "swin":
         model = models.swin_t()
         model.head = nn.Linear(model.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_swin.pth")
+        model_path = Path("models/best_swin.pth")
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -76,7 +76,11 @@ def visualize_attention(model_type):
         img_tensor = transform(img_pill).unsqueeze(0).to(DEVICE)
 
         with torch.no_grad():
-            _ = model(img_tensor)
+            output = model(img_tensor)
+            probs = torch.nn.functional.softmax(output, dim=1)
+            conf, pred = torch.max(probs, 1)
+            conf = conf.item()
+            pred_idx = pred.item()
         
         if "feat" not in captured_data: continue
         feat = captured_data["feat"]
@@ -98,13 +102,13 @@ def visualize_attention(model_type):
         plt.figure(figsize=(10, 5))
         plt.subplot(1, 2, 1)
         plt.imshow(img_pill.resize((224, 224)))
-        plt.title(f"Original: {img_path.parent.name}")
+        plt.title(f"True: {img_path.parent.name}")
         plt.axis("off")
         
         plt.subplot(1, 2, 2)
         plt.imshow(img_pill.resize((224, 224)))
         plt.imshow(heatmap, cmap='jet', alpha=0.5)
-        plt.title(f"{model_type.upper()} Activity Map")
+        plt.title(f"Pred: {classes[pred_idx]} ({conf:.2%})")
         plt.axis("off")
         
         plt.savefig(output_dir / f"attention_{img_path.stem}.png")

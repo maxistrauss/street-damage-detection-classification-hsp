@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-RESULTS_DIR = Path("hsp2_transformer/results")
+RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 # Note: In this project, training history is not explicitly saved as CSV, 

@@ -12,9 +12,9 @@ from tqdm import tqdm
 import argparse
 
 # Config
-DATA_DIR = Path("hsp2_transformer/data/classification/val")
-TRAIN_DIR = Path("hsp2_transformer/data/classification/train")
-RESULTS_BASE_DIR = Path("hsp2_transformer/results")
+DATA_DIR = Path("data/classification/test")
+TRAIN_DIR = Path("data/classification/train")
+RESULTS_BASE_DIR = Path("results")
 
 BATCH_SIZE = 64
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,11 +23,11 @@ def load_model(model_type, num_classes):
     if model_type == "vit":
         model = models.vit_b_16()
         model.heads.head = nn.Linear(model.heads.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_vit.pth")
+        model_path = Path("models/best_vit.pth")
     elif model_type == "swin":
         model = models.swin_t()
         model.head = nn.Linear(model.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_swin.pth")
+        model_path = Path("models/best_swin.pth")
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 

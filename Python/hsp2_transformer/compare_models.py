@@ -9,10 +9,10 @@ from tqdm import tqdm
 from PIL import Image
 
 # Config
-VAL_DIR = Path("hsp2_transformer/data/classification/val")
-VIT_PATH = Path("hsp2_transformer/models/best_vit.pth")
-SWIN_PATH = Path("hsp2_transformer/models/best_swin.pth")
-RESULTS_DIR = Path("hsp2_transformer/results/comparison")
+TEST_DIR = Path("data/classification/test")
+VIT_PATH = Path("models/best_vit.pth")
+SWIN_PATH = Path("models/best_swin.pth")
+RESULTS_DIR = Path("results/comparison")
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,7 +38,7 @@ def compare():
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
-    val_ds = datasets.ImageFolder(VAL_DIR, transform=transform)
+    val_ds = datasets.ImageFolder(TEST_DIR, transform=transform)
     val_loader = DataLoader(val_ds, batch_size=1, shuffle=False) # Batch size 1 for easy tracking
     classes = val_ds.classes
     
@@ -54,11 +54,17 @@ def compare():
             
             # Predict ViT
             out_vit = vit(img)
-            pred_vit = torch.max(out_vit, 1)[1].item()
+            prob_vit = torch.nn.functional.softmax(out_vit, dim=1)
+            conf_vit, pred_vit_idx = torch.max(prob_vit, 1)
+            pred_vit = pred_vit_idx.item()
+            conf_vit = conf_vit.item()
             
             # Predict Swin
             out_swin = swin(img)
-            pred_swin = torch.max(out_swin, 1)[1].item()
+            prob_swin = torch.nn.functional.softmax(out_swin, dim=1)
+            conf_swin, pred_swin_idx = torch.max(prob_swin, 1)
+            pred_swin = pred_swin_idx.item()
+            conf_swin = conf_swin.item()
             
             true_label = label.item()
             
@@ -70,7 +76,9 @@ def compare():
                     'path': img_path,
                     'true': classes[true_label],
                     'vit': classes[pred_vit],
-                    'swin': classes[pred_swin]
+                    'vit_conf': conf_vit,
+                    'swin': classes[pred_swin],
+                    'swin_conf': conf_swin
                 })
             
             if len(failures) >= 100: # Stop after finding enough examples
@@ -79,7 +87,7 @@ def compare():
     # Visualize 10 interesting cases (where they disagree or both fail)
     print(f"Generating visualization for {min(10, len(failures))} cases...")
     
-    fig, axes = plt.subplots(2, 5, figsize=(20, 10))
+    fig, axes = plt.subplots(2, 5, figsize=(25, 12))
     axes = axes.flatten()
     
     # Filter for cases where they disagree if possible
@@ -90,11 +98,8 @@ def compare():
         img = Image.open(case['path'])
         axes[idx].imshow(img)
         
-        color_vit = 'green' if case['vit'] == case['true'] else 'red'
-        color_swin = 'green' if case['swin'] == case['true'] else 'red'
-        
-        title = f"True: {case['true']}\nViT: {case['vit']}\nSwin: {case['swin']}"
-        axes[idx].set_title(title, fontsize=9)
+        title = f"True: {case['true']}\nViT: {case['vit']} ({case['vit_conf']:.2%})\nSwin: {case['swin']} ({case['swin_conf']:.2%})"
+        axes[idx].set_title(title, fontsize=10)
         axes[idx].axis('off')
         
         # Highlight text based on correctness in a real report would be better, 
