@@ -5,8 +5,8 @@ from PIL import Image
 from tqdm import tqdm
 
 # Paths
-DATASET_DIR = Path("data/dataset-ninja/rdd2022")
-OUTPUT_DIR = Path("hsp2_transformer/data/classification")
+DATASET_DIR = Path("../data/dataset-ninja/rdd2022")
+OUTPUT_DIR = Path("data/classification")
 
 CLASSES = [
     "alligator crack",
@@ -20,7 +20,9 @@ CLASSES = [
 ]
 
 TARGET_SIZE = (224, 224)
-VAL_RATIO = 0.2
+TRAIN_RATIO = 0.7
+VAL_RATIO = 0.15
+TEST_RATIO = 0.15
 SEED = 42
 
 random.seed(SEED)
@@ -110,19 +112,23 @@ def process_split(split_name):
             continue
             
         # Open image once per file
-        with Image.open(img_path) as img:
-            for crop in crops:
-                # Crop and resize
-                box = crop['box']
-                patch = img.crop(box)
-                patch = patch.resize(TARGET_SIZE, Image.Resampling.LANCZOS)
-                
-                # We'll save them later after splitting
-                all_samples.append({
-                    'image': patch,
-                    'class': crop['class'],
-                    'name': f"{img_path.stem}_{crop['id']}.jpg"
-                })
+        try:
+            with Image.open(img_path) as img:
+                for crop in crops:
+                    # Crop and resize
+                    box = crop['box']
+                    patch = img.crop(box)
+                    patch = patch.resize(TARGET_SIZE, Image.Resampling.LANCZOS)
+                    
+                    # We'll save them later after splitting
+                    all_samples.append({
+                        'image': patch,
+                        'class': crop['class'],
+                        'name': f"{img_path.stem}_{crop['id']}.jpg"
+                    })
+        except Exception as e:
+            print(f"Error processing {img_path}: {e}")
+            continue
     
     return all_samples
 
@@ -134,20 +140,21 @@ def save_samples(samples, subset):
         sample['image'].save(class_dir / sample['name'], quality=95)
 
 def main():
-    # Process Train (will be split into train/val)
-    train_samples = process_split("train")
-    random.shuffle(train_samples)
+    # Process only the labeled Train set and split it into Train, Val, and Test
+    all_samples = process_split("train")
+    random.shuffle(all_samples)
     
-    split_idx = int(len(train_samples) * (1 - VAL_RATIO))
-    train_part = train_samples[:split_idx]
-    val_part = train_samples[split_idx:]
+    n = len(all_samples)
+    train_end = int(n * TRAIN_RATIO)
+    val_end = int(n * (TRAIN_RATIO + VAL_RATIO))
+    
+    train_part = all_samples[:train_end]
+    val_part = all_samples[train_end:val_end]
+    test_part = all_samples[val_end:]
     
     save_samples(train_part, "train")
     save_samples(val_part, "val")
-    
-    # Process Test
-    test_samples = process_split("test")
-    save_samples(test_samples, "test")
+    save_samples(test_part, "test")
 
 if __name__ == "__main__":
     main()

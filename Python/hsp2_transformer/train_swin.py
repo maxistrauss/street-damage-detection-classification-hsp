@@ -10,8 +10,8 @@ from tqdm import tqdm
 from pathlib import Path
 
 # Config
-DATA_DIR = Path("hsp2_transformer/data/classification")
-MODEL_DIR = Path("hsp2_transformer/models")
+DATA_DIR = Path("data/classification")
+MODEL_DIR = Path("models")
 MODEL_DIR.mkdir(exist_ok=True)
 
 BATCH_SIZE = 64

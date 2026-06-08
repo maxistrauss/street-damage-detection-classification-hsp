@@ -12,9 +12,9 @@ from tqdm import tqdm
 import argparse
 
 # Config
-DATA_DIR = Path("hsp2_transformer/data/classification/val")
-TRAIN_DIR = Path("hsp2_transformer/data/classification/train")
-RESULTS_BASE_DIR = Path("hsp2_transformer/results")
+DATA_DIR = Path("data/classification/test")
+TRAIN_DIR = Path("data/classification/train")
+RESULTS_BASE_DIR = Path("results")
 
 BATCH_SIZE = 64
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,11 +23,11 @@ def load_model(model_type, num_classes):
     if model_type == "vit":
         model = models.vit_b_16()
         model.heads.head = nn.Linear(model.heads.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_vit.pth")
+        model_path = Path("models/best_vit.pth")
     elif model_type == "swin":
         model = models.swin_t()
         model.head = nn.Linear(model.head.in_features, num_classes)
-        model_path = Path("hsp2_transformer/models/best_swin.pth")
+        model_path = Path("models/best_swin.pth")
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -50,9 +50,15 @@ def evaluate(model_type):
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
+    if not TRAIN_DIR.exists():
+         raise FileNotFoundError(f"Training directory {TRAIN_DIR} not found. Needed for class names.")
+         
     classes = sorted([d.name for d in TRAIN_DIR.iterdir() if d.is_dir()])
     num_classes = len(classes)
     
+    if not DATA_DIR.exists():
+        raise FileNotFoundError(f"Evaluation directory {DATA_DIR} not found.")
+        
     test_ds = datasets.ImageFolder(DATA_DIR, transform=transform)
     test_loader = DataLoader(test_ds, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
 

@@ -5,11 +5,15 @@ import seaborn as sns
 from pathlib import Path
 
 # Paths
-DATA_DIR = Path("hsp2_transformer/data/classification/train")
+DATA_DIR = Path("data/classification/train")
 
 def generate_stats():
     print("Gathering dataset statistics...")
     
+    if not DATA_DIR.exists():
+        print(f"Error: Directory {DATA_DIR} not found.")
+        return
+        
     class_counts = {}
     for class_dir in DATA_DIR.iterdir():
         if class_dir.is_dir():
@@ -37,7 +41,7 @@ def generate_stats():
     plt.ylabel('Damage Class')
     plt.tight_layout()
     
-    save_path = Path("hsp2_transformer/results/dataset_distribution.png")
+    save_path = Path("results/dataset_distribution.png")
     save_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(save_path)
     print(f"\nDistribution plot saved to {save_path}")
