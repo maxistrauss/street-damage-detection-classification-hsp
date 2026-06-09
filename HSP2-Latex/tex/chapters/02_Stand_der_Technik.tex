@@ -8,9 +8,9 @@ Die automatische Analyse von Straßenoberflächen entwickelt sich in den letzten
 
 Für ein Verständnis, warum eine Straßenüberwachung notwendig ist, ist zunächst eine Betrachtung des Straßenaufbaus erforderlich. Eine Straße stellt ein komplexes Bauwerk dar, das aus mehreren Schichten mit jeweils spezifischen Aufgaben besteht.
 
-Ganz unten liegt die Frostschutzschicht aus grobem Kies oder Schotter. Sie dient dazu, Wasser nach unten abzuführen und ein Auffrieren der Straße bei Frost zu verhindern. Darüber folgt die Tragschicht, welche die Hauptlast der Fahrzeuge aufnimmt und auf den Untergrund verteilt. Den Abschluss bildet die Deckschicht aus Asphalt oder Beton. Diese Schicht muss eine Widerstandsfähigkeit gegen Temperatureinflüsse und mechanische Belastung durch den Reifenkontakt aufweisen.
+Der Oberbau von Straßen besteht typischerweise aus einer Frostschutzschicht, einer oder mehreren Tragschichten sowie einer Asphalt- oder Betondeckschicht. Die einzelnen Schichten übernehmen unterschiedliche Aufgaben hinsichtlich Lastabtragung, Frostschutz und Oberflächenfunktion. Die Frostschutzschicht verhindert das Eindringen von Wasser und schützt vor Frostschäden. Die Tragschichten sorgen für die Lastverteilung und Stabilität der Straße, während die Deckschicht die direkte Kontaktfläche zum Verkehr bildet und für die Fahrqualität verantwortlich ist \cite{bmdv_asb_querschnitt_2024}.
 
-Das Versagen einer dieser Schichten führt zur Entstehung von Schäden. Im Rahmen dieser Arbeit erfolgt eine Konzentration auf die Schadensarten, wie sie auch im Datensatz RDD2022 definiert sind:
+Das Versagen einer dieser Schichten führt zur Entstehung von Schäden. Im Rahmen dieser Arbeit erfolgt eine Konzentration auf die Schadensarten, wie sie auch im Datensatz RDD2022 definiert sind \cite{rdd2022}:
 
 \paragraph{Längsrisse, D00}
 Diese Risse verlaufen parallel zur Fahrtrichtung. Die Entstehung erfolgt meistens in den Rollspuren schwerer Fahrzeuge. Mit der Zeit ermüdet das Material und bricht auf. Frühzeitig erkannte Längsrisse lassen sich mit speziellem Bitumen verfüllen, um das Eindringen von Wasser zu verhindern.
@@ -24,33 +24,22 @@ Netzrisse gelten als kritisch. Die Struktur ähnelt einem Spinnennetz oder der H
 \paragraph{Schlaglöcher, D40}
 Ein Schlagloch entsteht häufig als Folgeschaden von Rissen. In Risse eingedrungenes Wasser gefriert, dehnt sich aus und sprengt den Asphalt auf. Durch die mechanische Belastung nachfolgender Fahrzeuge brechen Materialstücke heraus. Schlaglöcher stellen ein Sicherheitsrisiko dar und können Fahrzeuge beschädigen.
 
-\subsection{Klassifikationsstandards, RStO, ZEB, ASTM}
-\label{subsec:standards}
-
-Zur Gewährleistung einer einheitlichen Zustandsbewertung existieren Regelwerke. Diese definieren die Kriterien für die Einteilung von Schäden und ermöglichen eine objektive Beurteilung.
-
-In Deutschland stellt die ZEB, Zustandserfassung und -bewertung, den wichtigsten Standard dar. Spezielle Messfahrzeuge scannen die Oberfläche mittels Kameras und Lasern. Die Einteilung der Ergebnisse erfolgt in Noten von 1, sehr gut, bis 5, ungenügend.
-
-Ein weiteres Regelwerk sind die RStO, Richtlinien für die Standardisierung des Oberbaus. Diese schreiben die Schichtdicken in Abhängigkeit von der geplanten Belastung vor. Die Kenntnis der Belastungsklasse ermöglicht eine Beurteilung des aktuellen Zustands im Rahmen von HSP 2. 
-
-International findet häufig der ASTM-Standard, beispielsweise D6433, Anwendung, welcher den Pavement Condition Index, PCI, definiert. Dieser Index bewertet den Straßenzustand auf einer Skala von 0 bis 100, wobei 100 einen perfekten Zustand darstellt. Die Einteilung erfolgt in fünf Kategorien: "Excellent" (90-100), "Good" (80-89), "Fair" (60-79), "Poor" (40-59) und "Failed" (0-39). Da der verwendete Datensatz RDD2022 internationale Bilddaten enthält, ist dieser Standard für die Beurteilung der Modellrobustheit von Bedeutung.
-
 \subsection{Computer Vision in der Infrastrukturüberwachung}
 \label{subsec:cv_infrastruktur}
 
 Die manuelle Analyse von Videoaufnahmen durch Experten ist zeitaufwendig, kostenintensiv und unterliegt subjektiven Einflüssen. Die Computer Vision ermöglicht die Automatisierung dieses Prozesses.
 
-\paragraph{Einfache Filter: Der Sobel-Operator}
+\paragraph{Der Sobel-Operator}
 In der Computer Vision werden mathematische Filter zur Kantendetektion eingesetzt. Der Sobel-Operator sucht nach Helligkeitsunterschieden zwischen benachbarten Pixeln. Da Risse meist dunkler als die Umgebung sind, erzeugen sie eine detektierbare Helligkeits-Kante.
 
-Der Operator nutzt hierzu kleine Matrizen, sogenannte Kernels, die über das Bild pixelweise geschoben werden. Dabei werden die Werte der Pixel mit den entsprechenden Werten des Kernels multipliziert und aufsummiert, um die Stärke der Kante zu bestimmen:
+Der Operator nutzt hierzu kleine Matrizen, sogenannte Kernels, die über das Bild pixelweise geschoben werden. Dabei werden die Werte der Pixel mit den entsprechenden Werten des Kernels multipliziert und aufsummiert, um die Stärke der Kante zu bestimmen \cite[Kapitel 3.2]{szeliski2022computer}:
 \begin{equation}
     G_x = \begin{bmatrix} -1 & 0 & +1 \\ -2 & 0 & +2 \\ -1 & 0 & +1 \end{bmatrix} * A, \quad G_y = \begin{bmatrix} +1 & +2 & +1 \\ 0 & 0 & 0 \\ -1 & -2 & -1 \end{bmatrix} * A
 \end{equation}
 Ein Nachteil dieser Methode liegt in der Fehleranfälligkeit gegenüber Schatten, dunklen Steinen oder Ölspuren, die ebenfalls Helligkeitskanten erzeugen und somit zu Fehlalarmen führen können. Zudem erfasst der Sobel-Operator nur lokale Informationen, was bei komplexen Rissstrukturen zu falschen Detektionen führen kann. Daher sind bessere Methoden erforderlich, um die Herausforderungen der realen Straßenbilder zu bewältigen.
 
 \paragraph{Die Hough-Transformation}
-Zur Identifikation gerader Linien aus einer Menge von Punkten findet die Hough-Transformation Anwendung. Die Beschreibung der Linien erfolgt mathematisch über Polarkoordinaten. Jeder Punkt im Bildraum wird in den Parameterraum transformiert, wobei die Beziehung zwischen den Koordinaten eines Punktes $(x, y)$ und den Parametern einer Linie $(r, \phi)$ durch die folgende Gleichung gegeben ist:
+Zur Identifikation gerader Linien aus einer Menge von Punkten findet die Hough-Transformation Anwendung. Die Beschreibung der Linien erfolgt mathematisch über Polarkoordinaten. Jeder Punkt im Bildraum wird in den Parameterraum transformiert, wobei die Beziehung zwischen den Koordinaten eines Punktes $(x, y)$ und den Parametern einer Linie $(r, \phi)$ durch die folgende Gleichung gegeben ist \cite[Kapitel 7.4.2]{szeliski2022computer}:
 \begin{equation}
     r = x \cdot \cos(\phi) + y \cdot \sin(\phi)
 \end{equation}
@@ -62,7 +51,7 @@ Obwohl dieser Ansatz theoretisch zur Detektion von Längs- oder Querrissen geeig
 Eine Entwicklung stellt das Deep Learning dar. Hierbei werden keine manuellen Merkmale vorgegeben. Stattdessen lernt das Programm die relevanten Charakteristika eigenständig anhand einer großen Menge an Beispieldaten.
 
 \paragraph{Convolutional Neural Networks (CNNs)}
-CNNs bilden einen Standard für Bilderkennungsaufgaben. Die Architektur ist der Funktionsweise des menschlichen Auges nachempfunden und besteht aus mehreren sequenziellen Schichten:
+CNNs bilden einen Standard für Bilderkennungsaufgaben. Die Architektur ist der Funktionsweise des menschlichen Auges nachempfunden und besteht aus mehreren sequenziellen Schichten \cite{oshea2015introduction}:
 \begin{enumerate}
     \item Convolutional Layer: Hier werden Filterkerne gelernt, die sich während des Trainings an die Daten anpassen. Die unteren Schichten detektieren einfache Merkmale wie Kanten. Die höheren Schichten erfassen komplexere Strukturen, wie die Form eines Risses. Die Filter werden über das Bild geschoben, um die Merkmale zu extrahieren.
     \item Pooling Layer: Diese Schichten fassen Informationen zusammen. Wenn ein Riss in einem Bereich gefunden wurde, wird das Bild verkleinert, aber die Information über das Vorhandensein eines Schadens bleibt erhalten. Das macht das Modell schneller.
@@ -78,10 +67,10 @@ Ein limitierender Faktor bei CNNs ist das lokale Sichtfeld der Filter. Globale Z
 \subsection{Vision Transformer (ViT)}
 \label{subsec:vision_transformer}
 
-An dieser Stelle setzen Vision Transformer an. Ursprünglich für die Verarbeitung natürlicher Sprache entwickelt, zeigen diese Modelle auch bei Bilddaten gute Ergebnisse. Das Bild wird hierbei in kleine Quadrate, sogenannte Patches, zerlegt, die mathematisch als Vektoren verarbeitet werden. Die Stärke der Transformer liegt in der Fähigkeit, globale Beziehungen zwischen diesen Patches zu erfassen. Dies ermöglicht eine bessere Erkennung von komplexen Schadensmustern, die sich über das gesamte Bild erstrecken, wie beispielsweise Netzrisse.
+An dieser Stelle setzen Vision Transformer an. Ursprünglich für die Verarbeitung natürlicher Sprache entwickelt, zeigen diese Modelle auch bei Bilddaten gute Ergebnisse. Das Bild wird hierbei in kleine Quadrate, sogenannte Patches, zerlegt, die mathematisch als Vektoren verarbeitet werden. Ein Patch könnte beispielsweise ein 16x16 Pixel großes Quadrat sein, das Informationen über die Textur und Helligkeit enthält. Die Stärke der Transformer liegt in der Fähigkeit, globale Beziehungen zwischen diesen Patches zu erfassen. Dies ermöglicht eine bessere Erkennung von komplexen Schadensmustern, die sich über das gesamte Bild erstrecken, wie beispielsweise Netzrisse.
 
 \paragraph{Der Self-Attention-Mechanismus}
-Eine zentrale Komponente bildet die Self-Attention. Jeder Bildpatch wird in Beziehung zu allen anderen Patches des Bildes gesetzt. Dies ermöglicht es dem Modell, bereits in früheren Schichten globale Abhängigkeiten zu erfassen. Ein Patch, der beispielsweise einen dunklen Streifen zeigt, könnte in Beziehung zu einem anderen Patch stehen, der eine Fortsetzung dieses Streifens darstellt. Durch die Berechnung von Ähnlichkeiten zwischen den Patches kann das Modell die Struktur eines Risses erkennen, selbst wenn er durch Schatten oder Verschmutzungen unterbrochen ist.
+Eine zentrale Komponente bildet die Self-Attention. Jeder Bildpatch wird in Beziehung zu allen anderen Patches des Bildes gesetzt. Dies ermöglicht es dem Modell, bereits in früheren Schichten globale Abhängigkeiten zu erfassen \cite{vit2020}. Ein Patch, der beispielsweise einen dunklen Streifen zeigt, könnte in Beziehung zu einem anderen Patch stehen, der eine Fortsetzung dieses Streifens darstellt. Durch die Berechnung von Ähnlichkeiten zwischen den Patches kann das Modell die Struktur eines Risses erkennen, selbst wenn er durch Schatten oder Verschmutzungen unterbrochen ist.
 
 \paragraph{Multi-Head Attention}
 Moderne Transformer nutzen die Multi-Head Attention. Dabei betrachten mehrere parallele Aufmerksamkeits-Einheiten, sogenannte Heads, das Bild unter verschiedenen Aspekten. Ein Head fokussiert beispielsweise auf Farbkontraste, ein anderer auf geometrische Formen und ein weiterer auf globale Zusammenhänge. Die Kombination dieser Perspektiven führt zu einem Verständnis der Bilddaten.
@@ -92,35 +81,35 @@ Mathematisch funktioniert das über drei Werte pro Bildquadrat:
     \item Key, $K$: Was ist vorhanden, zum Beispiel ein dunkler Streifen oben links?
     \item Value, $V$: Die eigentliche Bildinformation, die weitergegeben wird.
 \end{itemize}
-Der Computer berechnet dann, wie gut Query und Key zusammenpassen:
+Der Computer berechnet dann, wie gut Query und Key zusammenpassen \cite{vaswani2017attention_neurips}:
 \begin{equation}
     \text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
 \end{equation}
 
-Die Softmax-Funktion normalisiert die Werte, sodass sie als Wahrscheinlichkeiten interpretiert werden können. Ein hoher Wert bedeutet, dass die beiden Patches wahrscheinlich zusammengehören. Durch die Kombination der Informationen aus allen Heads entsteht ein umfassendes Bildverständnis, das die Erkennung von Schäden auch unter schwierigen Bedingungen ermöglicht.
+Die Softmax-Funktion normalisiert die Werte, sodass sie als Wahrscheinlichkeiten interpretiert werden können. Ein hoher Wert bedeutet, dass die beiden Patches wahrscheinlich zusammengehören. Durch die Kombination der Informationen aus allen Heads entsteht ein umfassendes Bildverständnis, das die Erkennung von Schäden auch unter schwierigen Bedingungen ermöglicht \cite{vit2020}.
 
 \paragraph{Cross-Entropy Loss}
 Der Lernprozess wird durch eine Fehlerfunktion, den sogenannten Loss, gesteuert. Bei Klassifikationsaufgaben kommt meist der Cross-Entropy Loss zum Einsatz. Er misst die Abweichung zwischen der Vorhersage und dem tatsächlichen Label. Ziel des Trainings ist die Minimierung dieses Wertes über den Datensatz. Die Formel lautet:
 \begin{equation}
     L = -\sum_{i=1}^{N} y_i \log(\hat{y}_i)
 \end{equation}
-Hierbei ist $y_i$ das tatsächliche Label (1 für die richtige Klasse, 0 für die anderen) und $\hat{y}_i$ die vorhergesagte Wahrscheinlichkeit für die Klasse. Durch die Anpassung der Modellparameter während des Trainings wird angestrebt, die Vorhersagen zu verbessern und somit die Klassifikationsgenauigkeit zu erhöhen.
+Hierbei ist $y_i$ das tatsächliche Label (1 für die richtige Klasse, 0 für die anderen) und $\hat{y}_i$ die vorhergesagte Wahrscheinlichkeit für die Klasse. Durch die Anpassung der Modellparameter während des Trainings wird angestrebt, die Vorhersagen zu verbessern und somit die Klassifikationsgenauigkeit zu erhöhen \cite[Kapitel 5.7]{prince2023understanding}.
 
 \subsection{Swin Transformer}
 \label{subsec:swin_transformer}
 
 Zur Reduktion der Rechenleistung bei hochauflösenden Bildern nutzt der Swin Transformer, Shifted Window Transformer, eine hierarchische Struktur. Die Aufmerksamkeitsberechnung erfolgt zunächst innerhalb lokaler Fenster. Durch das Verschieben dieser Fenster, sogenannte Shifted Windows, in nachfolgenden Schichten findet dennoch ein Informationsaustausch über das gesamte Bild statt. Diese Methode ermöglicht es, die Vorteile der globalen Aufmerksamkeit zu nutzen, ohne die Rechenkomplexität exponentiell zu erhöhen. Das funktioniert durch die Einführung von zwei Arten von Aufmerksamkeitsmechanismen:
 \begin{itemize}
-    \item \textbf{Window-based Multi-Head Self-Attention:} Hierbei wird die Aufmerksamkeit innerhalb von nicht überlappenden Fenstern berechnet.
-    \item \textbf{Shifted Window-based Multi-Head Self-Attention:} In der nächsten Schicht werden die Fenster um eine halbe Fenstergröße verschoben, sodass die Aufmerksamkeit über die Grenzen der ursprünglichen Fenster hinweg berechnet wird.
+    \item Window-based Multi-Head Self-Attention: Hierbei wird die Aufmerksamkeit innerhalb von nicht überlappenden Fenstern berechnet.
+    \item Shifted Window-based Multi-Head Self-Attention: In der nächsten Schicht werden die Fenster um eine halbe Fenstergröße verschoben, sodass die Aufmerksamkeit über die Grenzen der ursprünglichen Fenster hinweg berechnet wird.
 \end{itemize}
 Diese Struktur ermöglicht es, sowohl lokale Details als auch globale Zusammenhänge zu erfassen, was insbesondere bei der Erkennung von komplexen Schadensmustern wie Netzrissen von Vorteil ist.
 
-Zusätzlich ermöglicht das Patch Merging eine hierarchische Repräsentation der Bilddaten. In den höheren Schichten werden die Informationen aus mehreren Patches zusammengeführt, wodurch das Modell eine abstraktere und dennoch umfassende Sicht auf die Bildstruktur erhält. Dies führt zu einer verbesserten Erkennung von Schäden, die sich über größere Bereiche erstrecken, ohne dabei die Details zu verlieren, die für die Klassifikation entscheidend sind.
+Zusätzlich ermöglicht das Patch Merging eine hierarchische Repräsentation der Bilddaten. In den höheren Schichten werden die Informationen aus mehreren Patches zusammengeführt, wodurch das Modell eine abstraktere und dennoch umfassende Sicht auf die Bildstruktur erhält. Dies führt zu einer verbesserten Erkennung von Schäden, die sich über größere Bereiche erstrecken, ohne dabei die Details zu verlieren, die für die Klassifikation entscheidend sind \cite{swin2021}.
 
 \subsection{Vergleich bestehender Systeme und Forschungsarbeiten}
 \label{subsec:vergleich}
 
-Existierende Systeme zur Schadenserkennung nutzen teils Laser-Scanner mit hoher Präzision, sind jedoch mit Investitionskosten verbunden. Kamerabasierte Systeme stellen eine Alternative dar, haben jedoch Schwierigkeiten bei schlechten Lichtverhältnissen.
+Existierende Systeme zur Straßenschadenerkennung verwenden häufig Laser-Scanner bzw. LiDAR-Systeme, da diese hochpräzise 3D-Informationen der Fahrbahnoberfläche liefern. Die Anschaffung und der Betrieb solcher Systeme sind jedoch mit hohen Kosten verbunden. Kamerabasierte Systeme stellen eine kostengünstigere Alternative dar, ihre Leistungsfähigkeit kann jedoch durch ungünstige Beleuchtungs- und Witterungsbedingungen beeinträchtigt werden \cite{hamaguchi2018development}.
 
-Aktuelle Forschungsarbeiten belegen das Potenzial von Transformer-Modellen zur Überwindung dieser Einschränkungen. Die vorliegende Arbeit, HSP 2, baut auf diesen Erkenntnissen auf und untersucht Strategien zur Klassifikationsgenauigkeit für den Einsatz in Sanierungsplanungen. Eine Rolle spielt hierbei das Transfer Learning, bei dem vortrainierte Modelle auf die Anforderungen der Straßenschadenserkennung angepasst werden.
+Aktuelle Forschungsarbeiten belegen das Potenzial von Transformer-Modellen zur Überwindung dieser Einschränkungen. Die vorliegende Arbeit, HSP 2, baut auf diesen Erkenntnissen auf und untersucht Strategien zur Klassifikationsgenauigkeit für den Einsatz in Sanierungsplanungen. Eine Rolle spielt hierbei das Transfer Learning, bei dem vortrainierte Modelle auf die Anforderungen der Straßenschadenserkennung angepasst werden \cite[Kapitel 4]{amaratunga2023}.

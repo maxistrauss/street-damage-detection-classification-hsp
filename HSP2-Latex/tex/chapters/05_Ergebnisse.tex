@@ -1,7 +1,7 @@
 \section{Ergebnisse}
 \label{sec:ergebnisse}
 
-In diesem Kapitel werden die Ergebnisse der Arbeit präsentiert. Die Evaluation der Modelle erfolgte anhand von über 19.000 Bildern, die dem System zuvor unbekannt waren. Die Resultate belegen eine Zuverlässigkeit der Transformer-Modelle bei der Erkennung von Straßenschäden. Es werden die Leistungswerte für die einzelnen Schadensklassen vorgestellt, ein Vergleich der Modellvarianten durchgeführt und eine Fehleranalyse vorgenommen, um die Ursachen für Fehlklassifikationen zu identifizieren. Zudem erfolgt eine Visualisierung der Ergebnisse mittels Attention-Maps, um die Entscheidungsgrundlagen der KI nachvollziehbar zu machen. Abschließend wird die Robustheit des Systems unter verschiedenen Umweltbedingungen bewertet.
+In diesem Kapitel werden die Ergebnisse der Arbeit präsentiert. Die Evaluation der Modelle erfolgte anhand von über 14.000 Bildern, die dem System zuvor unbekannt waren. Die Resultate belegen eine Zuverlässigkeit der Transformer-Modelle bei der Erkennung von Straßenschäden. Es werden die Leistungswerte für die einzelnen Schadensklassen vorgestellt, ein Vergleich der Modellvarianten durchgeführt und eine Fehleranalyse vorgenommen, um die Ursachen für Fehlklassifikationen zu identifizieren. Zudem erfolgt eine Visualisierung der Ergebnisse mittels Attention-Maps, um die Entscheidungsgrundlagen der KI nachvollziehbar zu machen. Abschließend wird die Robustheit des Systems unter verschiedenen Umweltbedingungen bewertet.
 
 \subsection{Modellleistung, Precision, Recall, F1}
 \label{subsec:modellleistung}
@@ -10,49 +10,51 @@ Zunächst erfolgt eine Analyse der Leistungsfähigkeit des Vision Transformers, 
 
 \begin{figure}[H]
     \centering
-    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/training_curves_vit}}
+    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/vit_training_curves.png}}
     \hfill
-    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/training_curves_swin}}
+    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/swin_training_curves.png}}
     \caption{Verlauf von Accuracy und Loss während des Trainings.}
     \label{fig:training_curves}
 \end{figure}
 
-\paragraph{Ergebnisse des Vision Transformers, ViT}
-Der ViT erreicht einen durchschnittlichen F1-Score von \textbf{0,96}. Die Erkennung schadensfreier Oberflächen (Klasse „Normal“) mit einem F1-Score von 0,99 hilft die Anzahl der Fehlalarme im praktischen Einsatz zu minimieren. Die zugehörige Konfusionsmatrix in Abbildung \ref{fig:cm_vit} zeigt dies. Von insgesamt 7.109 fehlerfreien Bildern werden lediglich 15 fälschlicherweise als Längsriss und 10 als „other\_corruption“ eingestuft. 
+\paragraph{Ergebnisse des Vision Transformers}
+Der ViT erreicht einen durchschnittlichen F1-Score von \textbf{0,96}. Die Erkennung schadensfreier Oberflächen (Klasse „Normal“) mit einem F1-Score von 0,99 hilft die Anzahl der Fehlalarme im praktischen Einsatz zu minimieren. Die zugehörige Konfusionsmatrix in Abbildung \ref{fig:cm_vit} zeigt dies. Von insgesamt 5.358 fehlerfreien Bildern werden lediglich 12 fälschlicherweise als Längsriss und 7 als „other\_corruption“ eingestuft. 
 
-Die Erkennung von Netzrissen (Klasse D20) weist hingegen mit einem F1-Score von 0,89 die geringste Leistung auf. 146 Netzrisse werden fälschlicherweise als Längsrisse klassifiziert, während im Gegenzug 99 echte Längsrisse der Klasse Netzriss zugeordnet werden. Dies resultiert aus der Funktionsweise des ViT, welche die feinen, flächigen Verästelungen eines beginnenden Netzrisses teilweise nicht optimal von Längsrissen abgrenzen kann. Zudem zeigt sich eine leichte Problematik bei den richtungsabhängigen Schäden. 81 Querrisse werden als Längsrisse klassifiziert. Die verbleibenden Schadensklassen wie Schlaglöcher erzielen durchschnittliche Werte, wobei die Matrix hier eine gleichmäßig geringe Verteilung über die anderen Rissklassen zeigt.
+Die Erkennung von Netzrissen (Klasse D20) weist hingegen mit einem F1-Score von 0,89 die geringste Leistung auf. 104 Netzrisse werden fälschlicherweise als Längsrisse klassifiziert, während im Gegenzug 75 echte Längsrisse der Klasse Netzriss zugeordnet werden. Dies resultiert aus der Funktionsweise des ViT, welche die feinen, flächigen Verästelungen eines beginnenden Netzrisses teilweise nicht optimal von Längsrissen abgrenzen kann. Zudem zeigt sich eine leichte Problematik bei den richtungsabhängigen Schäden. 49 Querrisse werden als Längsrisse klassifiziert. Die verbleibenden Schadensklassen wie Schlaglöcher erzielen durchschnittliche Werte, wobei die Matrix hier eine gleichmäßig geringe Verteilung über die anderen Rissklassen zeigt.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\textwidth]{Bilder/confusion_matrix_vit}
-    \caption{Konfusionsmatrix des Vision Transformers .}
+    \includegraphics[width=0.7\textwidth]{Bilder/confusion_matrix_vit.png}
+    \caption{Konfusionsmatrix des Vision Transformers}
     \label{fig:cm_vit}
 \end{figure}
 
 \begin{table}[H]
     \centering
-    \caption{Ergebnisse des Vision Transformers, ViT}
+    \caption{Ergebnisse des Vision Transformers}
     \label{tab:results_vit}
     \begin{tabularx}{\textwidth}{lXXXX}
         \toprule
-        \textbf{Klasse} & \textbf{Präzision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Anzahl Bilder} \\
+        \textbf{Klasse / Metrik} & \textbf{Präzision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Anzahl Bilder} \\
         \midrule
-        Netzriss (D20) & 0,90 & 0,88 & 0,89 & 2.109 \\
-        Längsriss (D00) & 0,95 & 0,96 & 0,95 & 5.260 \\
-        Querriss (D10) & 0,96 & 0,95 & 0,96 & 2.352 \\
-        Schlagloch (D40) & 0,93 & 0,94 & 0,93 & 1.295 \\
-        Andere Schäden & 0,94 & 0,96 & 0,95 & 1.158 \\
-        Normal & 0,99 & 0,99 & 0,99 & 7.109 \\
+        Netzriss (D20)           & 0,90                & 0,88            & 0,89               & 1.585                            \\
+        Längsriss (D00)          & 0,95                & 0,95            & 0,95               & 3.943                            \\
+        Querriss (D10)           & 0,95                & 0,96            & 0,95               & 1.744                            \\
+        Schlagloch (D40)         & 0,93                & 0,93            & 0,93               & 967                              \\
+        Andere Schäden           & 0,94                & 0,96            & 0,95               & 866                              \\
+        Normal                   & 0,99                & 0,99            & 0,99               & 5.358                            \\
         \midrule
-        \textbf{Durchschnitt} & \textbf{0,96} & \textbf{0,96} & \textbf{0,96} & \textbf{19.283} \\
+        Accuracy                 & --                  & --              & \textbf{0,96}      & 14.463                           \\
+        Macro Average            & 0,95                & 0,94            & 0,94               & 14.463                           \\
+        Weighted Average         & \textbf{0,96}       & \textbf{0,96}   & \textbf{0,96}      & 14.463                           \\
         \bottomrule
     \end{tabularx}
 \end{table}
 
 \paragraph{Ergebnisse des Swin Transformers}
-Der Swin Transformer weist eine ähnliche Gesamtleistung auf, ist jedoch in der Erkennung komplexer Schäden besser. Dies spiegelt sich in der Erkennung von Netzrissen wider (F1-Score von 0,91). Die Konfusionsmatrix des Swin Transformers (Abbildung \ref{fig:cm_swin}) zeigt, dass die Fehlklassifikation von Netzrissen als Längsrisse sinkt im Vergleich zum ViT von 146 auf 126 Fälle. Auch die falsche Zuordnung von Längsrissen zur Klasse der Netzrisse reduziert sich leicht auf 92 Fälle. Die hierarchische Struktur des Swin Transformers mit ihren lokal verschobenen Fenstern (\textit{Shifted Windows}) erlaubt es dem Modell, feinere Details zu erfassen.
+Der Swin Transformer weist eine ähnliche Gesamtleistung auf, ist jedoch in der Erkennung komplexer Schäden besser. Dies spiegelt sich in der Erkennung von Netzrissen wider (F1-Score von 0,90). Die Konfusionsmatrix des Swin Transformers (Abbildung \ref{fig:cm_swin}) zeigt, dass die Fehlklassifikation von Netzrissen als Längsrisse sinkt im Vergleich zum ViT von 104 auf 91 Fälle. Auch die falsche Zuordnung von Längsrissen zur Klasse der Netzrisse reduziert sich leicht auf 81 Fälle. Die hierarchische Struktur des Swin Transformers mit ihren lokal verschobenen Fenstern (\textit{Shifted Windows}) erlaubt es dem Modell, feinere Details zu erfassen.
 
-Die Klassifizierung der Kategorie „Normal“ mit 7.083 korrekt erkannten Bildern von insgesamt 7.109 erzielt das Modell eine nahezu perfekte Diagonale. Die Anzahl der Fehlalarme im unbeschädigten Zustand geht gegen Null. Ähnlich wie beim ViT bleibt jedoch die Herausforderung bestehen, Querrisse präzise von Längsrissen zu trennen. Hier verzeichnet die Matrix 68 Fehlklassifikationen. Dennoch zeigt der Swin Transformer allgemein eine geringere Fehlerquote, was auf eine robustere und bessere Merkmalsextraktion hindeutet.
+Die Klassifizierung der Kategorie „Normal“ mit 5.334 korrekt erkannten Bildern von insgesamt 5.358 erzielt das Modell eine nahezu perfekte Diagonale. Die Anzahl der Fehlalarme im unbeschädigten Zustand geht gegen Null. Ähnlich wie beim ViT bleibt jedoch die Herausforderung bestehen, Querrisse präzise von Längsrissen zu trennen. Hier verzeichnet die Matrix 49 Fehlklassifikationen. Dennoch zeigt der Swin Transformer allgemein eine geringere Fehlerquote, was auf eine robustere und bessere Merkmalsextraktion hindeutet.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{Bilder/confusion_matrix_swin}
@@ -66,16 +68,18 @@ Die Klassifizierung der Kategorie „Normal“ mit 7.083 korrekt erkannten Bilde
     \label{tab:results_swin}
     \begin{tabularx}{\textwidth}{lXXXX}
         \toprule
-        \textbf{Klasse} & \textbf{Präzision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Anzahl Bilder} \\
+        \textbf{Klasse / Metrik} & \textbf{Präzision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Anzahl Bilder} \\
         \midrule
-        Netzriss (D20) & 0,91 & 0,90 & 0,91 & 2.109 \\
-        Längsriss (D00) & 0,95 & 0,96 & 0,96 & 5.260 \\
-        Querriss (D10) & 0,96 & 0,96 & 0,96 & 2.352 \\
-        Schlagloch (D40) & 0,94 & 0,93 & 0,94 & 1.295 \\
-        Andere Schäden & 0,95 & 0,96 & 0,95 & 1.158 \\
-        Normal & 1,00 & 1,00 & 1,00 & 7.109 \\
+        Netzriss (D20)           & 0,91                & 0,89            & 0,90               & 1.585                            \\
+        Längsriss (D00)          & 0,96                & 0,95            & 0,95               & 3.943                            \\
+        Querriss (D10)           & 0,95                & 0,96            & 0,96               & 1.744                            \\
+        Schlagloch (D40)         & 0,92                & 0,95            & 0,93               & 967                              \\
+        Andere Schäden           & 0,94                & 0,95            & 0,95               & 866                              \\
+        Normal                   & 1,00                & 1,00            & 1,00               & 5.358                            \\
         \midrule
-        \textbf{Durchschnitt} & \textbf{0,96} & \textbf{0,96} & \textbf{0,96} & \textbf{19.283} \\
+        Accuracy                 & --                  & --              & \textbf{0,96}      & 14.463                           \\
+        Macro Average            & 0,95                & 0,95            & 0,95               & 14.463                           \\
+        Weighted Average         & \textbf{0,96}       & \textbf{0,96}   & \textbf{0,96}      & 14.463                           \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -83,9 +87,9 @@ Die Klassifizierung der Kategorie „Normal“ mit 7.083 korrekt erkannten Bilde
 \subsection{Vergleich verschiedener Modellvarianten}
 \label{subsec:vergleich_modelle}
 
-Im direkten Vergleich bietet der Swin Transformer Vorteile hinsichtlich der Genauigkeit und Skalierbarkeit für hochauflösende Bilddaten. Die hierarchische Struktur ermöglicht eine effektivere Erfassung von Details in komplexen Schadensbildern, was sich insbesondere bei der Klasse der Netzrisse zeigt. Der ViT hingegen bietet eine geringere Komplexität und schnellere Inferenzzeiten, was für Echtzeitanwendungen von Vorteil sein kann. Insgesamt zeigt sich, dass beide Modelle eine hohe Leistungsfähigkeit aufweisen, wobei die Wahl des Modells von den spezifischen Anforderungen des Einsatzszenarios abhängt.
+Im direkten Vergleich bietet der Swin Transformer Vorteile hinsichtlich der Genauigkeit und Skalierbarkeit für hochauflösende Bilddaten. Die hierarchische Struktur ermöglicht eine bessere Erfassung von Details in komplexen Schadensbildern, was sich insbesondere bei der Klasse der Netzrisse zeigt. Der ViT hingegen bietet eine geringere Komplexität und schnellere Inferenzzeiten, was für Echtzeitanwendungen von Vorteil sein kann. Insgesamt zeigt sich, dass beide Modelle eine hohe Leistungsfähigkeit aufweisen, wobei die Wahl des Modells von den spezifischen Anforderungen des Einsatzszenarios abhängt.
 
-Der wichtigste Aspekt ist jedoch die Trainingszeit, während der ViT in seiner "base" Version eine Trainingszeit von 8 Stunden aufweist, benötigt der Swin Transformer in der "tiny" Version nur 5 Stunden, was auf die effizientere Architektur zurückzuführen ist. Somit ist es für Anwendungen mit begrenzten Ressourcen sinnvoll, den Swin Transformer zu bevorzugen, auch wenn die Ergebnisse in Bezug auf die Genauigkeit ähnlich sind.
+Der wichtigste Aspekt ist jedoch die Trainingszeit, während der ViT in seiner "`base"' Version eine Trainingszeit von 2 Stunden aufweist, benötigt der Swin Transformer in der "`tiny"' Version nur 45 Minuten, was auf die effizientere Architektur zurückzuführen ist. Somit ist es für Anwendungen mit begrenzten Ressourcen sinnvoll, den Swin Transformer zu bevorzugen, auch wenn die Ergebnisse in Bezug auf die Genauigkeit ähnlich sind.
 
 \subsection{Fehleranalyse: Ursachen für Fehlklassifikationen}
 \label{subsec:fehleranalyse}
@@ -94,7 +98,7 @@ Trotz der Genauigkeitswerte treten in spezifischen Situationen Fehler auf. Die A
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{Bilder/error_analysis_samples}
+    \includegraphics[width=0.8\textwidth]{Bilder/error_analysis_samples.png}
     \caption{Beispiele für Fehlklassifikationen durch Umweltfaktoren.}
     \label{fig:error_analysis}
 \end{figure}
@@ -110,38 +114,38 @@ Reflektionen auf nassen Oberflächen führen zu Überstrahlungen im Bild. Die da
 \paragraph{Problem 3: Verschmutzungen}
 Rückstände, wie beispielsweise Laub oder Äste, sowie Reifenspuren können geometrische Formen aufweisen, die Schadensmustern ähneln. Ein Ast auf der Fahrbahn wird in manchen Fällen als Querriss fehlinterpretiert, während Laubansammlungen die Charakteristik von Schlaglöchern imitieren können.
 
-\subsection{Visualisierung der Ergebnisse: Attention-Maps}
+\subsection{Visualisierung der Ergebnisse}
 \label{subsec:visualisierung}
 
-Zur Interpretierbarkeit der Modellentscheidungen und Validierung der Merkmalsextraktion werden \textbf{Attention-Maps} herangezogen. Diese visualisieren die Relevanz einzelner Bildbereiche für die finale Klassifikationsentscheidung, wobei rote und gelbe Segmente eine hohe Aktivierung darstellen, während blaue Bereiche vom Modell weitgehend ignoriert werden. Die Abbildungen \ref{fig:attention_laengsriss} und \ref{fig:attention_netzriss} zeigen die Gegenüberstellungen zwischen der Swin-Transformer- und der Vision-Transformer-Architektur.
+Zur Interpretierbarkeit der Modellentscheidungen und Validierung der Merkmalsextraktion werden \emph{Attention-Maps} herangezogen. Diese visualisieren die Relevanz einzelner Bildbereiche für die finale Klassifikationsentscheidung, wobei rote und gelbe Segmente eine hohe Aktivierung darstellen, während blaue Bereiche vom Modell weitgehend ignoriert werden. Die Abbildungen \ref{fig:attention_laengsriss} und \ref{fig:attention_netzriss} zeigen die Gegenüberstellungen zwischen der Swin-Transformer- und der Vision-Transformer-Architektur.
 
 \begin{figure}[H]
     \centering
-    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/attention_United_States_swin_longitudinal_crack.png}}
+    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/swin_longitudinal.png}}
     \hfill
-    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/attention_United_States_vit_longitudinal_crack.png}}
+    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/vit_longitudinal.png}}
     \caption{Attention-Maps bei der Klassifizierung eines Längsrisses.}
     \label{fig:attention_laengsriss}
 \end{figure}
 
 \paragraph{Analyse bei Längsrissen}
-In Abbildung \ref{fig:attention_laengsriss} wird deutlich, dass die Architekturform einen Einfluss auf die Feinheit der Merkmalsextraktion hat. Der Swin Transformer zeigt einen stark lokalisierten Fokus, welcher dem diagonalen Verlauf des Längsrisses folgt und den intakten Asphalt isoliert. Dies lässt sich auf den Mechanismus der \textit{Shifted Windows} zurückführen, der lokale Texturen priorisiert. Im Gegensatz dazu weist das klassische ViT aufgrund seiner globalen Self-Attention ein chaotisches und rauschigeres Aufmerksamkeitsmuster auf. Obwohl der Riss grob erfasst wird, reagiert das ViT-Modell intensiver auch auf irrelevante Informationen.
+In Abbildung \ref{fig:attention_laengsriss} wird deutlich, dass die Architekturform einen Einfluss auf die Feinheit der Merkmalsextraktion hat. Der Swin Transformer zeigt einen stark lokalisierten Fokus, welcher dem diagonalen Verlauf des Längsrisses folgt und den intakten Asphalt isoliert. Dies lässt sich auf den Mechanismus der \textit{Shifted Windows} zurückführen, der lokale Texturen priorisiert. Im Gegensatz dazu weist das klassische ViT aufgrund seiner globalen Self-Attention ein chaotisches und rauschigeres Aufmerksamkeitsmuster auf. Obwohl der Riss grob erfasst wird, reagiert das ViT-Modell intensiver auf irrelevante Informationen.
 
 
 \begin{figure}[H]
     \centering
-    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/attention_United_States_swin_alligator_crack.png}}
+    \subfloat[Swin Transformer]{\includegraphics[width=0.48\textwidth]{Bilder/swin_alligator.png}}
     \hfill
-    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/attention_Norway_vit_alligator_crack.png}}
+    \subfloat[Vision Transformer ]{\includegraphics[width=0.48\textwidth]{Bilder/vit_alligator.png}}
     \caption{Attention-Maps bei der Klassifizierung eines Netzrisses.}
     \label{fig:attention_netzriss}
 \end{figure}
 
 \paragraph{Analyse bei Netzrissen}
-Bei komplexen Schadensbildern unter schwierigen Beleuchtungsverhältnissen (Abbildung \ref{fig:attention_netzriss}) treten die strukturellen Unterschiede noch deutlicher hervor. Das Originalbild des SWIN Transformers ist durch einen Schattenwurf überlagert, welcher eine potenzielle Fehlerquelle für die Klassifikation darstellt. Der zentrale Schattenbereich wird weitgehend ausgeblendet (blau), während sich die Aufmerksamkeit gezielt auf die realen, in den helleren Bereichen sichtbaren Rissstrukturen am Bildrand konzentriert. Das ViT-Modell blendet zwar ebenfalls das Zentrum aus, verlagert seine Hauptaufmerksamkeit jedoch auf die Kante des Bordsteins sowie den Licht-Schatten-Übergang am oberen Bildrand, statt auf den eigentlichen Schaden.
+Bei komplexen Schadensbildern unter schwierigen Beleuchtungsverhältnissen (Abbildung \ref{fig:attention_netzriss}) treten die strukturellen Unterschiede noch deutlicher hervor. Das Zentrum des Originalbild des SWIN Transformers wird weitgehend ausgeblendet (blau), während sich die Aufmerksamkeit gezielt auf die realen, in den helleren Bereichen sichtbaren Rissstrukturen am Bildrand konzentriert. Das ViT-Modell blendet zwar ebenfalls das Zentrum aus, verlagert seine Hauptaufmerksamkeit jedoch den Licht-Schatten-Übergang, statt auf den eigentlichen Schaden.
 \subsection{Bewertung der Systemrobustheit}
 \label{subsec:robustheit}
 
 Das System weist eine Robustheit gegenüber variierenden Umweltbedingungen auf. Die erfolgreiche Klassifizierung von Bilddaten aus verschiedenen Ländern zeigt, dass allgemeine Merkmale für Schäden erkannt werden und keine Überanpassung an spezifische Oberflächen vorliegt.
 
-Zudem ist eine stabile Genauigkeit auch bei moderater Bewegungsunschärfe ein wichtiges Ziel für den praktischen Einsatz. Dies stellt eine Voraussetzung für die Analyse von Bildern dar, die von Fahrzeugen im fließenden Verkehr aufgenommen werden. Zusammenfassend lässt sich feststellen, dass HSP 2 die grundlegenden Anforderungen für eine automatisierte Schadensklassifizierung erfüllt.
+Zudem ist eine stabile Genauigkeit auch bei moderater Bewegungsunschärfe ein wichtiges Ziel für den praktischen Einsatz. Dies stellt eine Voraussetzung für die Analyse von Bildern dar, die von Fahrzeugen im fließenden Verkehr aufgenommen werden. Die Evaluierung zeigt, dass die Modelle auch bei leicht verwackelten Bildern eine hohe Klassifikationsgenauigkeit von über 90\% erreichen, was auf die Fähigkeit der Transformer-Architekturen zurückzuführen ist, relevante Merkmale trotz Störungen zu extrahieren. Dennoch sollte die Bildqualität weiterhin optimiert werden, um die Erkennung von feinen Rissstrukturen zu gewährleisten.

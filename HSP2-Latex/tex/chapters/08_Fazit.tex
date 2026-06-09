@@ -6,9 +6,9 @@ Abschließend erfolgt ein Rückblick auf die Ergebnisse von HSP 2 sowie eine Zus
 \subsection{Zusammenfassung der Ergebnisse}
 \label{subsec:zusammenfassung_ergebnisse}
 
-In dieser Arbeit wurde belegt, dass Transformer-Modelle, ViT und Swin, zur Klassifizierung komplexer Straßenschäden geeignet sind. Mit einer Gesamtgenauigkeit von über 96,4\,\% erreichen die Modelle ein Leistungsniveau, das den Anforderungen für einen praktischen Einsatz in Kommunen und Bauämtern entspricht.
+In dieser Arbeit wurde belegt, dass Transformer-Modelle, ViT und Swin, zur Klassifizierung komplexer Straßenschäden geeignet sind. Mit einer Gesamtgenauigkeit von über 96\,\% erreichen die Modelle eine hohe Präzision bei der Unterscheidung von Schadensklassen.
 
-Zu verzeichnen ist die Leistungsfähigkeit des Swin Transformers. Die hierarchische Architektur ermöglicht die Kombination von Merkmalen auf verschiedenen Skalierungsebenen, wodurch sowohl feine Risse als auch großflächige Netzrissstrukturen erkannt werden. Die durchgeführten Tests belegen eine Robustheit gegenüber unterschiedlichen Asphaltarten und Umweltbedingungen. Es wurde eine Verarbeitungs-Pipeline entwickelt, welche die Prozesskette von der Bildaufnahme über die Extraktion relevanter Bildbereiche bis hin zur automatisierten Klassifizierung abdeckt. Die Kombination aus HSP 1 (Detektion) und HSP 2 (Klassifikation) stellt somit ein fundiertes Fundament für eine digitale Infrastrukturüberwachung dar.
+ Der Swin Transformer sticht durch seine hohe Präzision und Robustheit hervor. Die hierarchische Architektur ermöglicht die Kombination von Merkmalen auf verschiedenen Skalierungsebenen, wodurch sowohl feine Risse als auch großflächige Netzrissstrukturen erkannt werden. Die durchgeführten Tests belegen eine hohe Leistung trotz geringer Trainingszeit gegenüber unterschiedlichen Asphaltarten und Umweltbedingungen. Es wurde eine Verarbeitungs-Pipeline entwickelt, welche eine Bildaufnahme über die Extraktion relevanter Bildbereiche bis hin zur automatisierten Klassifizierung abdeckt. Die Kombination aus HSP 1 (Detektion) und HSP 2 (Klassifikation) stellt somit ein Fundament für die Infrastrukturüberwachung dar.
 
 \subsection{Beantwortung der Forschungsfragen}
 \label{subsec:beantwortung_ff}
@@ -16,23 +16,22 @@ Zu verzeichnen ist die Leistungsfähigkeit des Swin Transformers. Die hierarchis
 Im Rahmen der Untersuchung konnten alle drei Forschungsfragen beantwortet werden:
 
 \paragraph{FF 1: Überlegenheit der Transformer}
-Transformer-Modelle weisen bei der Differenzierung von Rissmustern eine höhere Genauigkeit auf als klassische neuronale Netze, CNNs. Durch die globale Merkmalsanalyse wird der strukturelle Zusammenhang eines Schadens erfasst, was die Fehleranfälligkeit gegenüber lokalen Störungen reduziert. Die Analyse mittels Attention-Maps belegt die Fokussierung der Modelle auf die relevanten Schadenscharakteristika.
+Transformer-Modelle weisen bei der Differenzierung von Rissmustern eine höhere Genauigkeit auf als klassische neuronale Netze, CNNs. Durch die globale Merkmalsanalyse wird der strukturelle Zusammenhang eines Schadens erfasst, was die Fehleranfälligkeit gegenüber lokalen Störungen reduziert.
 
 \paragraph{FF 2: Vorteil des Swin Transformers}
-Die hierarchische Struktur des Swin Transformers bietet Vorteile gegenüber dem Standard-ViT. Neben einer höheren Präzision bei komplexen Schadensklassen zeichnet sich das Modell durch eine effizientere Ressourcennutzung aus. Dies qualifiziert den Swin Transformer für zukünftige Systeme mit steigenden Anforderungen an die Bildauflösung.
+Die hierarchische Struktur des Swin Transformers bietet Vorteile gegenüber dem Standard-ViT. Neben einer höheren Präzision bei komplexen Schadensklassen zeichnet sich das Modell durch eine geringere Trainingszeit aus. Mit steigender Bildauflösung bleibt die Trainingszeit konstant, was die Skalierbarkeit des Systems verbessert.
 
 \paragraph{FF 3: Reduktion der Fehlerrate durch Transfer Learning}
-Durch den Einsatz von Transfer Learning konnte die Fehlerrate unter schwierigen Lichtverhältnissen gesenkt werden. Die Nutzung von vortrainiertem Wissen ermöglicht eine Adaption auf die spezifische Domäne der Straßenschäden. Das Ergebnis ist ein System mit einer geringen Quote an Fehlalarmen, False Positives.
+Durch den Einsatz von Transfer Learning konnte die Fehlerrate unter schwierigen Lichtverhältnissen gesenkt werden. Die Nutzung von vortrainiertem Wissen ermöglicht eine Adaption auf den Bereich der Straßenschäden. Das Ergebnis ist ein System mit einer geringen Quote an Fehlalarmen.
 
 \subsection{Ausblick auf zukünftige Forschung und Entwicklung}
 \label{subsec:ausblick}
 
 Trotz der erzielten Ergebnisse besteht weiteres Potenzial für die Weiterentwicklung des Systems in Richtung einer produktiven Anwendung:
 \begin{itemize}
-    \item \textbf{Integration von Metadaten:} Ein entscheidender Vorteil für zukünftige Analysen wäre die Verwendung von Datensätzen, die zusätzlich zu den Bildern auch GPS-Koordinaten und Informationen zum Straßentyp (z. B. Autobahn vs. Wohnstraße) enthalten. Dies würde eine automatisierte Verknüpfung der Schäden mit digitalen Karten und eine belastungsklassenabhängige Priorisierung ermöglichen.
-    \item \textbf{Deployment-Szenarien:} Für den praktischen Einsatz sind verschiedene Ansätze denkbar. Neben einer Cloud-basierten Auswertung bietet das Edge-Computing direkt im Fahrzeug (z. B. auf spezialisierten KI-Beschleunigern) den Vorteil einer internetunabhängigen Verarbeitung in Echtzeit. Auch mobile Applikationen auf Smartphones könnten die Hürden für eine flächendeckende Erfassung senken.
-    \item \textbf{Automatisierte Zustandsbewertung:} Die Erweiterung der reinen Klassifikation hin zu einem Bewertungssystem gemäß ZTV ZEB stellt den nächsten logischen Schritt dar. Durch die Aggregation von Schadenshäufigkeit und Schweregrad über definierte Straßenabschnitte könnten automatisiert Sanierungsvorschläge generiert werden.
-    \item \textbf{Multimodale Sensorfusion:} Die Kombination von Bilddaten mit weiteren Sensoren, beispielsweise Beschleunigungssensoren zur Erfassung der Erschütterungsintensität, könnte zusätzliche Informationen über die Schadensschwere (z. B. Tiefe eines Schlaglochs) liefern.
+    \item Integration von Metadaten: Ein entscheidender Vorteil für zukünftige Analysen wäre die Verwendung von Datensätzen, die zusätzlich zu den Bildern auch GPS-Koordinaten und Informationen zum Straßentyp (z. B. Autobahn vs. Wohnstraße) enthalten. Dies würde eine automatisierte Verknüpfung der Schäden mit digitalen Karten und eine belastungsklassenabhängige Priorisierung ermöglichen.
+    \item Automatisierte Zustandsbewertung: Die Erweiterung der reinen Klassifikation hin zu einem Bewertungssystem gemäß ZTV ZEB stellt den nächsten logischen Schritt dar. Durch die Aggregation von Schadenshäufigkeit und Schweregrad über definierte Straßenabschnitte könnten automatisiert Sanierungsvorschläge generiert werden.
+    \item Multimodale Sensorfusion: Die Kombination von Bilddaten mit weiteren Sensoren, beispielsweise Beschleunigungssensoren zur Erfassung der Erschütterungsintensität, könnte zusätzliche Informationen über die Schadensschwere (z. B. Tiefe eines Schlaglochs) liefern.
 \end{itemize}
 
 \subsection{Empfehlungen für die Praxis}
@@ -41,7 +40,7 @@ Trotz der erzielten Ergebnisse besteht weiteres Potenzial für die Weiterentwick
 Für den praktischen Einsatz in Städten, Gemeinden und Ingenieurbüros lassen sich folgende Empfehlungen ableiten:
 \begin{enumerate}
     \item KI als Assistenz-System: Die künstliche Intelligenz sollte zur automatisierten Vorauswahl der Daten genutzt werden. Die Verarbeitungsgeschwindigkeit entlastet das Fachpersonal von Sichtungsaufgaben, während die finale bautechnische Entscheidung weiterhin durch Experten erfolgen sollte.
-    \item Kontinuierliche Datenerfassung: Ein Nutzen wird durch eine regelmäßige Datenaufnahme erzielt, da hierdurch Degenerationsprozesse frühzeitig erkannt und Sanierungszyklen optimiert werden können.
+    \item Kontinuierliche Datenerfassung: Ein Nutzen wird durch eine regelmäßige Datenaufnahme erzielt, da hierdurch die Abnutzung der Straßen frühzeitig erkannt und Sanierungszyklen verbessert werden können.
 \end{enumerate}
 
 Diese Arbeit legt eine technologische Grundlage für ein Management der Straßeninfrastruktur. Die entwickelten Verfahren sind für die Überführung in den Alltag der Bauverwaltung vorbereitet.

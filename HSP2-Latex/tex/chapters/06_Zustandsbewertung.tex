@@ -1,59 +1,74 @@
 \section{Zustandsbewertung und Entscheidungslogik}
 \label{sec:zustandsbewertung}
 
-Die automatische Erkennung von Schäden stellt den ersten Prozessschritt dar. Für eine Nutzung durch Bauämter ist eine Überführung der Ergebnisse in Bewertungssysteme für Verkehrswege erforderlich. In diesem Kapitel wird ein \textbf{Konzept} erläutert, wie aus den KI-basierten Klassifizierungen Zustandsnoten abgeleitet werden könnten und welche Logik einer Sanierungsplanung zugrunde liegen kann. Zudem werden die Grenzen der Bewertung aufgezeigt, um eine realistische Interpretation der Ergebnisse zu ermöglichen.
+Die automatische Erkennung von Straßenschäden stellt den ersten Prozessschritt dar. Für eine praktische Nutzung durch Baubehörden ist es jedoch erforderlich, die KI-Ergebnisse in Bewertungssysteme für Verkehrswege zu überführen. In diesem Kapitel wird ein Konzept erläutert, wie aus den KI-basierten Klassifizierungen relevante Zustandsindizes abgeleitet werden können. 
 
-\subsection{Schadensklassifikation nach Normen, ZTV ZEB und RStO}
+Während die deutschen Regelwerke dabei als theoretischer Rahmen für eine konzeptionelle Übertragung dienen, liegt der Fokus dieser Arbeit auf dem internationalen ASTM-Standard. Dieser eignet sich aufgrund der globalen Ausrichtung des verwendeten RDD2022-Datensatzes als Evaluierungsbasis. Abschließend werden die Grenzen der Bewertung aufgezeigt, um eine realistische Interpretation der Ergebnisse zu ermöglichen.
+
+\subsection{Schadensklassifikation und Standardisierung}
 \label{subsec:normen}
 
-In Deutschland existieren Regelwerke für die Straßenbewertung, welche eine bundesweit einheitliche Beurteilung sicherstellen.
+Um Bilddaten in eine behördliche Entscheidungsgrundlage zu übersetzen, müssen die Detektionen mathematisch und regelbasiert aggregiert werden. Je nach geografischem und administrativem Kontext existieren hierfür unterschiedliche Standards.
 
-\paragraph{Die Rolle der ZTV ZEB}
-Die „Zusätzlichen Technischen Vertragsbedingungen und Richtlinien für die Zustandserfassung und -bewertung von Straßen“, ZTV ZEB, bilden die Grundlage der Straßenplanung. Gemäß dieser Richtlinie ist eine regelmäßige Überprüfung, im Regelfall im 4-Jahres-Rythmus, vorgesehen. Die künstliche Intelligenz detektiert die für diese Richtlinie relevanten Merkmale:
+\paragraph{Der Pavement Condition Index (ASTM D6433)}
+Der Datensatz RDD2022 nutzt internationale Bilddaten, somit wird der US-amerikanische Standard ASTM~D6433 herangezogen. Dieser definiert den \emph{Pavement Condition Index}, welcher den Straßenzustand auf einer Skala von 0 bis 100 abbildet, wobei 100 einen fehlerfreien Zustand darstellt. Dies erfolgt in fünf Hauptkategorien, \cite{astm_d6433_18}: 
 \begin{itemize}
-    \item Substanzwert, Baulicher Zustand: Bewertung des Materialzustandes, zum Beispiel durch Risse, und des Zustands der Tragschichten, Netzrisse.
-    \item Gebrauchswert, Verkehrssicherheit: Beurteilung der Fahrsicherheit, insbesondere im Hinblick auf Schlaglöcher und Spurrinnen.
+    \item \glqq Excellent\grqq\ (90--100)
+    \item \glqq Good\grqq\ (80--89)
+    \item \glqq Fair\grqq\ (60--79)
+    \item \glqq Poor\grqq\ (40--59)
+    \item \glqq Failed\grqq\ (0--39)
 \end{itemize}
 
-\paragraph{RStO und Belastungsklassen}
-Die Richtlinien für die Standardisierung des Oberbaus, RStO, definieren die Anforderungen an Straßen in Abhängigkeit von der Verkehrslast. Eine Autobahn, Bk100, unterliegt dabei anderen Bewertungskriterien als eine normale Straße, Bk0,3. Die Entscheidungslogik von HSP 2 berücksichtigt diese Belastungsklassen, da die Relevanz eines Schadens, wie beispielsweise eines Schlaglochs, mit der zulässigen Fahrgeschwindigkeit und der Verkehrsintensität korreliert.
+\paragraph{Konzeptionelle Brücke zu deutschen Normen (ZTV ZEB)}
+Für den produktiven Einsatz in Deutschland ist langfristig eine Überführung der Ergebnisse in das nationale System notwendig. Die Richtlinie \emph{Zusätzliche Technische Vertragsbedingungen und Richtlinien für die Zustandserfassung und -bewertung von Straßen} (ZTV ZEB) sieht im Gegensatz zum PCI eine Notenskala von 1 (sehr gut) bis 5 (ungenügend) vor. 
 
-\subsection{Ableitung eines Zustandsindex (Konzept)}
+Als theoretisches Konzept lässt sich der über die KI-Klassifikation ermittelte Zustand in die beiden Hauptwerte der ZTV ZEB übersetzen:
+\begin{itemize}
+    \item Substanzwert (Baulicher Zustand): Abwertung des Index vor allem durch netzartige Risse (Klasse D20), die auf strukturelle Schäden der Tragschicht hinweisen.
+    \item Gebrauchswert (Verkehrssicherheit): Abwertung durch akute Gefahrenquellen wie Schlaglöcher (Klasse D40).
+\end{itemize}
+Ein KI-gestütztes System könnte somit als Vorfilter dienen, um die im 4-Jahres-Rhythmus stattfindenden, aufwendigen ZEB-Messfahrten zu ergänzen oder kritische Abschnitte priorisiert zu prüfen \cite{fgsv2024_apske}.
+
+\paragraph{Kontextualisierung nach Belastungsklassen (RStO)}
+Die \emph{Richtlinien für die Standardisierung des Oberbaus von Verkehrsflächen} (RStO) definieren Anforderungen in Abhängigkeit von der Verkehrslast (von der Autobahn Bk100 bis zur Wohnstraße Bk0,3) \cite{vm_bw_2015_zeb}. In einem erweiterten Konzept muss die KI-basierte Bewertung diese Klassen als Metadaten einbeziehen: Ein Schlagloch (D40) auf einer hochfrequentierten Bundesstraße besitzt eine ungleich höhere Dringlichkeit und führt zu einer schnelleren Abwertung des berechneten Zustands als auf einem ländlichen Radweg.
+
+\subsection{Ableitung des Zustandsindex}
 \label{subsec:zustandsindex}
 
-Zur Gesamtbeurteilung eines Straßenabschnitts könnte eine Aggregation der Einzelergebnisse zu einem \textbf{Zustandsindex} erfolgen.
+Zur Gesamtbeurteilung eines Straßenabschnitts (z.\,B. ein Segment von 100 Metern Länge) werden die KI-Detektionen zusammengefasst. Das in dieser Arbeit verfolgte Konzept sieht vor, den internationalen PCI (0 bis 100) als mathematische Zielgröße zu berechnen.
 
-\paragraph{Gewichtung der Schadensarten}
-Die Schadensrelevanz könnte innerhalb der Logik über ein Punktesystem abgebildet werden:
+\paragraph{Gewichtung der RDD2022-Schadensarten}
+Die Schadensrelevanz kann innerhalb der Berechnungslogik über ein Punktabzugssystem realisiert werden:
 \begin{enumerate}
-    \item Schlaglöcher, D40: Priorität aufgrund der Relevanz für die Verkehrssicherheit.
-    \item Netzrisse, D20: Gewichtung als Indikator für strukturelle Beeinträchtigungen.
-    \item Längs- und Querrisse, D00/D10: Bei isoliertem Auftreten erfolgt eine moderate Abwertung, bei Häufung sinkt der Index.
+    \item Schlaglöcher (D40): Verursachen den höchsten Punktabzug prozentual zur Fläche, da sie die Verkehrssicherheit unmittelbar gefährden.
+    \item Netzrisse (D20): Führen zu hohen Punktabzügen, da sie großflächigen Verschließ des Oberbaus ankündigen.
+    \item Längs- und Querrisse (D00/D10): Werden bei isoliertem Auftreten mathematisch gering gewichtet; eine Häufung führt jedoch zu einer höheren Abwertung.
 \end{enumerate}
 
 \paragraph{Berechnung für den Abschnitt}
-Innerhalb eines definierten Abschnitts, beispielsweise 100 Meter, könnte eine Zählung aller detektierten Schäden erfolgen. Ein mathematisches Modell würde die Anzahl und Art der Schäden in einen Wert zwischen 1,0 (sehr guter Zustand) und 5,0 (ungenügender Zustand) transformieren. Dies würde die Erstellung digitaler Zustandskarten ermöglichen.
+Das System summiert alle Detektionen innerhalb des Abschnitts und gewichtet sie nach ihrer geometrischen Ausdehnung im Bild. Das Ergebnis ist ein objektiver, reproduzierbarer PCI-Wert für das Segment, welcher direkt in digitale Zustandskarten (z.\,B. GIS-Systeme) exportiert werden könnte. Für den deutschen Standard könnte eine Übersetzungstabelle erstellt werden, um die PCI-Werte in die Notenskala der ZTV ZEB zu überführen, wobei die Substanz- und Gebrauchswerte entsprechend berücksichtigt werden.
 
 \subsection{Priorisierung von Sanierungsmaßnahmen}
 \label{subsec:priorisierung}
 
-Die automatisiert ermittelten Zustandsnoten dienen der Allokation finanzieller Mittel. Die Noten lassen sich in Handlungsstrategien übersetzen:
+Aus dem ermittelten PCI-Wert lassen sich direkte, automatisierte Handlungsempfehlungen ableiten. Das Konzept folgt der klassischen Erhaltungsphilosophie:
 \begin{itemize}
-    \item 1,0 - 3,5, Erhaltungsbereich: Zustand ist stabil; eine kontinuierliche Beobachtung ist ausreichend.
-    \item 3,5 - 4,5, Warnwert: Zunehmende Verschlechterung; dies stellt einen Zeitpunkt für Instandsetzungsmaßnahmen dar.
-    \item 4,5 - 5,0, Schwellenwert: Erhebliche Mängel; zur Vermeidung von Folgeschäden und zur Abwendung eines vollständigen Neubaus sind Maßnahmen erforderlich.
+    \item PCI 80 -- 100 (Erhaltungsbereich): Der Zustand ist gut. Es sind keine Maßnahmen erforderlich; regelmäßige Überwachung genügt.
+    \item PCI 60 -- 79 (Warnwert / Instandsetzungsbereich): Erste Mängel werden sichtbar. Zu diesem Zeitpunkt sind einzelne Instandsetzungen (z.\,B. Rissschließungen) wirtschaftlich am effektivsten, um ein Fortschreiten des Schadens zu verhindern.
+    \item PCI 0 -- 59 (Schwellenwert / Erneuerungsbereich): Es liegen erhebliche Mängel vor. Zur Vermeidung von Folgeschäden und zur Abwendung eines vollständigen, kostenintensiven Neubaus der Tragschichten sind tiefgreifende Sanierungsmaßnahmen (z.\,B. Deckschichterneuerung) erforderlich.
 \end{itemize}
 
 \subsection{Grenzen und Unsicherheiten der Bewertung}
 \label{subsec:grenzen}
 
-Für eine Interpretation der Ergebnisse ist die Kenntnis der technologischen Grenzen erforderlich:
+Für eine Interpretation der Ergebnisse sind folgende Einschränkungen zu beachten:
 
 \paragraph{Informationstiefe}
-Die Analyse basiert auf Oberflächenbildern. Eine Bestimmung der tatsächlichen Schadensausdehnung in tiefere Schichten ist optisch nicht möglich. Hierfür sind weiterhin ergänzende Verfahren wie Bodenradar oder Bohrkernentnahmen notwendig.
+Die Analyse basiert ausschließlich auf zweidimensionalen Oberflächenbildern. Eine Bestimmung der tatsächlichen Schadensausdehnung in tiefere Schichten des Straßenoberbaus ist optisch nicht möglich. Für die finale Sanierungsplanung sind weiterhin ergänzende Verfahren wie Bodenradar oder Bohrkernentnahmen notwendig.
 
 \paragraph{Witterungseinflüsse und Konfidenzwerte}
-Umwelteinflüsse wie Schattenwurf oder Nässe können die Zuverlässigkeit der KI beeinflussen. Eine geplante Erweiterung des Systems sieht vor, dass Bilder mit einem Konfidenzwert unterhalb eines definierten Schwellenwerts, beispielsweise 70\,\%, für eine manuelle Nachprüfung markiert werden. Aktuell liefert das Modell die Klasse mit der höchsten statistischen Wahrscheinlichkeit zurück.
+Externe Einflüsse wie starker Schattenwurf, Nässe, Laub oder Verschmutzungen können die Erkennungsrate der Objekterkennungsmodelle negativ beeinflussen. Um Fehlinterpretationen zu reduzieren, könnte ein Bildsegment mit einem durchschnittlichen Konfidenzwert unterhalb eines Schwellenwerts von beispielsweise 70\,\% für eine manuelle Nachprüfung markiert werden.
 
 \paragraph{Menschliche Endkontrolle}
-Die künstliche Intelligenz fungiert als Filter zur Entlastung des Fachpersonals. Sie ermöglicht die Konzentration auf kritische Abschnitte, während unauffällige Bereiche automatisiert aussortiert werden. Die Entscheidung über Sanierungsmaßnahmen verbleibt beim verantwortlichen Bauingenieur.
+Die künstliche Intelligenz dient in diesem Szenario nicht als Entscheider, sondern als Filter zur Entlastung des Fachpersonals. Sie ermöglicht es Bauämtern, sich auf wichtige Abschnitte zu konzentrieren, während unauffällige Bereiche automatisiert durchgewunken werden. Die letztendliche Entscheidung über eine Sanierungsmaßnahme verbleibt beim verantwortlichen Bauingenieur.

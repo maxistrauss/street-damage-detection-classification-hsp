@@ -46,8 +46,10 @@
 \usepackage{picinpar}
 \usepackage[pdfpagelabels=true]{hyperref}
 \usepackage{listings}
+\usepackage{lmodern}
 \usepackage{csquotes}
 \usepackage{url}
+\usepackage{microtype}
 \usepackage{float}
 \usepackage{pgfplots}
 \usepackage[nonumberlist, nogroupskip]{glossaries}
@@ -66,22 +68,6 @@
 \usepackage[miktex]{gnuplottex}
 % Wird benötigt, damit die Tabelle beim Spaltentyp X die gesamte Seitenbreite verwendet. Ist unter anderem bei Tabellen in der Parameter definiert werden hilfreich.
 \keepXColumns
-
-
-
-
-%Wird zur Darstellung von Algorithmen benötigt
-\usepackage{algorithm}
-\usepackage{algorithmic}
-
-\floatname{algorithm}{Algorithmus}
-\floatname{List of Algorithms}{Algorithmen}
-\captionsetup[algorithm]{justification=raggedright,singlelinecheck=false}
-
-% Indizes
-\index{Algorithmus -- Pseudocode}
-\index{Optimierungsproblem -- Definition}
-
 
 % Stichwortverzeichnis
 \usepackage[nonewpage]{imakeidx}
@@ -151,7 +137,7 @@ isbn=false		% Keine Ausbage der ISBN
 }
 
 % Bibliothek der Quellen
-\bibliography{tex/biblatex.bib}
+\addbibresource{tex/biblatex.bib}
 \label{bib}
 
 
@@ -204,7 +190,7 @@ isbn=false		% Keine Ausbage der ISBN
 	pdfproducer={pdfTeX \the\pdftexversion.\pdftexrevision},
 	pdfkeywords={Deep Learning, Transformer, Swin, ViT, RDD2022, Straßenschäden},
 	pdfnewwindow=true,
-	colorlinks=true,linkcolor=black,citecolor=black,filecolor=magenta,urlcolor=black}
+	colorlinks=false}
 \pdfinfo{/CreationDate (D:20141024101000)}
 \pgfplotsset{compat=1.11}
 
@@ -362,12 +348,6 @@ isbn=false		% Keine Ausbage der ISBN
 \stepcounter{verzeichnis}
 \listoftables
 \pagebreak
-
-% Listingverzeichnis
-\stepcounter{verzeichnis}
-\lstlistoflistings
-\pagebreak
-
 
 
 % Stichwortverzeichnis

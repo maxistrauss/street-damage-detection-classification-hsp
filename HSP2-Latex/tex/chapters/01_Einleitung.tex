@@ -1,29 +1,29 @@
 \section{Einleitung}
 \label{sec:einleitung}
 
-Die Straßeninfrastruktur ist eine Voraussetzung für den Warenverkehr und die Mobilität der Bevölkerung. Ein funktionierendes Verkehrsnetz stellt sicher, dass Güter pünktlich geliefert werden, Rettungsdienste ihre Ziele erreichen und die tägliche Mobilität gewährleistet bleibt. Ein funktionsfähiges Straßennetz ist für die Aufrechterhaltung täglicher Abläufe notwendig. Die Straßen unterliegen jedoch hohen Belastungen. Das Verkehrsaufkommen steigt, die Fahrzeuge, insbesondere Lastkraftwagen, werden schwerer und klimatische Einflüsse nehmen zu, insbesondere Hitzeperioden im Sommer oder auch Frostperioden im Winter. Dies beansprucht die Fahrbahnen und führt zu einer beschleunigten Abnutzung. 
+Die Straßeninfrastruktur ist eine Voraussetzung für den Warenverkehr und die Mobilität der Bevölkerung. Ein funktionierendes Verkehrsnetz stellt sicher, dass Güter pünktlich geliefert werden, Rettungsdienste ihre Ziele erreichen und die tägliche Mobilität gewährleistet bleibt. Ein funktionsfähiges Straßennetz ist für die Aufrechterhaltung täglicher Abläufe notwendig. Die Straßen unterliegen jedoch hohen Belastungen. Das Verkehrsaufkommen steigt, die Fahrzeuge, insbesondere Lastkraftwagen, werden schwerer und klimatische Einflüsse nehmen zu, insbesondere Hitzeperioden im Sommer oder auch Frostperioden im Winter. Dies beansprucht die Fahrbahnen und führt zu einer beschleunigten Abnutzung \cite{bmv_erhaltung_2025}. 
 
-Eine regelmäßige und präzise Prüfung des Straßenzustands ist für die zuständigen Behörden daher erforderlich. Frühzeitig erkannte Risse lassen sich mit geringem Aufwand instand setzen. Werden diese jedoch übersehen, kann Wasser eindringen, was zur Beeinträchtigung des Untergrunds und zur Bildung von Schlaglöchern führt. Die Instandsetzungskosten steigen in diesem Fall an. Zudem können Schäden, die nicht rechtzeitig erkannt werden, die Verkehrssicherheit beeinträchtigen. Es besteht die Gefahr von Unfällen, vor allem bei Nacht oder schlechten Sichtverhältnissen. Daher ist eine genaue und zeitnahe Erfassung von Straßenschäden von großer Bedeutung. 
+Eine regelmäßige und genaue Prüfung des Straßenzustands ist für die zuständigen Behörden daher erforderlich. Frühzeitig erkannte Risse lassen sich mit geringem Aufwand instand setzen. Werden diese jedoch übersehen, kann Wasser eindringen, was zur Beeinträchtigung des Untergrunds und zur Bildung von Schlaglöchern führt. Die Instandsetzungskosten steigen in diesem Fall an. Zudem können Schäden, die nicht rechtzeitig erkannt werden, die Verkehrssicherheit beeinträchtigen. Es besteht die Gefahr von Unfällen, vor allem bei Nacht oder schlechten Sichtverhältnissen. Daher ist eine genaue und zeitnahe Erfassung von Straßenschäden von großer Bedeutung \cite{fraunhofer_ipm_strukturmerkmale_2026}. 
 
 \subsection{Motivation und Problemstellung}
 \label{subsec:motivation}
 
 Das Gesamtprojekt HSP besteht aus zwei Komponenten, die technologisch aufeinander aufbauen. Um das Ziel einer automatisierten Straßenkontrolle zu erreichen, sind zwei Kernaufgaben zu lösen. Erstens ist die Ermittlung der Schadensposition, die Frage nach dem "Wo", und die Bestimmung der Schadensart, die Frage nach dem "Was".
 
-Im ersten Teil des Projekts, HSP 1, liegt der Fokus auf der Echtzeit-Detektion. Ein Fahrzeug befährt die Straße mit regulärer Geschwindigkeit, während die Fahrbahnoberfläche aufgezeichnet wird. Ein Algorithmus, ein sogenanntes YOLO-Modell, analysiert diese Aufnahmen kontinuierlich auf Schäden. Sobald ein Schaden identifiziert wird, erfolgt die Markierung durch einen digitalen Rahmen, eine sogenannte "Bounding Box". HSP 1 übernimmt somit die Aufgabe der Detektion.
+Im ersten Teil des Projekts, HSP 1 \cite{hsp1_report}, liegt der Fokus auf der Echtzeit-Detektion. Ein Fahrzeug befährt die Straße mit regulärer Geschwindigkeit, während die Fahrbahnoberfläche aufgezeichnet wird. Ein Algorithmus, ein sogenanntes YOLO-Modell \cite{redmon2016you}, analysiert diese Aufnahmen kontinuierlich auf Schäden. Sobald ein Schaden identifiziert wird, erfolgt die Markierung durch einen digitalen Rahmen, eine sogenannte \emph{Bounding Box}. HSP 1 übernimmt somit die Aufgabe der Detektion.
 
 In der vorliegenden Arbeit, HSP 2, erfolgt der nächste Schritt der Klassifizierung. Nach der Markierung einer Stelle durch HSP 1 wird eine Analyse durchgeführt, um festzustellen, ob es sich beispielsweise um einen Längsriss oder um einen Netzriss handelt. Hierfür kommen Technologien aus dem Bereich der künstlichen Intelligenz zum Einsatz. Diese Modelle können komplexe Zusammenhänge in Bilddaten erkennen. Das Ziel ist eine Schadenserfassung, die als Entscheidungsgrundlage für Bauämter und Ingenieurbüros dient.
 
-\subsection{Informatische Herausforderungen}
+\subsection{Herausforderungen}
 \label{subsec:herausforderungen}
 
 Die automatische Erkennung von Straßenschäden stellt eine komplexe Aufgabe in der Informatik dar. Ein Computer verarbeitet ein Bild als eine Ansammlung von Pixeln, aus denen die relevanten Informationen extrahiert werden müssen.
 
 \paragraph{Einfluss der Umgebung}
-Reale Straßenaufnahmen weisen oft Schatten von Bäumen, Zäunen oder Brücken auf. Eine Schattenkante kann in einem einfachen Algorithmus beispielsweise wie ein Riss wirken. Hinzu kommen Verschmutzungen auf der Straße wie Laub, Zweige, Ölspuren oder Reifenabrieb, welche die Form eines Schadens imitieren können. Auch wechselnde Witterungsbedingungen wie Regen oder Nebel beeinflussen die Bildqualität. Die künstliche Intelligenz muss diese Störfaktoren unterschieden können und sich auf die Struktur des Asphalts konzentrieren.
+Reale Straßenaufnahmen weisen oft Schatten von Bäumen, Zäunen oder Brücken auf. Eine Schattenkante kann in einem einfachen Algorithmus beispielsweise wie ein Riss wirken. Hinzu kommen Verschmutzungen auf der Straße wie Laub, Zweige, Ölspuren oder Reifenabrieb, welche die Form eines Schadens imitieren können. Auch wechselnde Witterungsbedingungen wie Regen oder Nebel beeinflussen die Bildqualität. Die künstliche Intelligenz muss diese Störfaktoren unterschieden können und sich auf die Struktur des Asphalts konzentrieren \cite[Kapitel 12.2]{goodfellow2016}.
 
 \paragraph{Generalisierung vs. Overfitting}
-Ein weiteres Thema ist die Vielfalt der Straßenoberflächen. Da Asphalt international unterschiedlich beschaffen ist, ist eine hohe Generalisierungsfähigkeit erforderlich. Das Programm muss das zugrundeliegende Prinzip eines Schadens unabhängig von der jeweiligen Oberfläche erfassen. Gleichzeitig muss "Overfitting" vermieden werden, also der Effekt, dass die KI die Trainingsbilder lediglich auswendig lernt, anstatt die zugrundeliegenden Merkmale zu verstehen. Dies würde zu einer schlechten Leistung bei neuen, unbekannten Bildern führen.
+Ein weiteres Thema ist die Vielfalt der Straßenoberflächen. Da Asphalt international unterschiedlich beschaffen ist, ist eine hohe Generalisierungsfähigkeit erforderlich. Das Programm muss das zugrundeliegende Prinzip eines Schadens unabhängig von der jeweiligen Oberfläche erfassen. Gleichzeitig muss \emph{Overfitting} vermieden werden, also der Effekt, dass die KI die Trainingsbilder lediglich auswendig lernt, anstatt die zugrundeliegenden Merkmale zu verstehen. Dies würde zu einer schlechten Leistung bei neuen, unbekannten Bildern führen \cite[Kapitel 4]{amaratunga2023}.
 
 \subsection{Zielsetzung des Projekts}
 \label{subsec:zielsetzung}
@@ -32,10 +32,10 @@ Das Hauptziel von HSP 2 ist die Entwicklung einer Pipeline, die Straßenschäden
 
 Die Arbeit umfasst dabei folgende Kernpunkte:
 \begin{itemize}
-    \item \textbf{Implementierung des Vision Transformers, ViT:} Untersuchung der Schadenserkennung durch die Zerlegung des Bildes in kleine Quadrate, sogenannte "Patches", und die Analyse ihrer globalen Beziehungen.
+    \item \textbf{Implementierung des Vision Transformers:} Untersuchung der Schadenserkennung durch die Zerlegung des Bildes in kleine Quadrate, sogenannte \emph{Patches}, und die Analyse ihrer globalen Beziehungen, mehr dazu in Kapitel \ref{subsec:vision_transformer}.
     \item \textbf{Einsatz des Swin Transformers:} Prüfung, ob eine hierarchische Struktur Vorteile bei der Erkennung feiner Rissmuster bietet.
     \item \textbf{Benchmarking mit RDD2022:} Nutzung eines internationalen Datensatzes zur Überprüfung der Funktionalität unter verschiedenen Bedingungen.
-    \item \textbf{Visualisierung der Entscheidung:} Einsatz von Techniken wie "Attention-Maps", um die Entscheidungsgrundlage der KI darzustellen und die Nachvollziehbarkeit zu erhöhen.
+    \item \textbf{Visualisierung der Entscheidung:} Einsatz von Techniken wie Attention-Maps, um die Entscheidungsgrundlage der KI darzustellen und die Nachvollziehbarkeit zu erhöhen.
 \end{itemize}
 
 \subsection{Forschungsfragen}
@@ -56,7 +56,7 @@ Inwieweit lässt sich durch den Einsatz von Transfer Learning die Fehlerrate unt
 \label{subsec:abgrenzung}
 
 Diese Arbeit konzentriert sich auf die Klassifizierung von bereits entdeckten Schäden. Es wird davon ausgegangen, dass Bildausschnitte vorliegen, auf denen ein potenzieller Schaden zu sehen ist. 
-Die Entwicklung der Hardware, wie Kameras, Sensoren und Fahrzeuge, sowie die physikalische Instandsetzung der Straßen sind nicht Bestandteil dieser Untersuchung. Der Fokus liegt auf der Software-Ebene und der Verbesserung der Interpretation von Bilddaten durch künstliche Intelligenz. Zudem erfolgt eine Beschränkung auf die internationalen Schadensklassen des RDD2022-Datensatzes.
+Die Entwicklung der Hardware, wie Kameras, Sensoren und Fahrzeuge, sowie die physikalische Instandsetzung der Straßen sind nicht Bestandteil dieser Untersuchung. Der Fokus liegt auf der Software-Ebene und der Verbesserung der Interpretation von Bilddaten durch künstliche Intelligenz. Zudem erfolgt eine Beschränkung auf die internationalen Schadensklassen des RDD2022-Datensatzes \cite{rdd2022}.
 
 \subsection{Aufbau der Arbeit}
 \label{subsec:aufbau}

@@ -9,19 +9,19 @@ In diesem Kapitel wird die technische Umsetzung von HSP 2 beschrieben. Es wird a
 Die Software ist modular aufgebaut, was eine Zerlegung des Gesamtsystems in voneinander unabhängige Bausteine bedeutet. Dies bietet den Vorteil, dass einzelne Komponenten, beispielsweise das KI-Modell, ausgetauscht oder optimiert werden können, ohne das gesamte Programm neu strukturieren zu müssen.
 
 \paragraph{Einsatz von Python und PyTorch}
-Als Programmiersprache findet Python Anwendung. Python wird im Bereich der künstlichen Intelligenz häufig eingesetzt, da eine Vielzahl von Bibliotheken zur Verfügung steht.
-Das Framework PyTorch bildet die Grundlage der Entwicklung. Es ermöglicht eine Definition neuronaler Netze und deren Training auf Grafikkarten. Ein Vorteil von PyTorch ist die „Eager Execution“, wodurch mathematische Operationen innerhalb des Netzwerks während der Entwicklung überprüfbar sind. Dies trägt zu einer effizienten Entwicklungszeit bei.
+Als Programmiersprache findet Python Anwendung \cite{vanrossum2009python}. Python wird im Bereich der künstlichen Intelligenz häufig eingesetzt, da eine Vielzahl von Bibliotheken zur Verfügung steht.
+Das Framework PyTorch bildet die Grundlage der Entwicklung \cite{paszke2019pytorch}. Es ermöglicht eine Definition neuronaler Netze und deren Training auf Grafikkarten. Ein Vorteil von PyTorch ist die "`Eager Execution"', wodurch mathematische Operationen innerhalb des Netzwerks während der Entwicklung überprüfbar sind. Dies trägt zu einer effizienten Entwicklungszeit bei.
 
-Der Swin Tranformer werden über das Modell "swin\_t" genauer definiert. Das bedeutet die Architektur des Swin Transformers in der Version "tiny" zum Einsatz kommt, welche eine gute Balance zwischen Genauigkeit und Rechenaufwand bietet. Das Modell ist vortrainiert auf dem ImageNet-Datensatz. Das Modell verfügt über 28 Millionen Parameter.
+Der Swin Tranformer werden über das Modell \texttt{swin\_t} genauer definiert. Das bedeutet die Architektur des Swin Transformers in der Version "`tiny"'zum Einsatz kommt, welche eine gute Balance zwischen Genauigkeit und Rechenaufwand bietet. Das Modell ist vortrainiert auf dem ImageNet-Datensatz. Das Modell verfügt über 28 Millionen Parameter.
 
-Währenddessen wird der ViT über das Modell "vit\_b\_16" definiert. Es handelt sich um die Version "base" mit einer Patch-Größe von 16x16 Pixeln. Dieses Modell ist ebenfalls vortrainiert auf ImageNet und verfügt über 86 Millionen Parameter, was eine höhere Kapazität für die Erfassung komplexer Merkmale ermöglicht, jedoch auch einen höheren Rechenaufwand mit sich bringt.
+Währenddessen wird der ViT über das Modell \texttt{vit\_b\_16} definiert. Es handelt sich um die Version "`base"' mit einer Patch-Größe von 16x16 Pixeln. Dieses Modell ist ebenfalls vortrainiert auf ImageNet und verfügt über 86 Millionen Parameter, was eine höhere Kapazität für die Erfassung komplexer Merkmale ermöglicht, jedoch auch einen höheren Rechenaufwand mit sich bringt.
 
 \paragraph{Modulare Modulstruktur}
 Das System gliedert sich in drei Hauptmodule:
 \begin{enumerate}
-    \item Daten-Modul, Data Loader: Verantwortlich für den Import der Bilddaten. Es erfolgt das Einlesen der Dateien, die Anwendung der Vorverarbeitungsschritte sowie die Bereitstellung der Daten in Form von Batches für das Modell. Ein Batch ist eine Gruppe von Bildern, die gleichzeitig verarbeitet werden, um die Effizienz zu steigern.
-    \item Modell-Modul, Model Definition: Hier wird die mathematische Struktur der Transformer definiert. Die Bibliothek timm, PyTorch Image Models, stellt hierfür Versionen des ViT und Swin Transformers bereit.
-    \item Trainings- und Analyse-Modul, Trainer: Steuert den Lernprozess. Nach jeder Vorhersage erfolgt die Berechnung des Loss und die entsprechende Anpassung der internen Gewichte. Zudem werden die Evaluationsmetriken berechnet und protokolliert, um den Fortschritt zu überwachen.
+    \item Data Loader: Verantwortlich für den Import der Bilddaten. Es erfolgt das Einlesen der Dateien, die Anwendung der Vorverarbeitungsschritte sowie die Bereitstellung der Daten in Form von \emph{Batches} für das Modell. Ein Batch ist eine Gruppe von Bildern, die gleichzeitig verarbeitet werden, um die Effizienz zu steigern.
+    \item Model Definition: Hier wird die mathematische Struktur der Transformer definiert. Die Bibliothek \texttt{timm}, PyTorch Image Models, stellt hierfür Versionen des ViT und Swin Transformers bereit \cite{wightman2019timm}.
+    \item Trainer: Steuert den Lernprozess. Nach jeder Vorhersage erfolgt die Berechnung des Loss und die entsprechende Anpassung der internen Gewichte. Zudem werden die Evaluationsmetriken berechnet und protokolliert, um den Fortschritt zu überwachen.
 \end{enumerate}
 
 \subsection{Datenpipeline: Vorbereitung der Bilddaten}
@@ -30,13 +30,13 @@ Das System gliedert sich in drei Hauptmodule:
 Vor dem Lernprozess durchlaufen die Bilder eine Verarbeitungs-Pipeline, um ein einheitliches Format zu gewährleisten und die Relevanz der Merkmale zu erhöhen.
 
 \paragraph{Vorbereitung der Bildkacheln, Tiling und Padding}
-Transformer-Modelle erfordern quadratische Eingabedaten. Da reale Straßenschäden oft langgezogene Geometrien aufweisen, findet ein spezieller Algorithmus Anwendung. Dieser berechnet den erforderlichen Bildbereich um den Schaden herum, um ein Quadrat zu erzeugen. Fehlende Bildbereiche werden durch reale Asphaltstrukturen aus der Umgebung oder durch Spiegelung der Randpixel gefüllt, Padding. Dadurch bleibt die natürliche Struktur des Asphalts erhalten und geometrische Verzerrungen werden vermieden.
+Transformer-Modelle erfordern quadratische Eingabedaten. Da reale Straßenschäden oft langgezogene Geometrien aufweisen, findet ein spezieller Algorithmus Anwendung. Dieser berechnet den erforderlichen Bildbereich um den Schaden herum, um ein Quadrat zu erzeugen. Dieser Prozess wird als \emph{Tiling} bezeichnet. Fehlende Bildbereiche werden durch reale Asphaltstrukturen aus der Umgebung oder durch Spiegelung der Randpixel gefüllt, \emph{Padding}. Dadurch bleibt die natürliche Struktur des Asphalts erhalten und geometrische Verzerrungen werden vermieden.
 
 \paragraph{Negative Sampling}
-Zur Vermeidung von Fehlklassifikationen, zum Beispiel Schattenwurf als Schaden, kommt \textbf{Negative Sampling} zum Einsatz. Das System wird so konfiguriert, dass es gezielt Bildausschnitte ohne Schäden selektiert, Klasse „Normal“. Dies fördert die Fähigkeit des Modells, natürliche Asphaltstrukturen von tatsächlichen Schäden zu unterscheiden.
+Zur Vermeidung von Fehlklassifikationen, zum Beispiel Schattenwurf als Schaden, kommt \emph{Negative Sampling} zum Einsatz. Das System wird so konfiguriert, dass es gezielt Bildausschnitte ohne Schäden selektiert, Klasse "`Normal"'. Dies fördert die Fähigkeit des Modells, natürliche Asphaltstrukturen von tatsächlichen Schäden zu unterscheiden.
 
 \paragraph{Daten-Augmentierung im Detail}
-Zur Erhöhung der Robustheit gegenüber variierenden Umweltbedingungen findet eine künstliche Veränderung der Trainingsdaten mittels der Bibliothek Albumentations statt:
+Zur Erhöhung der Robustheit gegenüber variierenden Umweltbedingungen findet eine künstliche Veränderung der Trainingsdaten mittels der Bibliothek \texttt{albumentations} \cite{buslaev2020albumentations} statt:
 \begin{itemize}
     \item Helligkeit und Kontrast: Simulation verschiedener Tageszeiten und Lichtverhältnisse.
     \item Rauschen, Noise: Hinzufügen von Pixelrauschen zur Simulation unterschiedlicher Kamerasensoren.
@@ -46,13 +46,13 @@ Zur Erhöhung der Robustheit gegenüber variierenden Umweltbedingungen findet ei
 \subsection{Modelltraining und mathematische Optimierung}
 \label{subsec:modelltraining}
 
-Das Training stellt die rechenintensivste Phase des Projekts dar. Dabei erfolgt die Justierung der Modellparameter zur korrekten Schadensklassifizierung.
+Das Training stellt die rechenintensivste Phase des Projekts dar. Dabei erfolgt die Abstimmung der Modellparameter für die korrekte Schadensklassifizierung.
 
 \paragraph{Hardware-Konfiguration}
 Für das Training findet eine Grafikkarte vom Typ NVIDIA RTX 6000 Ada mit 48 GB Grafikspeicher, VRAM, Verwendung. Die Speicherkapazität ermöglicht die Verarbeitung großer Batch Sizes, was den Datendurchsatz zwischen Festplatte und GPU optimiert und das Training beschleunigt.
 
 \paragraph{Optimierungs-Algorithmus, AdamW}
-Die Minimierung des Fehlers erfolgt durch einen Optimizer. In diesem Projekt kommt AdamW zum Einsatz. Die integrierte "Weight Decay"-Technik verhindert ein übermäßiges Anwachsen der Modellgewichte, was zur Vermeidung von Overfitting beiträgt und die Generalisierungsfähigkeit stärkt. Die Lernrate wird dynamisch angepasst. Zu Beginn des Trainings ist sie höher, um schnelle Fortschritte zu ermöglichen. Im Verlauf des Trainings wird sie schrittweise reduziert, um eine feinere Anpassung der Gewichte zu ermöglichen. Die Lernrate ist dafür verantwortlich, wie stark die Gewichte bei jeder Aktualisierung angepasst werden. Eine zu hohe Lernrate kann zu instabilem Training führen, während eine zu niedrige Lernrate den Fortschritt verlangsamt.
+Die Minimierung des Fehlers erfolgt durch einen \emph{Optimizer}. In diesem Projekt kommt AdamW zum Einsatz. Die integrierte "`Weight Decay"'-Technik verhindert ein übermäßiges Anwachsen der Modellgewichte, was zur Vermeidung von Overfitting beiträgt und die Generalisierungsfähigkeit stärkt. Die Lernrate wird dynamisch angepasst. Zu Beginn des Trainings ist sie höher, um schnelle Fortschritte zu ermöglichen. Im Verlauf des Trainings wird sie schrittweise reduziert, um eine feinere Anpassung der Gewichte zu ermöglichen. Die Lernrate ist dafür verantwortlich, wie stark die Gewichte bei jeder Aktualisierung angepasst werden. Eine zu hohe Lernrate kann zu instabilem Training führen, während eine zu niedrige Lernrate den Fortschritt verlangsamt \cite[Kapitel 8.5]{goodfellow2016}.
 
 \paragraph{Mixed Precision Training, AMP}
-Zur Effizienzsteigerung wird Mixed Precision genutzt. Dabei erfolgen Teile der Berechnungen mit reduzierter Genauigkeit, 16-Bit anstatt 32-Bit. Dies resultiert in einer Beschleunigung des Trainingsprozesses bei gleichzeitig reduziertem Speicherbedarf, ohne die Klassifikationsgenauigkeit negativ zu beeinflussen. Die Grafikkarte unterstützt diese Technik nativ, was die Implementierung erleichtert.
+Zur Effizienzsteigerung wird \emph{Mixed Precision} genutzt. Dabei erfolgen Teile der Berechnungen mit reduzierter Genauigkeit, 16-Bit anstatt 32-Bit. Dies resultiert in einer Beschleunigung des Trainingsprozesses bei gleichzeitig reduziertem Speicherbedarf, ohne die Klassifikationsgenauigkeit negativ zu beeinflussen. Die Grafikkarte unterstützt diese Technik nativ, was die Implementierung erleichtert.

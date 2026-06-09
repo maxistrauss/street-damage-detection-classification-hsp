@@ -10,7 +10,7 @@ Das System ist als eine Pipeline strukturiert, die mehrere Verarbeitungsstufen u
 
 Zunächst erfolgt die Erfassung von Straßenbildern aus Quellen wie Fahrzeugkameras oder Drohnen aus dem vorhandenen Datensatz. Das Ziel von HSP 1 ist die Detektion, wobei hier digitale Rahmen, sogenannte Bounding Boxes, um potenzielle Schäden gezogen werden.
 
-Das System schneidet diesen Bereich aus dem Gesamtbild heraus. Dieser Ausschnitt (Patch) wird an das Klassifizierungsmodul übergeben, welches über die Art des Schadens entscheidet. Am Ende steht eine Bewertung, die mit GPS-Daten verknüpft wird. So entsteht eine digitale Schadenskarte, die als Grundlage für die Sanierungsplanung dient.
+Das System schneidet diesen Bereich aus dem Gesamtbild heraus. Dieser Ausschnitt (\emph{Patch}) wird an das Klassifizierungsmodul übergeben, welches über die Art des Schadens entscheidet. Am Ende steht eine Bewertung, die mit einem Konfidenz-Wert verknüpft wird. Diese Bewertung dient als Entscheidungsgrundlage für die Priorisierung von Instandsetzungsmaßnahmen. Zudem werden die Ergebnisse visualisiert, um die Nachvollziehbarkeit der Entscheidungen zu erhöhen.
 
 \subsection{Datenbasis: Das Road Damage Dataset 2022, RDD2022}
 \label{subsec:rdd2022}
@@ -24,7 +24,7 @@ Das RDD2022 enthält Aufnahmen aus sechs verschiedenen Ländern, darunter Japan,
     \item Asphalt-Texturen: Da jedes Land unterschiedliche Asphaltmischungen verwendet, muss die KI lernen, Schäden unabhängig von der Oberflächenstruktur zu erkennen.
     \item Infrastrukturelemente: Fahrbahnmarkierungen oder länderspezifische Beschilderungen dürfen nicht zu Fehlklassifikationen führen.
 \end{itemize}
-Diese Vielfalt wird in der Informatik als Domänen-Varianz bezeichnet. Sie stellt eine Herausforderung dar, da die KI die zugrundeliegenden Merkmale eines Schadens erfassen muss, anstatt sich auf oberflächliche Details zu verlassen. Das RDD2022 bietet somit eine ideale Grundlage für die Entwicklung eines Modells mit hoher Generalisierungsfähigkeit.
+Diese Vielfalt wird in der Informatik als \emph{Domänen-Varianz} bezeichnet. Sie stellt eine Herausforderung dar, da die KI die zugrundeliegenden Merkmale eines Schadens erfassen muss, anstatt sich auf oberflächliche Details zu verlassen. Das RDD2022 bietet somit eine ideale Grundlage für die Entwicklung eines Modells mit hoher Generalisierungsfähigkeit \cite[Kapitel 1]{szeliski2022computer}.
 
 \begin{figure}[H]
     \centering
@@ -36,7 +36,7 @@ Diese Vielfalt wird in der Informatik als Domänen-Varianz bezeichnet. Sie stell
 \subsection{Datenannotation und Labeling-Strategie}
 \label{subsec:annotation}
 
-Bevor ein Lernprozess stattfinden kann, ist eine Kennzeichnung der Bildinhalte erforderlich. Dieser Vorgang wird als Annotation oder Labeling bezeichnet. Experten markieren dabei die Schäden in den Bildern durch Rahmen.
+Bevor ein Lernprozess stattfinden kann, ist eine Kennzeichnung der Bildinhalte erforderlich. Dieser Vorgang wird als \emph{Annotation} oder \emph{Labeling} bezeichnet. Experten markieren dabei die Schäden in den Bildern durch Rahmen.
 
 Für HSP 2 werden diese Informationen genutzt, um die relevanten Bildbereiche zu extrahieren. In einer JSON-Datei sind die Koordinaten der Bounding Boxes sowie die zugehörigen Schadensklassen gespeichert. Das System liest diese Informationen ein und schneidet die entsprechenden Bildausschnitte aus, um sie für die Klassifikation vorzubereiten. Dabei wird ein Puffer von etwa 10\,\% um den Schaden herum beibehalten. Dies ermöglicht es der KI, den Übergang vom beschädigten zum intakten Asphalt zu analysieren, was für die Einschätzung von Kontrast und Tiefe relevant ist.
 
@@ -69,7 +69,7 @@ Die Messwerte basieren auf dem Vergleich zwischen der Vorhersage der KI und der 
 \end{itemize}
 
 \paragraph{Umgang mit ungleich verteilten Daten}
-Da in der Realität schadensfreie Straßen häufiger vorkommen als Schäden, Class Imbalance, ist die alleinige Betrachtung der Genauigkeit nicht ausreichend.
+Da in der Realität schadensfreie Straßen häufiger vorkommen als Schäden, Class Imbalance, ist die alleinige Betrachtung der Genauigkeit nicht ausreichend \cite[Kapitel 5.7]{halak2026_convolutional}.
 
 \begin{itemize}
     \item Accuracy, Genauigkeit: Anteil aller korrekten Vorhersagen.
@@ -98,8 +98,8 @@ Da in der Realität schadensfreie Straßen häufiger vorkommen als Schäden, Cla
 
 Zur Gewährleistung einer Evaluation erfolgt eine Aufteilung der Daten in drei getrennte Mengen:
 \begin{enumerate}
-    \item Trainingsdaten (80\,\% des Quell-Trainingsdatensatzes): Diese Teilmenge dient als Basis für den Lernprozess, bei dem das Modell die spezifischen Schadensmuster der Straßenoberfläche erlernt.
-    \item Validierungsdaten (20\,\% des Quell-Trainingsdatensatzes): Dieser Anteil wird über eine randomisierte Partitionierung vom ursprünglichen Trainingspool abgespalten. Er dient zur kontinuierlichen Überprüfung der Lernfortschritte während der Epochen.
-    \item Testdaten: Diese Menge entspricht dem separaten, isolierten Test-Verzeichnis des Original-Datensatzes. Sie verbleibt während des gesamten Trainingsprozesses vollständig unberührt. Die abschließende Bewertung anhand dieser völlig neuen Bilddaten stellt die Generalisierungsfähigkeit des Transformer-Modells sicher.
+    \item Trainingsdaten (70\,\% des Datensatzes): Diese Teilmenge dient als Basis für den Lernprozess, bei dem das Modell die spezifischen Schadensmuster der Straßenoberfläche erlernt.
+    \item Validierungsdaten (15\,\% des Datensatzes): Dieser Anteil wird über eine randomisierte Partitionierung vom ursprünglichen Trainingspool abgespalten. Er dient zur kontinuierlichen Überprüfung der Lernfortschritte während der Epochen.
+    \item Testdaten (15\,\% des Datensatzes): Diese Menge entspricht dem separaten, isolierten Test-Verzeichnis des Original-Datensatzes. Sie verbleibt während des gesamten Trainingsprozesses vollständig unberührt. Die abschließende Bewertung anhand dieser völlig neuen Bilddaten stellt die Generalisierungsfähigkeit des Transformer-Modells sicher.
 \end{enumerate}
 Um eine vollständige Reproduzierbarkeit dieser Aufteilung zu garantieren, wird der Randomisierungs-Algorithmus bei jedem Durchlauf über einen festen Zufallssaatwert initialisiert.
