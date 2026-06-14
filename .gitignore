@@ -24,6 +24,8 @@ HSP2-Latex/Vorlage.pdf
 Python/data/dataset-ninja
 Python/hsp2_transformer/data
 *.pth
+*.pt
+Python/hsp1/results/
 
 
 node_modules/
@@ -37,3 +39,4 @@ runs/
 .claude/settings.local.json
 .claude/settings.json
 HSP2-Latex/Abschlussarbeit.pdf
+dataset/rdd2022-DatasetNinja.tar

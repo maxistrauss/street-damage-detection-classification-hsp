@@ -7,13 +7,13 @@ from pathlib import Path
 from ultralytics import YOLO
 
 YAML      = Path(__file__).parent / "data" / "yolo" / "rdd2022.yaml"
-MODEL     = "yolo11m.pt"   # medium — change to yolo11s.pt for faster iteration
-EPOCHS    = 50
+MODEL     = "yolo11m.pt"
+EPOCHS    = 100
 IMGSZ     = 640
 BATCH     = 16
 WORKERS   = 4
 PROJECT   = Path(__file__).parent / "runs"
-NAME      = "rdd2022_yolo11m"
+NAME      = "rdd2022_yolo11m_damage"
 
 
 def main():

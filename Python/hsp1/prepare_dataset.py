@@ -19,16 +19,14 @@ from pathlib import Path
 DATASET_DIR = Path(__file__).parent / "data" / "dataset-ninja"
 OUTPUT_DIR  = Path(__file__).parent / "data" / "yolo"
 
-CLASSES = [
-    "alligator crack",
-    "block crack",
-    "longitudinal crack",
-    "other corruption",
-    "pothole",
-    "repair",
-    "transverse crack",
-]
-CLASS_TO_IDX = {c: i for i, c in enumerate(CLASSES)}
+CLASSES = ["damage"]
+
+# All annotation classes map to class 0 ("damage")
+DAMAGE_CLASSES = {
+    "alligator crack", "block crack", "longitudinal crack",
+    "other corruption", "pothole", "repair", "transverse crack",
+}
+CLASS_TO_IDX = {c: 0 for c in DAMAGE_CLASSES}
 
 VAL_RATIO = 0.2
 SEED = 42
