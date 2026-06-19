@@ -349,37 +349,6 @@ isbn=false		% Keine Ausbage der ISBN
 \listoftables
 \pagebreak
 
-
-% Stichwortverzeichnis
-\pagebreak
-\stepcounter{verzeichnis}
-% Stichwortverzeichnis soll im Inhaltsverzeichnis auftauchen
-\section{Stichwortverzeichnis}
-
-% Abstand analog der anderen Verzeichnisse reduzieren
-\vspace{-3em}
-
-% Stichwortverzeichnis endgueltig anzeigen
-
-\printindex
-
-% Abkürzungen
-\pagebreak
-\stepcounter{verzeichnis}
-\section{Abkürzungsverzeichnis}
-\vspace{-4em} % Abstand analog der anderen Verzeichnisse reduzieren
-\printnoidxglossary[type=\acronymtype,style=alttree,title=,toctitle=] %automatischen Titel und Gliederungsbeschriftung unterdrücken - sonst steht da Glossarie
-%\printglossary[type=\acronymtype,style=alttree,title=,toctitle=] %automatischen Titel und Gliederungsbeschriftung unterdrücken - sonst steht da Glossarie
-\newpage
-
-% ---------------------------------------------------------------------------------
-% Anhang
-% ---------------------------------------------------------------------------------
-\rhead{Anhang}        %Kopftextbeschriftung
-\begin{appendix}
-	
-\end{appendix}
-
 \pagebreak
 \input{tex/Ehrenwoertliche-Erklaerung}
 
