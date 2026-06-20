@@ -38,7 +38,7 @@ Diese Vielfalt wird in der Informatik als \emph{Domänen-Varianz} bezeichnet. Si
 
 Bevor ein Lernprozess stattfinden kann, ist eine Kennzeichnung der Bildinhalte erforderlich. Dieser Vorgang wird als \emph{Annotation} oder \emph{Labeling} bezeichnet. Experten markieren dabei die Schäden in den Bildern durch Rahmen.
 
-Für HSP 2 werden diese Informationen genutzt, um die relevanten Bildbereiche zu extrahieren. In einer JSON-Datei sind die Koordinaten der Bounding Boxes sowie die zugehörigen Schadensklassen gespeichert. Das System liest diese Informationen ein und schneidet die entsprechenden Bildausschnitte aus, um sie für die Klassifikation vorzubereiten. Dabei wird ein Puffer von etwa 10\,\% um den Schaden herum beibehalten. Dies ermöglicht es der KI, den Übergang vom beschädigten zum intakten Asphalt zu analysieren, was für die Einschätzung von Kontrast und Tiefe relevant ist.
+Für HSP 2 werden diese Informationen genutzt, um die relevanten Bildbereiche zu extrahieren. In einer JSON-Datei sind die Koordinaten der Bounding Boxes sowie die zugehörigen Schadensklassen gespeichert. Das System liest diese Informationen ein und schneidet die entsprechenden Bildausschnitte aus, um sie für die Klassifikation vorzubereiten. Dabei wird ein Puffer um den Schaden herum beibehalten. Dies ermöglicht es der KI, den Übergang vom beschädigten zum intakten Asphalt zu analysieren, was für die Einschätzung von Kontrast und Tiefe relevant ist.
 
 \subsection{Datenaufbereitung und Preprocessing}
 \label{subsec:preprocessing}
