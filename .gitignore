@@ -40,3 +40,9 @@ runs/
 .claude/settings.json
 HSP2-Latex/Abschlussarbeit.pdf
 dataset/rdd2022-DatasetNinja.tar
+
+# OS / editor / tool artifacts
+Thumbs.db
+~$*
+.claude/
+Python/hsp2_transformer/gemini.txt
